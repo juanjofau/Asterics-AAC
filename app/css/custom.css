@@ -63,8 +63,8 @@ button.btn-primary:hover {
 
 header {
     z-index: 101;
-    margin: 40;
-    padding: 2vh;
+    margin: 0;
+    padding: 102vh;
     border-bottom: 2px solid lightgray;
     max-height: 40px;
 }
