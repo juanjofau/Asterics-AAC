@@ -13,7 +13,12 @@ class ColorConfig extends Model({
     borderWidth: [Number],
     elementMargin: [Number],
     borderRadius: [Number],
-    colorMode: [String]
+    colorMode: [String],
+    navigationIndicatorStyle: [String],
+    navigationIndicatorIcon: [String],
+    navigationIndicatorSize: [Number],
+    navigationIndicatorColor: [String],
+    navigationIndicatorOpacity: [Number]
 }) {
     constructor(properties) {
         super(properties);
@@ -31,6 +36,23 @@ ColorConfig.COLOR_MODE_BOTH = 'COLOR_MODE_BOTH';
 ColorConfig.BORDER_WIDTH_BORDER_COLORED = 0.45;
 ColorConfig.BORDER_WIDTH_BG_COLORED = 0.1;
 
+ColorConfig.NAV_INDICATOR_STYLE_ICON = 'icon';
+ColorConfig.NAV_INDICATOR_STYLE_SHADED = 'shaded';
+ColorConfig.NAV_INDICATOR_STYLE_FOLDED = 'folded';
+ColorConfig.NAV_INDICATOR_STYLE_FOLDER = 'folder';
+
+ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE = 'sticky-note';
+ColorConfig.NAV_INDICATOR_ICON_FOLDER = 'folder';
+ColorConfig.NAV_INDICATOR_ICON_ARROW = 'arrow-right';
+ColorConfig.NAV_INDICATOR_ICON_LINK = 'external-link-alt';
+
+ColorConfig.NAV_INDICATOR_SIZE_MIN = 10;
+ColorConfig.NAV_INDICATOR_SIZE_MAX = 50;
+ColorConfig.NAV_INDICATOR_SIZE_DEFAULT = 30;
+
+ColorConfig.NAV_INDICATOR_COLOR_DEFAULT = '#3478b8';
+ColorConfig.NAV_INDICATOR_OPACITY_DEFAULT = 80;
+
 ColorConfig.defaults({
     modelName: ColorConfig.getModelName(),
     modelVersion: constants.MODEL_VERSION,
@@ -43,7 +65,12 @@ ColorConfig.defaults({
     borderWidth: ColorConfig.BORDER_WIDTH_BG_COLORED,
     elementMargin: 0.15,
     borderRadius: 0.4,
-    colorMode: ColorConfig.COLOR_MODE_BACKGROUND
+    colorMode: ColorConfig.COLOR_MODE_BACKGROUND,
+    navigationIndicatorStyle: ColorConfig.NAV_INDICATOR_STYLE_ICON,
+    navigationIndicatorIcon: ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE,
+    navigationIndicatorSize: ColorConfig.NAV_INDICATOR_SIZE_DEFAULT,
+    navigationIndicatorColor: ColorConfig.NAV_INDICATOR_COLOR_DEFAULT,
+    navigationIndicatorOpacity: ColorConfig.NAV_INDICATOR_OPACITY_DEFAULT
 });
 
 export { ColorConfig };
