@@ -12,7 +12,7 @@
             <i v-if="gridElement.hidden"
                class="fas fa-eye-slash element-hint"></i>
 
-            <i v-if="hasNavigation && isOriginalIcon"
+            <i v-show="hasNavigation && isOriginalIcon"
                class="fas fa-sticky-note fa-rotate-180 fa-flip-vertical element-hint"></i>
 
             <i v-if="hasNavigation && isIconIndicator && !isOriginalIcon"
