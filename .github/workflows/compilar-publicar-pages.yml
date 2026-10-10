@@ -6,10 +6,11 @@ on:
   workflow_dispatch:
     inputs:
       rama:
-        description: "Rama que quieres compilar y publicar"
-        required: true
-        default: "prueba-A"
+        description: "Rama a publicar (vacío = rama seleccionada arriba)"
+        required: false
+        default: ""
         type: string
+
 
 # Evita dos publicaciones simultaneas.
 concurrency:
