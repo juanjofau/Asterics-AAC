@@ -131,6 +131,95 @@
                         </div>
                     </accordion>
                 </div>
+                <h4 class="mt-5">{{ $t('navigationIndicator') }}</h4>
+
+                <div class="srow">
+                    <label class="three columns" for="navigationIndicatorStyle">
+                        {{ $t('navigationIndicatorStyle') }}
+                    </label>
+                    <select id="navigationIndicatorStyle"
+                            v-model="metadata.colorConfig.navigationIndicatorStyle"
+                            class="five columns"
+                            @change="saveMetadata(metadata)">
+                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_ICON">
+                            {{ $t('navigationIndicatorStyleIcon') }}
+                        </option>
+                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_SHADED">
+                            {{ $t('navigationIndicatorStyleShaded') }}
+                        </option>
+                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_FOLDED">
+                            {{ $t('navigationIndicatorStyleFolded') }}
+                        </option>
+                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_FOLDER">
+                            {{ $t('navigationIndicatorStyleFolder') }}
+                        </option>
+                    </select>
+                </div>
+
+                <div v-if="metadata.colorConfig.navigationIndicatorStyle === ColorConfig.NAV_INDICATOR_STYLE_ICON"
+                     class="srow">
+                    <label class="three columns" for="navigationIndicatorIcon">
+                        {{ $t('navigationIndicatorIcon') }}
+                    </label>
+                    <select id="navigationIndicatorIcon"
+                            v-model="metadata.colorConfig.navigationIndicatorIcon"
+                            class="five columns"
+                            @change="saveMetadata(metadata)">
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE">
+                            {{ $t('navigationIndicatorIconStickyNote') }}
+                        </option>
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_FOLDER">
+                            {{ $t('navigationIndicatorIconFolder') }}
+                        </option>
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_ARROW">
+                            {{ $t('navigationIndicatorIconArrow') }}
+                        </option>
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_LINK">
+                            {{ $t('navigationIndicatorIconLink') }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="srow">
+                    <slider-input
+                        label="navigationIndicatorSize"
+                        unit="%"
+                        id="navigationIndicatorSize"
+                        :min="ColorConfig.NAV_INDICATOR_SIZE_MIN"
+                        :max="ColorConfig.NAV_INDICATOR_SIZE_MAX"
+                        step="1"
+                        v-model.number="metadata.colorConfig.navigationIndicatorSize"
+                        @change="saveMetadata(metadata)"/>
+                </div>
+
+                <div v-if="metadata.colorConfig.navigationIndicatorStyle !== ColorConfig.NAV_INDICATOR_STYLE_ICON"
+                     class="srow">
+                    <label class="three columns" for="navigationIndicatorColor">
+                        {{ $t('navigationIndicatorColor') }}
+                    </label>
+                    <input id="navigationIndicatorColor"
+                           v-model="metadata.colorConfig.navigationIndicatorColor"
+                           class="five columns"
+                           type="color"
+                           @change="saveMetadata(metadata)">
+                    <button class="three columns"
+                            @click="metadata.colorConfig.navigationIndicatorColor = ColorConfig.NAV_INDICATOR_COLOR_DEFAULT; saveMetadata(metadata)">
+                        {{ $t('reset') }}
+                    </button>
+                </div>
+
+                <div v-if="metadata.colorConfig.navigationIndicatorStyle !== ColorConfig.NAV_INDICATOR_STYLE_ICON"
+                     class="srow">
+                    <slider-input
+                        label="navigationIndicatorOpacity"
+                        unit="%"
+                        id="navigationIndicatorOpacity"
+                        min="0"
+                        max="100"
+                        step="1"
+                        v-model.number="metadata.colorConfig.navigationIndicatorOpacity"
+                        @change="saveMetadata(metadata)"/>
+                </div>
                 <h3 class="mt-5">{{ $t('grid') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="appColor">
@@ -150,7 +239,13 @@
                     <label for="testElementLabel" class="me-2 u-full-width">{{ $t('testElementLabel') }}</label>
                     <input id="testElementLabel" class="u-full-width" type="text" v-model="testElementLabel" @input="resetTestGrid"/>
                 </div>
-                <app-grid-display v-if="testGridData" style="max-width: 200px; height: 500px;" :grid-data="testGridData" :metadata="metadata" :watch-for-changes="true"/>
+                <app-grid-display v-if="testGridData"
+                                  style="max-width: 200px; height: 500px; pointer-events: none;"
+                                  :grid-data="testGridData"
+                                  :metadata="metadata"
+                                  :watch-for-changes="true"
+                                  aria-hidden="true"
+                                  inert/>
             </div>
         </div>
     </div>
@@ -163,6 +258,7 @@
     import SliderInput from '../../modals/input/sliderInput.vue';
     import Accordion from '../../components/accordion.vue';
     import AppGridDisplay from '../../grid-display/appGridDisplay.vue';
+    import { GridActionNavigate } from '../../../js/model/GridActionNavigate';
     import { GridElement } from '../../../js/model/GridElement';
     import { i18nService } from '../../../js/service/i18nService';
     import { GridImage } from '../../../js/model/GridImage';
@@ -270,9 +366,22 @@
             },
             resetTestGrid() {
                 util.debounce(() => {
+                    const navigationPreviewElement = this.getElement(
+                        0,
+                        0,
+                        this.testElementLabel,
+                        "https://api.arasaac.org/api/pictograms/2648?download=false&plural=false&color=true"
+                    );
+
+                    navigationPreviewElement.actions = [
+                        new GridActionNavigate({
+                            navType: GridActionNavigate.NAV_TYPES.TO_HOME
+                        })
+                    ];
+
                     this.testGridData = new GridData({
                         gridElements: [
-                            this.getElement(0, 0, this.testElementLabel, "https://api.arasaac.org/api/pictograms/2648?download=false&plural=false&color=true"),
+                            navigationPreviewElement,
                             this.getElement(0, 1, i18nService.t("CC_VERB"), "https://api.arasaac.org/api/pictograms/4887?download=false&plural=false&color=true", "CC_VERB"),
                             this.getElement(0, 2, i18nService.t("CC_NOUN"), "https://api.arasaac.org/api/pictograms/2808?download=false&plural=false&color=true", "CC_NOUN"),
                             this.getElement(0, 3, this.testElementLabel),
