@@ -67,11 +67,11 @@
     import './../../css/modal.css';
     import {dataService} from "../../js/service/data/dataService";
     import {gridUtil} from "../../js/util/gridUtil";
-    import {printService} from "../../js/service/printService";
+    import {pdfService} from "../../js/service/pdfExport/pdfService";
     import {MainVue} from "../../js/vue/mainVue";
 
     export default {
-        props: ['gridsData', 'printGridId'],
+        props: ['gridsData', 'printGridId', 'metadata'],
         data: function () {
             return {
                 selectedGrid: null,
@@ -109,7 +109,10 @@
                     }
                 }).then((grids) => {
                     grids = exportIds.map(id => grids.filter(grid => grid.id === id)[0]);
-                    printService.gridsToPdf(grids, {
+                    let homeGridId = this.metadata.homeGridId;
+                    let selectedId = this.selectedGrid ? this.selectedGrid.id : null;
+                    grids = gridUtil.sortGrids(grids, homeGridId, selectedId);
+                    pdfService.gridsToPdf(grids, {
                         printBackground: this.options.printBackground,
                         showLinks: this.options.showLinks,
                         showRegister: this.options.showRegister,
