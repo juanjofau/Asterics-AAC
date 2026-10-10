@@ -1200,6 +1200,7 @@
   "colorModeBackground": "Fondo",
   "colorModeBackgroundBorder": "Fondo + borde",
   "borderWidth": "Grosor del borde",
+  "inheritGlobalBorderWidth": "Usar el grosor global",
   "borderRadius": "Redondeado del borde",
   "elementMargin": "Espacio entre celdas",
   "fontColor": "Color del texto",

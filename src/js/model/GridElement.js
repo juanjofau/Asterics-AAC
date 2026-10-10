@@ -35,6 +35,7 @@ class GridElement extends Model({
     pronunciation: [Object], //map locale -> pronunciation, e.g. "de" => pronunciationDE
     wordForms: [Model.Array(Object)], //Array of WordForm, removed for performance reasons
     fontSizePct: [Number],
+    borderWidthPct: [Number],
     fontColor: [String],
     backgroundColor: [String], // also used as border color for color mode: "border", see https://github.com/asterics/Asterics-AAC/issues/580#issuecomment-3281187917
     borderColor: [String], // only used for color mode: "both"!
@@ -54,6 +55,13 @@ class GridElement extends Model({
         properties.actions = properties.actions || [new GridActionSpeak()];
         super(Object.assign(defaults, properties));
         this.id = this.id || modelUtil.generateId(GridElement.ID_PREFIX);
+    }
+
+    static getBorderWidthPct(element, colorConfig) {
+        if (element && element.borderWidthPct !== undefined && element.borderWidthPct !== null) {
+            return element.borderWidthPct;
+        }
+        return colorConfig.borderWidth;
     }
 
     hasSetPosition() {

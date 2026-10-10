@@ -171,6 +171,13 @@ constants.TRANSFER_PROPS = {
         type: constants.PROP_TRANSFER_TYPES.PERCENTAGE,
         category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE
     },
+    BORDER_WIDTH: {
+        path: 'borderWidthPct',
+        label: 'borderWidth',
+        type: constants.PROP_TRANSFER_TYPES.PERCENTAGE,
+        category: constants.PROP_TRANSFER_CATEGORIES.APPEARANCE,
+        noneSelectedLabel: 'inheritGlobalBorderWidth'
+    },
     HIDDEN: {
         path: 'hidden',
         label: 'hideElement',

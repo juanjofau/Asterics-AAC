@@ -8,7 +8,7 @@
             <span>{{ $t('currentValue') }}</span>:
             <span>{{ showValue }}<span v-if="value || value === 0">{{unit ? (' ' + i18nService.t(unit)) : ''}}</span></span>
         </div>
-        <button v-if="showClearButton" class="two columns" :disabled="!value" @click="emitChange(null)">{{ $t('clear') }}</button>
+        <button v-if="showClearButton" class="two columns" :disabled="value === null || value === undefined" @click="emitChange(null)">{{ $t('clear') }}</button>
     </div>
 </template>
 
@@ -16,7 +16,7 @@
     import {i18nService} from "../../../js/service/i18nService.js";
 
     export default {
-        props: ['id', 'label', 'value', 'min', 'max', 'step', 'decimals', 'unit', 'displayFactor', 'default', 'showClearButton'],
+        props: ['id', 'label', 'value', 'min', 'max', 'step', 'decimals', 'unit', 'displayFactor', 'default', 'showClearButton', 'noneSelectedLabel'],
         data() {
             return {
                 i18nService: i18nService
@@ -25,7 +25,7 @@
         computed: {
             showValue() {
                 if (!this.value && this.value !== 0) {
-                    return i18nService.t('noneSelected');
+                    return i18nService.t(this.noneSelectedLabel || 'noneSelected');
                 }
                 let displayFactor = this.displayFactor ? parseFloat(this.displayFactor) : 1;
                 let val = parseFloat(this.value) * displayFactor;

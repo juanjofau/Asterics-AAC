@@ -11,7 +11,7 @@
         <div class="col-sm-3">
             <span class="d-inline-block d-sm-none">{{ $t('currentValue') }}:</span>
             <div class="d-inline-block">
-                <span v-if="[undefined, null].includes(gridElement[propObject.path]) && propObject.type !== TYPES.BOOLEAN">{{ $t('noneSelected') }}</span>
+                <span v-if="[undefined, null].includes(gridElement[propObject.path]) && propObject.type !== TYPES.BOOLEAN">{{ $t(propObject.noneSelectedLabel || 'noneSelected') }}</span>
                 <div v-if="![undefined, null].includes(gridElement[propObject.path]) || propObject.type === TYPES.BOOLEAN">
                     <div v-if="propObject.type === TYPES.BOOLEAN">
                         <span v-if="gridElement[propObject.path]"><i class="far fa-check-square"/> {{ $t('checked') }}</span>

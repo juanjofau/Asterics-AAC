@@ -52,6 +52,7 @@
                     <label for="toggleInBar">{{ $t('toggleInCollectionElementIfAddedMultipleTimes') }}</label>
                 </div>
                 <slider-input label="fontSize" unit="%" id="fontSize" :show-clear-button="true" min="0" max="70" step="1" v-model.number="gridElement.fontSizePct" @input="resetTestGrid"/>
+                <slider-input label="borderWidth" unit="%" id="borderWidth" :show-clear-button="true" none-selected-label="inheritGlobalBorderWidth" min="0" max="2" step="0.05" :decimals="2" v-model.number="gridElement.borderWidthPct" @input="resetTestGrid"/>
                 <div class="srow">
                     <label class="four columns" for="backgroundColor">
                         <span v-if="metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER">{{ $t('customBorderColor') }}</span>
