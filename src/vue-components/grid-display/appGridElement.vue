@@ -50,8 +50,7 @@ export default {
             GridElement: GridElement,
             resizeObserver: null,
             elementMarginPx: fontUtil.pctToPx(this.metadata.colorConfig.elementMargin),
-            borderRadiusPx: fontUtil.pctToPx(this.metadata.colorConfig.borderRadius),
-            borderWidthPx: fontUtil.pctToPx(this.metadata.colorConfig.borderWidth)
+            borderRadiusPx: fontUtil.pctToPx(this.metadata.colorConfig.borderRadius)
         }
     },
     computed: {
@@ -63,6 +62,9 @@ export default {
         },
         backgroundColor() {
             return colorUtil.getBackgroundColor(this.element, this.metadata);
+        },
+        borderWidthPx() {
+            return this.getBorderWidth();
         },
         fontColor() {
             return colorUtil.getFontColor(this.metadata, this.backgroundColor);
@@ -158,14 +160,13 @@ export default {
                 return;
             }
             this.elementMarginPx = this.getElementMargin();
-            this.borderWidthPx = this.getBorderWidth();
             this.borderRadiusPx = fontUtil.pctToPx(this.metadata.colorConfig.borderRadius);
         },
         getElementMargin() {
             return fontUtil.pctToPx(this.metadata.colorConfig.elementMargin);
         },
         getBorderWidth() {
-            return fontUtil.pctToPx(this.metadata.colorConfig.borderWidth);
+            return fontUtil.pctToPx(colorUtil.getBorderWidthPct(this.element, this.metadata));
         }
     },
     async mounted() {

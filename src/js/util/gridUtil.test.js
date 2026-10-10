@@ -167,3 +167,17 @@ function getGrid(id, navigateToList) {
         gridElements: elements
     }
 }
+
+test('gridUtil.duplicateElement preserves an explicit zero border width', () => {
+    const source = { id: 'source', borderWidthPct: 0, actions: [] };
+    const duplicate = gridUtil.duplicateElement(source);
+    expect(duplicate.borderWidthPct).toBe(0);
+    expect(duplicate.id).not.toEqual(source.id);
+});
+
+test('gridUtil property transfer includes an explicit zero border width', () => {
+    const source = { borderWidthPct: 0 };
+    expect(gridUtil.getAllPropTransferPaths()).toContain('borderWidthPct');
+    expect(gridUtil.getPropTransferObjectAll(source).borderWidthPct).toBe(0);
+    expect(gridUtil.getPropTransferObjectAppearance(source).borderWidthPct).toBe(0);
+});

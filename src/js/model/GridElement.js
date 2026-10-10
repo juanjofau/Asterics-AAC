@@ -35,6 +35,7 @@ class GridElement extends Model({
     pronunciation: [Object], //map locale -> pronunciation, e.g. "de" => pronunciationDE
     wordForms: [Model.Array(Object)], //Array of WordForm, removed for performance reasons
     fontSizePct: [Number],
+    borderWidthPct: [Number, null], // null/undefined inherits global width; zero is a valid override
     fontColor: [String],
     backgroundColor: [String], // also used as border color for color mode: "border", see https://github.com/asterics/Asterics-AAC/issues/580#issuecomment-3281187917
     borderColor: [String], // only used for color mode: "both"!

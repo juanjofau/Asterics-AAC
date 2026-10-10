@@ -43,6 +43,13 @@ colorUtil.getBackgroundColor = function(element = {}, metadata, fallbackColor) {
     return metadata.colorConfig.elementBackgroundColor;
 }
 
+/** Resolve the effective per-cell border width (percentage), preserving explicit zero. */
+colorUtil.getBorderWidthPct = function (element = {}, metadata) {
+    if (element.borderWidthPct !== undefined && element.borderWidthPct !== null) return element.borderWidthPct;
+    if (metadata && metadata.colorConfig && metadata.colorConfig.borderWidth !== undefined && metadata.colorConfig.borderWidth !== null) return metadata.colorConfig.borderWidth;
+    return ColorConfig.BORDER_WIDTH_BG_COLORED;
+}
+
 colorUtil.getBorderColor = function (element = {}, metadata, returnHex) {
     if (!metadata || !metadata.colorConfig) {
         return constants.COLORS.GRAY;

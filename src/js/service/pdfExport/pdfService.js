@@ -271,7 +271,7 @@ async function addGridToPdf(doc, gridData, options, metadata, globalGrid) {
         if (element.hidden) {
             continue;
         }
-        let borderWidth = pctToMm(metadata.colorConfig.borderWidth);
+        let borderWidth = pctToMm(colorUtil.getBorderWidthPct(element, metadata));
         let elementMargin = borderWidth / 2 + pctToMm((metadata.colorConfig.elementMargin));
         let outerElemArea = getArea({
             x: gridArea.x + elementTotalWidth * element.x + elementMargin,

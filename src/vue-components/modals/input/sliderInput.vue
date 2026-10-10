@@ -8,7 +8,7 @@
             <span>{{ $t('currentValue') }}</span>:
             <span>{{ showValue }}<span v-if="value || value === 0">{{unit ? (' ' + i18nService.t(unit)) : ''}}</span></span>
         </div>
-        <button v-if="showClearButton" class="two columns" :disabled="!value" @click="emitChange(null)">{{ $t('clear') }}</button>
+        <button v-if="showClearButton" class="two columns" :disabled="value === undefined || value === null" @click="emitChange(null)">{{ $t('clear') }}</button>
     </div>
 </template>
 
