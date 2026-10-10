@@ -1,12 +1,9 @@
-// The application initializes objectmodel's global window.Model before loading models.
-// Jest loads modules directly, so provide the same factory contract without relying on app bootstrap.
-jest.mock('../externals/objectmodel', () => ({
-    Model: () => class {
-        constructor(properties = {}) {
-            Object.assign(this, properties);
-        }
-    }
-}));
+// Follow the same manual mocks used by the existing model-related Jest tests.
+// In particular, objectmodel's manual mock implements the static API (defaults/Array)
+// that model modules call while they are being imported.
+jest.mock('../externals/objectmodel');
+jest.mock('../util/modelUtil');
+jest.mock('../service/data/localStorageService');
 
 import { GridElement } from './GridElement';
 
@@ -28,5 +25,18 @@ describe('GridElement border width', () => {
         const element = new GridElement({ borderWidthPct: 0 });
         const savedElement = JSON.parse(JSON.stringify(element));
         expect(savedElement.borderWidthPct).toBe(0);
+    });
+
+    test('persists an individual width in serialized cell data', () => {
+        const element = new GridElement({ borderWidthPct: 0.8 });
+        const savedElement = JSON.parse(JSON.stringify(element));
+        expect(savedElement.borderWidthPct).toBe(0.8);
+    });
+
+    test('leaves the property absent when a cell inherits the global width', () => {
+        const element = new GridElement({});
+        const savedElement = JSON.parse(JSON.stringify(element));
+        expect(savedElement.borderWidthPct).toBeUndefined();
+        expect(GridElement.getBorderWidthPct(savedElement, colorConfig)).toBe(0.45);
     });
 });
