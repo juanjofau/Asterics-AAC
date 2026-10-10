@@ -3,7 +3,15 @@ import { GridElement } from './GridElement.js';
 // Follow the existing unit-test convention: use the project's ObjectModel mock and
 // mock browser storage so the test exercises GridElement without bootstrapping app settings.
 jest.mock('../externals/objectmodel');
-jest.mock('../service/data/localStorageService');
+jest.mock('../service/data/localStorageService', () => ({
+    localStorageService: {
+        getAppSettings: () => ({ appLang: 'en' }),
+        getAutologinOrActiveUser: () => 'some_user',
+        getSavedUsers: () => [],
+        getJSON: () => [],
+        saveJSON: () => {}
+    }
+}));
 
 describe('GridElement border width persistence', () => {
     test('keeps an explicit zero border width through JSON save/load', () => {
