@@ -1,0 +1,86 @@
+
+name: Publicar prueba en GitHub Pages
+
+# Solo se ejecuta manualmente.
+on:
+  workflow_dispatch:
+    inputs:
+      rama:
+        description: "Rama que quieres compilar y publicar"
+        required: true
+        default: "prueba-A"
+        type: string
+
+# Evita dos publicaciones simultaneas.
+concurrency:
+  group: publicacion-pages
+  cancel-in-progress: false
+
+jobs:
+  compilar:
+    name: Compilar rama seleccionada
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: read
+
+    steps:
+      # Descargar el codigo de la rama elegida.
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.rama }}
+
+      # Misma version de Node que el build original.
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Instalar dependencias
+        run: npm install
+
+      # Preparar constantes como en la compilacion Beta.
+      - name: Configurar version de prueba
+        run: |
+          sed -i "s/#ASTERICS_GRID_VERSION#/pages-${GITHUB_RUN_NUMBER}/g" src/js/util/constants.js src/vue-components/views/aboutView.vue serviceWorker.js
+          sed -i 's/#ASTERICS_GRID_ENV#/BETA/g' src/js/util/constants.js
+
+      # Ejecutar pruebas Jest y compilar con Webpack.
+      - name: Compilar aplicacion
+        run: npm run build
+
+      # Preparar solo los archivos necesarios para la web.
+      - name: Preparar archivos para publicar
+        run: |
+          mkdir -p public
+          cp index.html unsupported.html public/
+          cp serviceWorker.js serviceWorkerCachePaths.js public/
+          cp -R app public/
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Subir web compilada
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+
+  publicar:
+    name: Publicar web
+    needs: compilar
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Publicar en GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
