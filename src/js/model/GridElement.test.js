@@ -9,6 +9,9 @@ jest.mock('../util/modelUtil', () => ({
     }
 }));
 jest.mock('../service/data/localStorageService');
+// GridActionSpeak imports i18nService, whose module initialization reads app settings.
+// Localization is unrelated to these model tests, so isolate it as well.
+jest.mock('../service/i18nService', () => ({ i18nService: {} }));
 
 import { GridElement } from './GridElement';
 
