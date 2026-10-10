@@ -51,7 +51,7 @@ export default {
             resizeObserver: null,
             elementMarginPx: fontUtil.pctToPx(this.metadata.colorConfig.elementMargin),
             borderRadiusPx: fontUtil.pctToPx(this.metadata.colorConfig.borderRadius),
-            borderWidthPx: fontUtil.pctToPx(this.metadata.colorConfig.borderWidth)
+            borderWidthPx: fontUtil.pctToPx(this.element.borderWidthPct == null ? this.metadata.colorConfig.borderWidth : this.element.borderWidthPct)
         }
     },
     computed: {
@@ -165,7 +165,7 @@ export default {
             return fontUtil.pctToPx(this.metadata.colorConfig.elementMargin);
         },
         getBorderWidth() {
-            return fontUtil.pctToPx(this.metadata.colorConfig.borderWidth);
+            return fontUtil.pctToPx(this.element.borderWidthPct == null ? this.metadata.colorConfig.borderWidth : this.element.borderWidthPct);
         }
     },
     async mounted() {
