@@ -2,7 +2,12 @@
 // In particular, objectmodel's manual mock implements the static API (defaults/Array)
 // that model modules call while they are being imported.
 jest.mock('../externals/objectmodel');
-jest.mock('../util/modelUtil');
+jest.mock('../util/modelUtil', () => ({
+    modelUtil: {
+        setDefaults: (properties) => properties,
+        generateId: (prefix) => prefix + '-test'
+    }
+}));
 jest.mock('../service/data/localStorageService');
 
 import { GridElement } from './GridElement';
