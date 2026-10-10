@@ -12,10 +12,7 @@
             <i v-if="gridElement.hidden"
                class="fas fa-eye-slash element-hint"></i>
 
-            <i v-show="hasNavigation && isOriginalIcon"
-               class="fas fa-sticky-note fa-rotate-180 fa-flip-vertical element-hint"></i>
-
-            <i v-if="hasNavigation && isIconIndicator && !isOriginalIcon"
+            <i v-if="hasNavigation && isIconIndicator"
                :class="navigationIconClasses"
                :style="navigationIconStyle"
                aria-hidden="true"></i>
@@ -103,13 +100,6 @@ export default {
         isGeometricIndicator() {
             return !this.isIconIndicator;
         },
-        isOriginalIcon() {
-            return this.isIconIndicator &&
-                this.navigationIndicatorIcon ===
-                    ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE &&
-                this.navigationIndicatorSize ===
-                    ColorConfig.NAV_INDICATOR_SIZE_DEFAULT;
-        },
         navigationIconClasses() {
             const classes = [
                 'fas',
@@ -124,20 +114,8 @@ export default {
             return classes;
         },
         navigationIconStyle() {
-            const width = Math.max(
-                0, Number(this.containerSize && this.containerSize.width) || 0
-            );
-
-            // Match the existing hint scaling used by fontUtil.
-            const originalSize = Math.min(width / 10, 30);
-            const baseSize = originalSize < 5 ? 0 : originalSize;
-
             return {
-                fontSize: (
-                    baseSize *
-                    this.navigationIndicatorSize /
-                    ColorConfig.NAV_INDICATOR_SIZE_DEFAULT
-                ) + 'px',
+                fontSize: this.cornerSizePx + 'px',
                 lineHeight: 1
             };
         },
@@ -154,9 +132,14 @@ export default {
         },
         navigationShapeStyle() {
             const config = this.metadata.colorConfig;
+
             const width = Math.max(
                 0, Number(this.containerSize && this.containerSize.width) || 0
             );
+            const height = Math.max(
+                0, Number(this.containerSize && this.containerSize.height) || 0
+            );
+
             const size = this.cornerSizePx;
 
             const rawOpacity = Number(config.navigationIndicatorOpacity);
@@ -168,7 +151,7 @@ export default {
                 ColorConfig.NAV_INDICATOR_STYLE_FOLDER;
 
             const style = {
-                width: (isFolder ? width * 0.6 : size) + 'px',
+                width: size + 'px',
                 height: size + 'px',
                 backgroundColor: config.navigationIndicatorColor ||
                     ColorConfig.NAV_INDICATOR_COLOR_DEFAULT,
@@ -176,9 +159,17 @@ export default {
             };
 
             if (isFolder) {
-                // Horizontal lower edge and a 45-degree diagonal
-                // on the left, entirely inside the cell.
-                style.clipPath = `polygon(0 0, 100% 0, 100% 100%, ${size}px 100%)`;
+                const folderWidth = width * this.navigationIndicatorSize / 100;
+                const folderHeight = height * 0.10;
+
+                // Keep the diagonal at 45 degrees and within the shape.
+                const diagonalSize = Math.min(folderHeight, folderWidth);
+
+                style.width = folderWidth + 'px';
+                style.height = folderHeight + 'px';
+
+                style.clipPath =
+                    `polygon(0 0, 100% 0, 100% 100%, ${diagonalSize}px 100%)`;
             }
 
             return style;
@@ -225,13 +216,7 @@ export default {
     right: 0;
     bottom: 0;
     left: 0;
-    background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.65) 0%,
-        rgba(255, 255, 255, 0.35) 35%,
-        rgba(255, 255, 255, 0.05) 49%,
-        rgba(0, 0, 0, 0.22) 51%,
-        rgba(0, 0, 0, 0.08) 100%
-    );
+    background-color: rgba(255, 255, 255, 0.55);
+    clip-path: polygon(12% 0, 100% 0, 100% 88%);
 }
 </style>
