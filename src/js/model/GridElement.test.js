@@ -1,3 +1,13 @@
+// The application initializes objectmodel's global window.Model before loading models.
+// Jest loads modules directly, so provide the same factory contract without relying on app bootstrap.
+jest.mock('../externals/objectmodel', () => ({
+    Model: () => class {
+        constructor(properties = {}) {
+            Object.assign(this, properties);
+        }
+    }
+}));
+
 import { GridElement } from './GridElement';
 
 describe('GridElement border width', () => {
