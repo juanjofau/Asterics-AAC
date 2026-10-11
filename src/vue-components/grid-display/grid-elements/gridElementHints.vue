@@ -137,34 +137,24 @@ export default {
                 /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(this.backgroundColor) ?
                 this.backgroundColor : '#ffffff';
 
-            const automaticBackground = fontUtil.getHighContrastColor(
-                backgroundHex,
-                '#ffffff',
-                '#000000'
-            );
-
-            const isLightBackground = automaticBackground === '#ffffff';
-
-            const rgb = isLightBackground ?
-                '255, 255, 255' : '0, 0, 0';
-
-            const hex = backgroundHex.length === 4 ?
-                '#' + backgroundHex.slice(1).split('').map(value => value + value).join('') :
+            // Normalizar colores hexadecimales abreviados.
+            const normalizedBackground = backgroundHex.length === 4 ?
+                '#' + backgroundHex.slice(1).split('')
+                    .map(value => value + value).join('') :
                 backgroundHex;
-            const backgroundRgb = [
-                parseInt(hex.slice(1, 3), 16),
-                parseInt(hex.slice(3, 5), 16),
-                parseInt(hex.slice(5, 7), 16)
-            ];
-            const fillRgb = isLightBackground ? [255, 255, 255] : [0, 0, 0];
-            const visibleRgb = backgroundRgb.map((channel, index) =>
-                channel * (1 - opacity / 100) + fillRgb[index] * (opacity / 100)
+
+            // Una sola decisión basada en el fondo de la celda.
+            const fillColor = fontUtil.getHighContrastColor(
+                normalizedBackground,
+                '#000000',
+                '#ffffff'
             );
-            const iconColor = fontUtil.getHighContrastColorRgb(
-                visibleRgb,
-                '#ffffff',
-                '#000000'
-            );
+
+            const iconColor = fillColor === '#ffffff' ?
+                '#000000' : '#ffffff';
+
+            const rgb = fillColor === '#ffffff' ?
+                '255, 255, 255' : '0, 0, 0';
 
             return {
                 fontSize: iconSize + 'px',
