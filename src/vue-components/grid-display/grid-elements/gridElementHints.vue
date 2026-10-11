@@ -186,22 +186,6 @@ export default {
                 borderTop: this.indicatorAtBottom ? borderStyle : 'none'
             };
         },
-        normalizeHexColor(color) {
-            if (typeof color !== 'string' || !/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(color)) {
-                return null;
-            }
-            return color.length === 4 ?
-                '#' + color.slice(1).split('').map(value => value + value).join('') :
-                color.toLowerCase();
-        },
-        hexToRgb(hex) {
-            const normalized = this.normalizeHexColor(hex) || '#ffffff';
-            return [
-                parseInt(normalized.slice(1, 3), 16),
-                parseInt(normalized.slice(3, 5), 16),
-                parseInt(normalized.slice(5, 7), 16)
-            ];
-        },
         cornerSizePx() {
             const width = Math.max(
                 0, Number(this.containerSize && this.containerSize.width) || 0
@@ -324,6 +308,24 @@ export default {
 
             return style;
         }
+    },
+    methods: {
+        normalizeHexColor(color) {
+            if (typeof color !== 'string' || !/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(color)) {
+                return null;
+            }
+            return color.length === 4 ?
+                '#' + color.slice(1).split('').map(value => value + value).join('') :
+                color.toLowerCase();
+        },
+        hexToRgb(hex) {
+            const normalized = this.normalizeHexColor(hex) || '#ffffff';
+            return [
+                parseInt(normalized.slice(1, 3), 16),
+                parseInt(normalized.slice(3, 5), 16),
+                parseInt(normalized.slice(5, 7), 16)
+            ];
+        },
     }
 }
 </script>
