@@ -384,7 +384,8 @@
                     const navigationPreviewElement = this.getElement(
                         0,
                         4,
-                        i18nService.t("navigation")
+                        i18nService.t("navigation"),
+                        "https://api.arasaac.org/api/pictograms/2317?download=false&plural=false&color=true"
                     );
                     navigationPreviewElement.backgroundColor = "#d3d3d3";
                     navigationPreviewElement.actions = [
