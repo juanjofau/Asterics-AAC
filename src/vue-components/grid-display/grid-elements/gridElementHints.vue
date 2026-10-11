@@ -181,9 +181,7 @@ export default {
                 verticalAlign: 'top',
                 backgroundColor: 'rgba(' + fillRgb.join(', ') + ', ' + opacity + ')',
                 color: iconColor,
-                borderLeft: borderStyle,
-                borderBottom: this.indicatorAtBottom ? 'none' : borderStyle,
-                borderTop: this.indicatorAtBottom ? borderStyle : 'none'
+                border: borderStyle
             };
         },
         cornerSizePx() {
