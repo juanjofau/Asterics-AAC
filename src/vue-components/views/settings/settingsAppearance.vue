@@ -131,7 +131,7 @@
                         </div>
                     </accordion>
                 </div>
-                <h4 class="mt-5">{{ $t('navigationIndicator') }}</h4>
+                <h3 class="mt-5">{{ $t('navigationIndicator') }}</h3>
 
                 <div class="srow">
                     <label class="three columns" for="navigationIndicatorStyle">
@@ -248,7 +248,7 @@
                     <input id="testElementLabel" class="u-full-width" type="text" v-model="testElementLabel" @input="resetTestGrid"/>
                 </div>
                 <app-grid-display v-if="testGridData"
-                                  style="max-width: 200px; height: 625px; pointer-events: none;"
+                                  style="max-width: 200px; height: 750px; pointer-events: none;"
                                   :grid-data="testGridData"
                                   :metadata="metadata"
                                   :watch-for-changes="true"
@@ -387,8 +387,21 @@
                         i18nService.t("navigation"),
                         "https://api.arasaac.org/api/pictograms/2317?download=false&plural=false&color=true"
                     );
-                    navigationPreviewElement.backgroundColor = "#d3d3d3";
+                    navigationPreviewElement.backgroundColor = "#f3f3f3";
                     navigationPreviewElement.actions = [
+                        new GridActionNavigate({
+                            navType: GridActionNavigate.NAV_TYPES.TO_HOME
+                        })
+                    ];
+
+                    const darkNavigationPreviewElement = this.getElement(
+                        0,
+                        5,
+                        i18nService.t("navigation"),
+                        "https://api.arasaac.org/api/pictograms/2317?download=false&plural=false&color=true"
+                    );
+                    darkNavigationPreviewElement.backgroundColor = "#484848";
+                    darkNavigationPreviewElement.actions = [
                         new GridActionNavigate({
                             navType: GridActionNavigate.NAV_TYPES.TO_HOME
                         })
@@ -401,6 +414,7 @@
                             this.getElement(0, 2, i18nService.t("CC_NOUN"), "https://api.arasaac.org/api/pictograms/2808?download=false&plural=false&color=true", "CC_NOUN"),
                             this.getElement(0, 3, this.testElementLabel),
                             navigationPreviewElement,
+                            darkNavigationPreviewElement,
                         ]
                     });
                 }, 200, "RESET_TEST_GRD");
