@@ -205,8 +205,7 @@
                     </button>
                 </div>
 
-                <div v-if="metadata.colorConfig.navigationIndicatorStyle !== ColorConfig.NAV_INDICATOR_STYLE_ICON"
-                     class="srow">
+                <div class="srow">
                     <slider-input
                         label="navigationIndicatorOpacity"
                         unit="%"

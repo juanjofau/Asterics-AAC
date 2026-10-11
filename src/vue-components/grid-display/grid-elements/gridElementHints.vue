@@ -115,10 +115,50 @@ export default {
             return classes;
         },
         navigationIconStyle() {
-            return {
-                fontSize: this.cornerSizePx + 'px',
+            const size = this.cornerSizePx;
+            const rawOpacity = Number(
+                this.metadata.colorConfig.navigationIndicatorOpacity
+            );
+
+            const opacity = Number.isFinite(rawOpacity) ?
+                Math.max(0, Math.min(100, rawOpacity)) :
+                ColorConfig.NAV_INDICATOR_OPACITY_DEFAULT;
+
+            const style = {
+                fontSize: size + 'px',
                 lineHeight: 1
             };
+
+            // At zero opacity, preserve the existing icon appearance.
+            if (opacity === 0) {
+                return style;
+            }
+
+            // Select a light or dark square according to the cell background.
+            const automaticBackground = fontUtil.getHighContrastColor(
+                this.backgroundColor,
+                '#ffffff',
+                '#000000'
+            );
+
+            const isLightBackground = automaticBackground === '#ffffff';
+            const rgb = isLightBackground ?
+                '255, 255, 255' : '0, 0, 0';
+
+            Object.assign(style, {
+                display: 'inline-flex',
+                width: size + 'px',
+                height: size + 'px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                verticalAlign: 'top',
+                backgroundColor: `rgba(${rgb}, ${opacity / 100})`,
+                color: opacity >= 45 ?
+                    (isLightBackground ? '#000000' : '#ffffff') :
+                    this.hintsColor
+            });
+
+            return style;
         },
         cornerSizePx() {
             const width = Math.max(
