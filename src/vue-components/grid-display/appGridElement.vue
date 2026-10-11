@@ -1,7 +1,7 @@
 <template>
     <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
-         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
+         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.16), rgba(0, 0, 0, 0.10)); box-shadow: 0 2px 5px rgba(0, 0, 0, 0.22); font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" :metadata="metadata" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
@@ -187,5 +187,12 @@ export default {
     flex: 1 1 auto;
     overflow: hidden;
     position: relative;
+    transition: transform 100ms ease, filter 100ms ease, box-shadow 100ms ease;
+}
+
+.element-container:active {
+    transform: scale(0.97);
+    filter: brightness(1.08);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
 }
 </style>
