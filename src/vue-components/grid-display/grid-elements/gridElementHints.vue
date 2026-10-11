@@ -166,6 +166,10 @@ export default {
             return Math.min(width, height) *
                 this.navigationIndicatorSize / 100;
         },
+        indicatorAtBottom() {
+            return this.metadata.textConfig.textPosition ===
+                TextConfig.TEXT_POS_ABOVE;
+        },
         navigationShapeStyle() {
             const config = this.metadata.colorConfig;
 
@@ -198,6 +202,11 @@ export default {
                 opacity: opacity / 100
             };
 
+            if (this.indicatorAtBottom) {
+                style.top = 'auto';
+                style.bottom = '-2px';
+            }
+
             if (isFolder) {
                 const folderWidth = width * this.navigationIndicatorSize / 100;
                 const folderHeight = height * 0.10;
@@ -209,8 +218,14 @@ export default {
                 style.width = shapeWidth + 'px';
                 style.height = shapeHeight + 'px';
 
-                style.clipPath =
+                style.clipPath = this.indicatorAtBottom ?
+                    `polygon(0 100%, 100% 100%, 100% 0, ${diagonalSize}px 0)` :
                     `polygon(0 0, 100% 0, 100% 100%, ${diagonalSize}px 100%)`;
+            }
+
+            if (!isFolder && this.indicatorAtBottom) {
+                style.clipPath =
+                    'polygon(0 100%, 100% 0, 100% 100%)';
             }
 
             return style;
