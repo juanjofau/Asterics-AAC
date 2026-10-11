@@ -94,7 +94,7 @@ export default {
         navigationFillColor() {
             if (this.navigationIndicatorAutoColor) {
                 const background = this.normalizeHexColor(this.backgroundColor) || '#ffffff';
-                return fontUtil.getHighContrastColor(background, '#000000', '#ffffff');
+                return fontUtil.getHighContrastColor(background, '#ffffff', '#000000');
             }
             return this.normalizeHexColor(this.metadata.colorConfig.navigationIndicatorColor) ||
                 ColorConfig.NAV_INDICATOR_COLOR_DEFAULT;
