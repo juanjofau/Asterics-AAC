@@ -67,7 +67,7 @@ export default {
             const validStyles = [
                 ColorConfig.NAV_INDICATOR_STYLE_ICON,
                 ColorConfig.NAV_INDICATOR_STYLE_SHADED,
-                ColorConfig.NAV_INDICATOR_STYLE_FOLDER
+                ColorConfig.NAV_INDICATOR_STYLE_TAB
             ];
 
             return validStyles.includes(style) ?
@@ -197,8 +197,8 @@ export default {
 
             const size = this.cornerSizePx;
 
-            const isFolder = this.navigationIndicatorStyle ===
-                ColorConfig.NAV_INDICATOR_STYLE_FOLDER;
+            const isTab = this.navigationIndicatorStyle ===
+                ColorConfig.NAV_INDICATOR_STYLE_TAB;
 
             // Overscan compensates for fractional pixel rounding at the
             // top and right edges. The cell clips the excess.
@@ -217,12 +217,12 @@ export default {
                 style.bottom = '-2px';
             }
 
-            if (isFolder) {
-                const folderWidth = width * this.navigationIndicatorSize / 100;
-                const folderHeight = height * 0.10;
+            if (isTab) {
+                const tabWidth = width * this.navigationIndicatorSize / 100;
+                const tabHeight = height * 0.10;
 
-                const shapeWidth = folderWidth + overscan;
-                const shapeHeight = folderHeight + overscan;
+                const shapeWidth = tabWidth + overscan;
+                const shapeHeight = tabHeight + overscan;
                 const diagonalSize = Math.min(shapeHeight, shapeWidth);
 
                 style.width = shapeWidth + 'px';
@@ -233,7 +233,7 @@ export default {
                     `polygon(0 0, 100% 0, 100% 100%, ${diagonalSize}px 100%)`;
             }
 
-            if (!isFolder && this.indicatorAtBottom) {
+            if (!isTab && this.indicatorAtBottom) {
                 style.clipPath =
                     'polygon(0 100%, 100% 0, 100% 100%)';
             }

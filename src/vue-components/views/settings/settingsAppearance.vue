@@ -147,8 +147,8 @@
                         <option :value="ColorConfig.NAV_INDICATOR_STYLE_SHADED">
                             {{ $t('navigationIndicatorStyleShaded') }}
                         </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_FOLDER">
-                            {{ $t('navigationIndicatorStyleFolder') }}
+                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_TAB">
+                            {{ $t('navigationIndicatorStyleTab') }}
                         </option>
                     </select>
                 </div>

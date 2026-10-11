@@ -1191,7 +1191,7 @@
   "navigationIndicatorStyle": "Indicator style",
   "navigationIndicatorStyleIcon": "Icon",
   "navigationIndicatorStyleShaded": "Shaded corner",
-  "navigationIndicatorStyleFolder": "Tab",
+  "navigationIndicatorStyleTab": "Tab",
   "navigationIndicatorIcon": "Icon",
   "navigationIndicatorIconStickyNote": "sticky-note",
   "navigationIndicatorIconFolder": "folder",

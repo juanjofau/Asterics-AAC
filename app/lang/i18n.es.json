@@ -1191,7 +1191,7 @@
   "navigationIndicatorStyle": "Estilo del indicador",
   "navigationIndicatorStyleIcon": "Icono",
   "navigationIndicatorStyleShaded": "Esquina sombreada",
-  "navigationIndicatorStyleFolder": "Pestaña",
+  "navigationIndicatorStyleTab": "Pestaña",
   "navigationIndicatorIcon": "Icono",
   "navigationIndicatorIconStickyNote": "sticky-note",
   "navigationIndicatorIconFolder": "folder",
