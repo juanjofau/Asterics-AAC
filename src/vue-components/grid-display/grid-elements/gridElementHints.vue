@@ -6,7 +6,7 @@
              :style="navigationShapeStyle"
              aria-hidden="true"></div>
 
-        <svg v-if="hasNavigation && isGeometricIndicator && hasVisibleCellBorder"
+        <svg v-if="hasNavigation && isGeometricIndicator && navigationIndicatorShowBorder && hasVisibleCellBorder"
              class="navigation-indicator-outline"
              :style="navigationOutlineStyle"
              :viewBox="navigationOutlineGeometry.viewBox"
@@ -77,15 +77,27 @@ export default {
         },
         navigationIndicatorStyle() {
             const style = this.metadata.colorConfig.navigationIndicatorStyle;
-
             const validStyles = [
+                ColorConfig.NAV_INDICATOR_STYLE_NONE,
                 ColorConfig.NAV_INDICATOR_STYLE_ICON,
                 ColorConfig.NAV_INDICATOR_STYLE_SHADED,
                 ColorConfig.NAV_INDICATOR_STYLE_TAB
             ];
-
-            return validStyles.includes(style) ?
-                style : ColorConfig.NAV_INDICATOR_STYLE_ICON;
+            return validStyles.includes(style) ? style : ColorConfig.NAV_INDICATOR_STYLE_ICON;
+        },
+        navigationIndicatorAutoColor() {
+            return this.metadata.colorConfig.navigationIndicatorAutoColor !== false;
+        },
+        navigationIndicatorShowBorder() {
+            return this.metadata.colorConfig.navigationIndicatorShowBorder !== false;
+        },
+        navigationFillColor() {
+            if (this.navigationIndicatorAutoColor) {
+                const background = this.normalizeHexColor(this.backgroundColor) || '#ffffff';
+                return fontUtil.getHighContrastColor(background, '#000000', '#ffffff');
+            }
+            return this.normalizeHexColor(this.metadata.colorConfig.navigationIndicatorColor) ||
+                ColorConfig.NAV_INDICATOR_COLOR_DEFAULT;
         },
         navigationIndicatorIcon() {
             const icon = this.metadata.colorConfig.navigationIndicatorIcon;
@@ -117,7 +129,8 @@ export default {
                 ColorConfig.NAV_INDICATOR_STYLE_ICON;
         },
         isGeometricIndicator() {
-            return !this.isIconIndicator;
+            return this.navigationIndicatorStyle === ColorConfig.NAV_INDICATOR_STYLE_SHADED ||
+                this.navigationIndicatorStyle === ColorConfig.NAV_INDICATOR_STYLE_TAB;
         },
         navigationIconClasses() {
             const classes = [
@@ -143,46 +156,51 @@ export default {
         },
         navigationIconStyle() {
             const size = this.cornerSizePx;
-
-            // Keep the background square at full size, but make
-            // the icon glyph smaller to create internal spacing.
             const iconSize = size * 0.8;
-
-            const backgroundHex = typeof this.backgroundColor === 'string' &&
-                /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(this.backgroundColor) ?
-                this.backgroundColor : '#ffffff';
-
-            // Normalize abbreviated hexadecimal colors.
-            const normalizedBackground = backgroundHex.length === 4 ?
-                '#' + backgroundHex.slice(1).split('')
-                    .map(value => value + value).join('') :
-                backgroundHex;
-
-            // Make a single contrast decision based on the cell background.
-            const fillColor = fontUtil.getHighContrastColor(
-                normalizedBackground,
-                '#000000',
-                '#ffffff'
+            const fillColor = this.navigationFillColor;
+            const background = this.normalizeHexColor(this.backgroundColor) || '#ffffff';
+            const opacity = this.navigationOpacity / 100;
+            const fillRgb = this.hexToRgb(fillColor);
+            const backgroundRgb = this.hexToRgb(background);
+            const visibleRgb = fillRgb.map((value, index) =>
+                Math.round(value * opacity + backgroundRgb[index] * (1 - opacity))
             );
-
-            const iconColor = fillColor === '#ffffff' ?
-                '#000000' : '#ffffff';
-
-            const rgb = fillColor === '#ffffff' ?
-                '255, 255, 255' : '0, 0, 0';
-
+            const visibleHex = '#' + visibleRgb.map(value => value.toString(16).padStart(2, '0')).join('');
+            const iconColor = fontUtil.getHighContrastColor(visibleHex, '#ffffff', '#000000');
+            const borderStyle = this.navigationIndicatorShowBorder && this.hasVisibleCellBorder ?
+                Number(this.borderWidthPx) + 'px solid ' + this.borderColor : 'none';
             return {
                 fontSize: iconSize + 'px',
                 lineHeight: 1,
                 display: 'inline-flex',
+                boxSizing: 'border-box',
                 width: size + 'px',
                 height: size + 'px',
                 alignItems: 'center',
                 justifyContent: 'center',
                 verticalAlign: 'top',
-                backgroundColor: `rgba(${rgb}, ${this.navigationOpacity / 100})`,
-                color: iconColor
+                backgroundColor: 'rgba(' + fillRgb.join(', ') + ', ' + opacity + ')',
+                color: iconColor,
+                borderLeft: borderStyle,
+                borderBottom: this.indicatorAtBottom ? 'none' : borderStyle,
+                borderTop: this.indicatorAtBottom ? borderStyle : 'none'
             };
+        },
+        normalizeHexColor(color) {
+            if (typeof color !== 'string' || !/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(color)) {
+                return null;
+            }
+            return color.length === 4 ?
+                '#' + color.slice(1).split('').map(value => value + value).join('') :
+                color.toLowerCase();
+        },
+        hexToRgb(hex) {
+            const normalized = this.normalizeHexColor(hex) || '#ffffff';
+            return [
+                parseInt(normalized.slice(1, 3), 16),
+                parseInt(normalized.slice(3, 5), 16),
+                parseInt(normalized.slice(5, 7), 16)
+            ];
         },
         cornerSizePx() {
             const width = Math.max(
@@ -255,8 +273,6 @@ export default {
             };
         },
         navigationShapeStyle() {
-            const config = this.metadata.colorConfig;
-
             const width = Math.max(
                 0, Number(this.containerSize && this.containerSize.width) || 0
             );
@@ -273,12 +289,11 @@ export default {
             // top and right edges. The cell clips the excess.
             const overscan = 2;
 
+            const fillRgb = this.hexToRgb(this.navigationFillColor);
             const style = {
                 width: (size + overscan) + 'px',
                 height: (size + overscan) + 'px',
-                backgroundColor: config.navigationIndicatorColor ||
-                    ColorConfig.NAV_INDICATOR_COLOR_DEFAULT,
-                opacity: this.navigationOpacity / 100
+                backgroundColor: 'rgba(' + fillRgb.join(', ') + ', ' + (this.navigationOpacity / 100) + ')'
             };
 
             if (this.indicatorAtBottom) {
