@@ -116,6 +116,11 @@ export default {
         },
         navigationIconStyle() {
             const size = this.cornerSizePx;
+
+            // Keep the background square at full size, but make
+            // the icon glyph smaller to create internal spacing.
+            const iconSize = size * 0.8;
+
             const rawOpacity = Number(
                 this.metadata.colorConfig.navigationIndicatorOpacity
             );
@@ -124,17 +129,6 @@ export default {
                 Math.max(0, Math.min(100, rawOpacity)) :
                 ColorConfig.NAV_INDICATOR_OPACITY_DEFAULT;
 
-            const style = {
-                fontSize: size + 'px',
-                lineHeight: 1
-            };
-
-            // At zero opacity, preserve the existing icon appearance.
-            if (opacity === 0) {
-                return style;
-            }
-
-            // Select a light or dark square according to the cell background.
             const automaticBackground = fontUtil.getHighContrastColor(
                 this.backgroundColor,
                 '#ffffff',
@@ -142,10 +136,13 @@ export default {
             );
 
             const isLightBackground = automaticBackground === '#ffffff';
+
             const rgb = isLightBackground ?
                 '255, 255, 255' : '0, 0, 0';
 
-            Object.assign(style, {
+            return {
+                fontSize: iconSize + 'px',
+                lineHeight: 1,
                 display: 'inline-flex',
                 width: size + 'px',
                 height: size + 'px',
@@ -156,9 +153,7 @@ export default {
                 color: opacity >= 45 ?
                     (isLightBackground ? '#000000' : '#ffffff') :
                     this.hintsColor
-            });
-
-            return style;
+            };
         },
         cornerSizePx() {
             const width = Math.max(

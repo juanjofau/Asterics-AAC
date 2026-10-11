@@ -1199,7 +1199,7 @@
   "navigationIndicatorIconLink": "External link",
   "navigationIndicatorSize": "Indicator size",
   "navigationIndicatorColor": "Indicator color",
-  "navigationIndicatorOpacity": "Indicator opacity",
+  "navigationIndicatorOpacity": "Fill opacity",
   "grid": "Grid",
   "quickSettings": "Quick settings",
   "setToDefaultSettings": "Set to default settings",

@@ -1199,7 +1199,7 @@
   "navigationIndicatorIconLink": "Enlace externo",
   "navigationIndicatorSize": "Tamaño del indicador",
   "navigationIndicatorColor": "Color del indicador",
-  "navigationIndicatorOpacity": "Opacidad del indicador",
+  "navigationIndicatorOpacity": "Opacidad del relleno",
   "grid": "Tablero",
   "quickSettings": "Ajustes rápidos",
   "setToDefaultSettings": "Ajustes por defecto",
