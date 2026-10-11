@@ -79,7 +79,7 @@ export default {
                 ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE,
                 ColorConfig.NAV_INDICATOR_ICON_FOLDER,
                 ColorConfig.NAV_INDICATOR_ICON_ARROW,
-                ColorConfig.NAV_INDICATOR_ICON_LINK,
+                ColorConfig.NAV_INDICATOR_ICON_SIGN_OUT_ALT,
                 ColorConfig.NAV_INDICATOR_ICON_FOLDER_OPEN,
                 ColorConfig.NAV_INDICATOR_ICON_TH,
                 ColorConfig.NAV_INDICATOR_ICON_TH_LARGE,
@@ -118,6 +118,15 @@ export default {
 
             return classes;
         },
+        navigationOpacity() {
+            const rawOpacity = Number(
+                this.metadata.colorConfig.navigationIndicatorOpacity
+            );
+
+            return Number.isFinite(rawOpacity) ?
+                Math.max(0, Math.min(100, rawOpacity)) :
+                ColorConfig.NAV_INDICATOR_OPACITY_DEFAULT;
+        },
         navigationIconStyle() {
             const size = this.cornerSizePx;
 
@@ -125,25 +134,17 @@ export default {
             // the icon glyph smaller to create internal spacing.
             const iconSize = size * 0.8;
 
-            const rawOpacity = Number(
-                this.metadata.colorConfig.navigationIndicatorOpacity
-            );
-
-            const opacity = Number.isFinite(rawOpacity) ?
-                Math.max(0, Math.min(100, rawOpacity)) :
-                ColorConfig.NAV_INDICATOR_OPACITY_DEFAULT;
-
             const backgroundHex = typeof this.backgroundColor === 'string' &&
                 /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(this.backgroundColor) ?
                 this.backgroundColor : '#ffffff';
 
-            // Normalizar colores hexadecimales abreviados.
+            // Normalize abbreviated hexadecimal colors.
             const normalizedBackground = backgroundHex.length === 4 ?
                 '#' + backgroundHex.slice(1).split('')
                     .map(value => value + value).join('') :
                 backgroundHex;
 
-            // Una sola decisión basada en el fondo de la celda.
+            // Make a single contrast decision based on the cell background.
             const fillColor = fontUtil.getHighContrastColor(
                 normalizedBackground,
                 '#000000',
@@ -165,7 +166,7 @@ export default {
                 alignItems: 'center',
                 justifyContent: 'center',
                 verticalAlign: 'top',
-                backgroundColor: `rgba(${rgb}, ${opacity / 100})`,
+                backgroundColor: `rgba(${rgb}, ${this.navigationOpacity / 100})`,
                 color: iconColor
             };
         },
@@ -196,11 +197,6 @@ export default {
 
             const size = this.cornerSizePx;
 
-            const rawOpacity = Number(config.navigationIndicatorOpacity);
-            const opacity = Number.isFinite(rawOpacity) ?
-                Math.max(0, Math.min(100, rawOpacity)) :
-                ColorConfig.NAV_INDICATOR_OPACITY_DEFAULT;
-
             const isFolder = this.navigationIndicatorStyle ===
                 ColorConfig.NAV_INDICATOR_STYLE_FOLDER;
 
@@ -213,7 +209,7 @@ export default {
                 height: (size + overscan) + 'px',
                 backgroundColor: config.navigationIndicatorColor ||
                     ColorConfig.NAV_INDICATOR_COLOR_DEFAULT,
-                opacity: opacity / 100
+                opacity: this.navigationOpacity / 100
             };
 
             if (this.indicatorAtBottom) {

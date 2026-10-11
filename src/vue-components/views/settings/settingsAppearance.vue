@@ -171,8 +171,8 @@
                         <option :value="ColorConfig.NAV_INDICATOR_ICON_FOLDER_OPEN">
                             {{ $t('navigationIndicatorIconFolderOpen') }}
                         </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_LINK">
-                            {{ $t('navigationIndicatorIconLink') }}
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_SIGN_OUT_ALT">
+                            {{ $t('navigationIndicatorIconSignOutAlt') }}
                         </option>
                         <option :value="ColorConfig.NAV_INDICATOR_ICON_SQUARE">
                             {{ $t('navigationIndicatorIconSquare') }}

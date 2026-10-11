@@ -1196,7 +1196,7 @@
   "navigationIndicatorIconStickyNote": "sticky-note",
   "navigationIndicatorIconFolder": "folder",
   "navigationIndicatorIconArrow": "arrow-right",
-  "navigationIndicatorIconLink": "sign-out-alt",
+  "navigationIndicatorIconSignOutAlt": "sign-out-alt",
   "navigationIndicatorIconFolderOpen": "folder-open",
   "navigationIndicatorIconTh": "th",
   "navigationIndicatorIconThLarge": "th-large",
