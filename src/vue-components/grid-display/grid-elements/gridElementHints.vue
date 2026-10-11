@@ -79,7 +79,9 @@ export default {
                 ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE,
                 ColorConfig.NAV_INDICATOR_ICON_FOLDER,
                 ColorConfig.NAV_INDICATOR_ICON_ARROW,
-                ColorConfig.NAV_INDICATOR_ICON_LINK
+                ColorConfig.NAV_INDICATOR_ICON_LINK,
+                ColorConfig.NAV_INDICATOR_ICON_CHAIN_LINK,
+                ColorConfig.NAV_INDICATOR_ICON_FOLDER_OPEN
             ];
             return validIcons.includes(icon) ?
                 icon : ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE;

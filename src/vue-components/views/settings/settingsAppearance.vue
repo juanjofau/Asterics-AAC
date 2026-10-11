@@ -174,6 +174,12 @@
                         <option :value="ColorConfig.NAV_INDICATOR_ICON_LINK">
                             {{ $t('navigationIndicatorIconLink') }}
                         </option>
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_CHAIN_LINK">
+                            {{ $t('navigationIndicatorIconChainLink') }}
+                        </option>
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_FOLDER_OPEN">
+                            {{ $t('navigationIndicatorIconFolderOpen') }}
+                        </option>
                     </select>
                 </div>
 
