@@ -182,7 +182,7 @@
 
                 <div class="srow">
                     <slider-input
-                        :label="metadata.colorConfig.navigationIndicatorStyle === ColorConfig.NAV_INDICATOR_STYLE_FOLDER ? 'navigationIndicatorWidth' : 'navigationIndicatorSize'"
+                        label="navigationIndicatorSize"
                         unit="%"
                         id="navigationIndicatorSize"
                         :min="ColorConfig.NAV_INDICATOR_SIZE_MIN"

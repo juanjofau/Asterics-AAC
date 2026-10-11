@@ -151,8 +151,8 @@ export default {
                 ColorConfig.NAV_INDICATOR_STYLE_FOLDER;
 
             const style = {
-                width: size + 'px',
-                height: size + 'px',
+                width: (size + 1) + 'px',
+                height: (size + 1) + 'px',
                 backgroundColor: config.navigationIndicatorColor ||
                     ColorConfig.NAV_INDICATOR_COLOR_DEFAULT,
                 opacity: opacity / 100
@@ -165,11 +165,11 @@ export default {
                 // Keep the diagonal at 45 degrees and within the shape.
                 const diagonalSize = Math.min(folderHeight, folderWidth);
 
-                style.width = folderWidth + 'px';
-                style.height = folderHeight + 'px';
+                style.width = (folderWidth + 1) + 'px';
+                style.height = (folderHeight + 1) + 'px';
 
                 style.clipPath =
-                    `polygon(0 0, 100% 0, 100% 100%, ${diagonalSize}px 100%)`;
+                    `polygon(0 0, 101% 0, 101% 101%, ${diagonalSize}px 100%)`;
             }
 
             return style;
@@ -206,7 +206,7 @@ export default {
 
 .navigation-indicator-shaded,
 .navigation-indicator-folded {
-    clip-path: polygon(0 0, 100% 0, 100% 100%);
+    clip-path: polygon(0 0, 101% 0, 101% 101%);
 }
 
 .navigation-indicator-folded::after {
@@ -214,9 +214,9 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
-    bottom: 0;
-    left: 0;
+    width: 42%;
+    height: 42%;
     background-color: rgba(255, 255, 255, 0.55);
-    clip-path: polygon(12% 0, 100% 0, 100% 88%);
+    clip-path: polygon(100% 0, 0 0, 100% 100%);
 }
 </style>
