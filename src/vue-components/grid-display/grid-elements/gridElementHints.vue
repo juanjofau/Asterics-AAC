@@ -6,6 +6,20 @@
              :style="navigationShapeStyle"
              aria-hidden="true"></div>
 
+        <svg v-if="hasNavigation && isGeometricIndicator && hasVisibleCellBorder"
+             class="navigation-indicator-outline"
+             :style="navigationOutlineStyle"
+             :viewBox="navigationOutlineGeometry.viewBox"
+             aria-hidden="true"
+             focusable="false">
+            <path :d="navigationOutlineGeometry.path"
+                  fill="none"
+                  :stroke="borderColor"
+                  :stroke-width="borderWidthPx"
+                  stroke-linecap="butt"
+                  stroke-linejoin="miter"/>
+        </svg>
+
         <div class="element-hints-content"
              :style="`color: ${hintsColor}; top: ${topPx}; bottom: ${bottomPx}`">
 
@@ -33,7 +47,7 @@ import { Router } from '../../../js/router';
 import { fontUtil } from '../../../js/util/fontUtil';
 
 export default {
-    props: ["gridElement", "metadata", "backgroundColor", "containerSize"],
+    props: ["gridElement", "metadata", "backgroundColor", "containerSize", "borderColor", "borderWidthPx"],
     data() {
         return {
             isOnEdit: Router.isOnEditPage()
@@ -185,6 +199,61 @@ export default {
             return this.metadata.textConfig.textPosition ===
                 TextConfig.TEXT_POS_ABOVE;
         },
+        hasVisibleCellBorder() {
+            const width = Number(this.borderWidthPx);
+            if (!Number.isFinite(width) || width <= 0) {
+                return false;
+            }
+
+            const color = String(this.borderColor || '').trim().toLowerCase();
+            const transparentHex =
+                (/^#[0-9a-f]{4}$/.test(color) && color.endsWith('0')) ||
+                (/^#[0-9a-f]{8}$/.test(color) && color.endsWith('00'));
+            const transparentRgba =
+                /^rgba\(.*?,\s*0(?:\.0+)?\s*\)$/.test(color);
+
+            return color !== 'transparent' &&
+                !transparentHex &&
+                !transparentRgba;
+        },
+        navigationOutlineStyle() {
+            const shapeStyle = this.navigationShapeStyle;
+
+            return {
+                position: 'absolute',
+                right: '-2px',
+                top: this.indicatorAtBottom ? 'auto' : '-2px',
+                bottom: this.indicatorAtBottom ? '-2px' : 'auto',
+                width: shapeStyle.width,
+                height: shapeStyle.height,
+                pointerEvents: 'none',
+                zIndex: 1
+            };
+        },
+        navigationOutlineGeometry() {
+            const shapeStyle = this.navigationShapeStyle;
+            const width = Math.max(0, parseFloat(shapeStyle.width) || 0);
+            const height = Math.max(0, parseFloat(shapeStyle.height) || 0);
+            const diagonalSize = Math.min(width, height);
+            const isTab = this.navigationIndicatorStyle ===
+                ColorConfig.NAV_INDICATOR_STYLE_TAB;
+            let path;
+
+            if (isTab) {
+                path = this.indicatorAtBottom ?
+                    `M 0 ${height} L ${diagonalSize} 0 L ${width} 0` :
+                    `M 0 0 L ${diagonalSize} ${height} L ${width} ${height}`;
+            } else {
+                path = this.indicatorAtBottom ?
+                    `M 0 ${height} L ${width} 0` :
+                    `M 0 0 L ${width} ${height}`;
+            }
+
+            return {
+                viewBox: `0 0 ${width} ${height}`,
+                path
+            };
+        },
         navigationShapeStyle() {
             const config = this.metadata.colorConfig;
 
@@ -268,6 +337,12 @@ export default {
     right: -2px;
     pointer-events: none;
     z-index: 1;
+}
+
+.navigation-indicator-outline {
+    display: block;
+    overflow: visible;
+    pointer-events: none;
 }
 
 .navigation-indicator-shaded {
