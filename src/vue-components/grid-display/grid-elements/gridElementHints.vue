@@ -64,11 +64,6 @@ export default {
         navigationIndicatorStyle() {
             const style = this.metadata.colorConfig.navigationIndicatorStyle;
 
-            // Compatibility with previously saved folded corners.
-            if (style === ColorConfig.NAV_INDICATOR_STYLE_FOLDED) {
-                return ColorConfig.NAV_INDICATOR_STYLE_SHADED;
-            }
-
             const validStyles = [
                 ColorConfig.NAV_INDICATOR_STYLE_ICON,
                 ColorConfig.NAV_INDICATOR_STYLE_SHADED,

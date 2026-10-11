@@ -38,7 +38,6 @@ ColorConfig.BORDER_WIDTH_BG_COLORED = 0.1;
 
 ColorConfig.NAV_INDICATOR_STYLE_ICON = 'icon';
 ColorConfig.NAV_INDICATOR_STYLE_SHADED = 'shaded';
-ColorConfig.NAV_INDICATOR_STYLE_FOLDED = 'folded';
 ColorConfig.NAV_INDICATOR_STYLE_FOLDER = 'folder';
 
 ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE = 'sticky-note';
