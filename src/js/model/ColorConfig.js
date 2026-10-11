@@ -47,7 +47,7 @@ ColorConfig.NAV_INDICATOR_ICON_ARROW = 'arrow-right';
 ColorConfig.NAV_INDICATOR_ICON_LINK = 'external-link-alt';
 
 ColorConfig.NAV_INDICATOR_SIZE_MIN = 10;
-ColorConfig.NAV_INDICATOR_SIZE_MAX = 50;
+ColorConfig.NAV_INDICATOR_SIZE_MAX = 100;
 ColorConfig.NAV_INDICATOR_SIZE_DEFAULT = 30;
 
 ColorConfig.NAV_INDICATOR_COLOR_DEFAULT = '#3478b8';

@@ -63,12 +63,18 @@ export default {
         },
         navigationIndicatorStyle() {
             const style = this.metadata.colorConfig.navigationIndicatorStyle;
+
+            // Compatibility with previously saved folded corners.
+            if (style === ColorConfig.NAV_INDICATOR_STYLE_FOLDED) {
+                return ColorConfig.NAV_INDICATOR_STYLE_SHADED;
+            }
+
             const validStyles = [
                 ColorConfig.NAV_INDICATOR_STYLE_ICON,
                 ColorConfig.NAV_INDICATOR_STYLE_SHADED,
-                ColorConfig.NAV_INDICATOR_STYLE_FOLDED,
                 ColorConfig.NAV_INDICATOR_STYLE_FOLDER
             ];
+
             return validStyles.includes(style) ?
                 style : ColorConfig.NAV_INDICATOR_STYLE_ICON;
         },
@@ -150,9 +156,13 @@ export default {
             const isFolder = this.navigationIndicatorStyle ===
                 ColorConfig.NAV_INDICATOR_STYLE_FOLDER;
 
+            // Overscan compensates for fractional pixel rounding at the
+            // top and right edges. The cell clips the excess.
+            const overscan = 2;
+
             const style = {
-                width: (size + 1) + 'px',
-                height: (size + 1) + 'px',
+                width: (size + overscan) + 'px',
+                height: (size + overscan) + 'px',
                 backgroundColor: config.navigationIndicatorColor ||
                     ColorConfig.NAV_INDICATOR_COLOR_DEFAULT,
                 opacity: opacity / 100
@@ -162,14 +172,15 @@ export default {
                 const folderWidth = width * this.navigationIndicatorSize / 100;
                 const folderHeight = height * 0.10;
 
-                // Keep the diagonal at 45 degrees and within the shape.
-                const diagonalSize = Math.min(folderHeight, folderWidth);
+                const shapeWidth = folderWidth + overscan;
+                const shapeHeight = folderHeight + overscan;
+                const diagonalSize = Math.min(shapeHeight, shapeWidth);
 
-                style.width = (folderWidth + 1) + 'px';
-                style.height = (folderHeight + 1) + 'px';
+                style.width = shapeWidth + 'px';
+                style.height = shapeHeight + 'px';
 
                 style.clipPath =
-                    `polygon(0 0, 101% 0, 101% 101%, ${diagonalSize}px 100%)`;
+                    `polygon(0 0, 100% 0, 100% 100%, ${diagonalSize}px 100%)`;
             }
 
             return style;
@@ -198,25 +209,13 @@ export default {
 
 .navigation-indicator-shape {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -2px;
+    right: -2px;
     pointer-events: none;
     z-index: 1;
 }
 
-.navigation-indicator-shaded,
-.navigation-indicator-folded {
-    clip-path: polygon(0 0, 101% 0, 101% 101%);
-}
-
-.navigation-indicator-folded::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 42%;
-    height: 42%;
-    background-color: rgba(255, 255, 255, 0.55);
-    clip-path: polygon(100% 0, 0 0, 100% 100%);
+.navigation-indicator-shaded {
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
 }
 </style>

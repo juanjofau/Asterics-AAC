@@ -147,9 +147,6 @@
                         <option :value="ColorConfig.NAV_INDICATOR_STYLE_SHADED">
                             {{ $t('navigationIndicatorStyleShaded') }}
                         </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_FOLDED">
-                            {{ $t('navigationIndicatorStyleFolded') }}
-                        </option>
                         <option :value="ColorConfig.NAV_INDICATOR_STYLE_FOLDER">
                             {{ $t('navigationIndicatorStyleFolder') }}
                         </option>
@@ -392,6 +389,13 @@
             }
         },
         async mounted() {
+            if (this.metadata.colorConfig.navigationIndicatorStyle ===
+                ColorConfig.NAV_INDICATOR_STYLE_FOLDED) {
+                this.metadata.colorConfig.navigationIndicatorStyle =
+                    ColorConfig.NAV_INDICATOR_STYLE_SHADED;
+                this.saveMetadata(this.metadata);
+            }
+
             this.resetTestGrid();
         }
     }
