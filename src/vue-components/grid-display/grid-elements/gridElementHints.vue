@@ -133,8 +133,12 @@ export default {
                 Math.max(0, Math.min(100, rawOpacity)) :
                 ColorConfig.NAV_INDICATOR_OPACITY_DEFAULT;
 
+            const backgroundHex = typeof this.backgroundColor === 'string' &&
+                /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(this.backgroundColor) ?
+                this.backgroundColor : '#ffffff';
+
             const automaticBackground = fontUtil.getHighContrastColor(
-                this.backgroundColor,
+                backgroundHex,
                 '#ffffff',
                 '#000000'
             );
@@ -143,6 +147,24 @@ export default {
 
             const rgb = isLightBackground ?
                 '255, 255, 255' : '0, 0, 0';
+
+            const hex = backgroundHex.length === 4 ?
+                '#' + backgroundHex.slice(1).split('').map(value => value + value).join('') :
+                backgroundHex;
+            const backgroundRgb = [
+                parseInt(hex.slice(1, 3), 16),
+                parseInt(hex.slice(3, 5), 16),
+                parseInt(hex.slice(5, 7), 16)
+            ];
+            const fillRgb = isLightBackground ? [255, 255, 255] : [0, 0, 0];
+            const visibleRgb = backgroundRgb.map((channel, index) =>
+                channel * (1 - opacity / 100) + fillRgb[index] * (opacity / 100)
+            );
+            const iconColor = fontUtil.getHighContrastColorRgb(
+                visibleRgb,
+                '#ffffff',
+                '#000000'
+            );
 
             return {
                 fontSize: iconSize + 'px',
@@ -154,9 +176,7 @@ export default {
                 justifyContent: 'center',
                 verticalAlign: 'top',
                 backgroundColor: `rgba(${rgb}, ${opacity / 100})`,
-                color: opacity >= 45 ?
-                    (isLightBackground ? '#000000' : '#ffffff') :
-                    this.hintsColor
+                color: iconColor
             };
         },
         cornerSizePx() {
