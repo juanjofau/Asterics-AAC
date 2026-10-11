@@ -42,8 +42,8 @@ ColorConfig.NAV_INDICATOR_STYLE_FOLDER = 'folder';
 
 ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE = 'sticky-note';
 ColorConfig.NAV_INDICATOR_ICON_FOLDER = 'folder';
-ColorConfig.NAV_INDICATOR_ICON_ARROW = 'arrow-right';
-ColorConfig.NAV_INDICATOR_ICON_LINK = 'external-link-alt';
+ColorConfig.NAV_INDICATOR_ICON_ARROW = 'arrow-alt-circle-right';
+ColorConfig.NAV_INDICATOR_ICON_LINK = 'external-link-square-alt';
 
 ColorConfig.NAV_INDICATOR_SIZE_MIN = 10;
 ColorConfig.NAV_INDICATOR_SIZE_MAX = 100;
