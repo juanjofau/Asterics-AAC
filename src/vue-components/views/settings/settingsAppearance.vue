@@ -162,29 +162,29 @@
                             v-model="metadata.colorConfig.navigationIndicatorIcon"
                             class="five columns"
                             @change="saveMetadata(metadata)">
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE">
-                            {{ $t('navigationIndicatorIconStickyNote') }}
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_ARROW">
+                            {{ $t('navigationIndicatorIconArrow') }}
                         </option>
                         <option :value="ColorConfig.NAV_INDICATOR_ICON_FOLDER">
                             {{ $t('navigationIndicatorIconFolder') }}
                         </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_ARROW">
-                            {{ $t('navigationIndicatorIconArrow') }}
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_FOLDER_OPEN">
+                            {{ $t('navigationIndicatorIconFolderOpen') }}
                         </option>
                         <option :value="ColorConfig.NAV_INDICATOR_ICON_LINK">
                             {{ $t('navigationIndicatorIconLink') }}
                         </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_FOLDER_OPEN">
-                            {{ $t('navigationIndicatorIconFolderOpen') }}
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_SQUARE">
+                            {{ $t('navigationIndicatorIconSquare') }}
+                        </option>
+                        <option :value="ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE">
+                            {{ $t('navigationIndicatorIconStickyNote') }}
                         </option>
                         <option :value="ColorConfig.NAV_INDICATOR_ICON_TH">
                             {{ $t('navigationIndicatorIconTh') }}
                         </option>
                         <option :value="ColorConfig.NAV_INDICATOR_ICON_TH_LARGE">
                             {{ $t('navigationIndicatorIconThLarge') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_SQUARE">
-                            {{ $t('navigationIndicatorIconSquare') }}
                         </option>
                     </select>
                 </div>
@@ -248,7 +248,7 @@
                     <input id="testElementLabel" class="u-full-width" type="text" v-model="testElementLabel" @input="resetTestGrid"/>
                 </div>
                 <app-grid-display v-if="testGridData"
-                                  style="max-width: 200px; height: 500px; pointer-events: none;"
+                                  style="max-width: 200px; height: 625px; pointer-events: none;"
                                   :grid-data="testGridData"
                                   :metadata="metadata"
                                   :watch-for-changes="true"
@@ -374,13 +374,19 @@
             },
             resetTestGrid() {
                 util.debounce(() => {
-                    const navigationPreviewElement = this.getElement(
+                    const testElementWithImage = this.getElement(
                         0,
                         0,
                         this.testElementLabel,
                         "https://api.arasaac.org/api/pictograms/2648?download=false&plural=false&color=true"
                     );
 
+                    const navigationPreviewElement = this.getElement(
+                        0,
+                        4,
+                        i18nService.t("navigation")
+                    );
+                    navigationPreviewElement.backgroundColor = "#d3d3d3";
                     navigationPreviewElement.actions = [
                         new GridActionNavigate({
                             navType: GridActionNavigate.NAV_TYPES.TO_HOME
@@ -389,10 +395,11 @@
 
                     this.testGridData = new GridData({
                         gridElements: [
-                            navigationPreviewElement,
+                            testElementWithImage,
                             this.getElement(0, 1, i18nService.t("CC_VERB"), "https://api.arasaac.org/api/pictograms/4887?download=false&plural=false&color=true", "CC_VERB"),
                             this.getElement(0, 2, i18nService.t("CC_NOUN"), "https://api.arasaac.org/api/pictograms/2808?download=false&plural=false&color=true", "CC_NOUN"),
                             this.getElement(0, 3, this.testElementLabel),
+                            navigationPreviewElement,
                         ]
                     });
                 }, 200, "RESET_TEST_GRD");
