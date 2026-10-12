@@ -343,52 +343,69 @@ function getActionTypes(elem) {
 }
 
 function getCollectTextBackgroundStyles(metadata, collectElement) {
-    const config = metadata.textConfig;
-
     const validHex = value =>
         /^#[0-9a-f]{6}$/i.test(value || '');
 
-    const customColor = validHex(collectElement.textBackgroundColor)
+    const enabled = collectElement.textBackgroundEnabled === true;
+    const backgroundColor = validHex(collectElement.textBackgroundColor)
         ? collectElement.textBackgroundColor
-        : null;
-
-    const enabled = !!customColor || config.textBackgroundEnabled === true;
-
-    if (!enabled) {
-        return {
-            containerStyle: '',
-            textStyle: ''
-        };
-    }
-
-    const color = customColor ||
-        (validHex(config.textBackgroundColor)
-            ? config.textBackgroundColor
-            : '#000000');
-
-    const opacityValue = Number(config.textBackgroundOpacity);
+        : '#000000';
+    const opacityValue = Number(collectElement.textBackgroundOpacity);
     const opacity = Number.isFinite(opacityValue)
         ? Math.max(0, Math.min(100, opacityValue)) / 100
         : 0.5;
 
-    const red = parseInt(color.slice(1, 3), 16);
-    const green = parseInt(color.slice(3, 5), 16);
-    const blue = parseInt(color.slice(5, 7), 16);
+    let containerStyle = '';
+    let textStyle = '';
+    if (enabled) {
+        const red = parseInt(backgroundColor.slice(1, 3), 16);
+        const green = parseInt(backgroundColor.slice(3, 5), 16);
+        const blue = parseInt(backgroundColor.slice(5, 7), 16);
+        const css = `background-color: rgba(${red}, ${green}, ${blue}, ${opacity});`;
 
-    const css =
-        `background-color: rgba(${red}, ${green}, ${blue}, ${opacity});`;
-
-    if (config.textBackgroundFullWidth !== false) {
-        return {
-            containerStyle: css,
-            textStyle: ''
-        };
+        if (collectElement.textBackgroundFullWidth !== false) {
+            containerStyle = css;
+        } else {
+            textStyle = css + ' padding: 0 4px; box-sizing: border-box;';
+        }
     }
 
-    return {
-        containerStyle: '',
-        textStyle: css + ' padding: 0 4px; box-sizing: border-box;'
-    };
+    let fontColor = collectElement.fontColor || constants.DEFAULT_ELEMENT_FONT_COLOR;
+    if (collectElement.fontColorAuto !== false) {
+        const cellColor = validHex(collectElement.backgroundColor)
+            ? collectElement.backgroundColor
+            : (validHex(metadata.colorConfig.gridBackgroundColor)
+                ? metadata.colorConfig.gridBackgroundColor
+                : '#ffffff');
+        let visibleColor = cellColor;
+
+        if (enabled) {
+            const fillRgb = [
+                parseInt(backgroundColor.slice(1, 3), 16),
+                parseInt(backgroundColor.slice(3, 5), 16),
+                parseInt(backgroundColor.slice(5, 7), 16)
+            ];
+            const cellRgb = [
+                parseInt(cellColor.slice(1, 3), 16),
+                parseInt(cellColor.slice(3, 5), 16),
+                parseInt(cellColor.slice(5, 7), 16)
+            ];
+            const visibleRgb = fillRgb.map((value, index) =>
+                Math.round(value * opacity + cellRgb[index] * (1 - opacity))
+            );
+            visibleColor = '#' + visibleRgb
+                .map(value => value.toString(16).padStart(2, '0'))
+                .join('');
+        }
+
+        fontColor = fontUtil.getHighContrastColor(
+            visibleColor,
+            constants.COLORS.WHITE,
+            constants.COLORS.BLACK
+        );
+    }
+
+    return { containerStyle, textStyle, fontColor };
 }
 
 async function updateCollectElements(isSecondTry) {
@@ -397,7 +414,8 @@ async function updateCollectElements(isSecondTry) {
     for (let collectElement of registeredCollectElements) {
         const {
             containerStyle,
-            textStyle
+            textStyle,
+            fontColor
         } = getCollectTextBackgroundStyles(metadata, collectElement);
         let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
         let imageMode = isSeparateMode(collectElement.mode);
@@ -416,7 +434,7 @@ async function updateCollectElements(isSecondTry) {
                             ${displayedText}
                         </span>`;
             outerContainerJqueryElem.html(
-                (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: transparent; text-align: justify;">${html}</div>`)
+                (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: transparent; color: ${fontColor}; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
@@ -503,7 +521,7 @@ async function updateCollectElements(isSecondTry) {
                              </div>`;
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: transparent; text-align: justify; ${additionalCSS}">
+            html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: transparent; color: ${fontColor}; text-align: justify; ${additionalCSS}">
                         <div class="collect-items-container" style="display: flex; flex-direction: row; ">${html}</div>
                     </div>`;
             outerContainerJqueryElem.html(html);

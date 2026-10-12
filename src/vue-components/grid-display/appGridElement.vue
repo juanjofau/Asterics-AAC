@@ -68,6 +68,9 @@ export default {
             }
         },
         backgroundColor() {
+            if (this.element.type === GridElement.ELEMENT_TYPE_COLLECT) {
+                return this.element.backgroundColor;
+            }
             return colorUtil.getBackgroundColor(this.element, this.metadata);
         },
         emptyCellBackgroundColor() {
