@@ -1,7 +1,7 @@
 <template>
     <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
-         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.28), rgba(0, 0, 0, 0.18)); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.32); font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
+         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; background-image: ${gradientBackgroundImage}; box-shadow: ${shadowStyle}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" :metadata="metadata" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
@@ -69,6 +69,26 @@ export default {
         },
         borderColor() {
             return colorUtil.getBorderColor(this.element, this.metadata);
+        },
+        gradientBackgroundImage() {
+            if (!this.metadata.colorConfig.gradientEnabled) {
+                return 'none';
+            }
+            const intensity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientIntensity) || 0)) / 100;
+            if (intensity === 0) {
+                return 'none';
+            }
+            return `linear-gradient(to bottom, rgba(255, 255, 255, ${0.28 * intensity}), rgba(0, 0, 0, ${0.18 * intensity}))`;
+        },
+        shadowStyle() {
+            if (!this.metadata.colorConfig.shadowEnabled) {
+                return 'none';
+            }
+            const intensity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowIntensity) || 0)) / 100;
+            if (intensity === 0) {
+                return 'none';
+            }
+            return `0 4px 10px rgba(0, 0, 0, ${0.32 * intensity})`;
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
