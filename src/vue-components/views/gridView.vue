@@ -432,6 +432,8 @@
                 this.renderGridData.minColumnCount = gridUtil.getWidthWithBounds(this.renderGridData);
                 this.renderGridData.rowCount = gridUtil.getHeightWithBounds(this.renderGridData);
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
+                // Hidden elements must leave an empty-cell placeholder in their former position.
+                this.renderGridData = gridUtil.fillFreeSpaces(this.renderGridData, GridElement.ELEMENT_TYPE_UI_FILLER);
 
                 // Check for local toggle level first, otherwise use synchronized metadata level
                 let isToggled = localStorageService.get(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
