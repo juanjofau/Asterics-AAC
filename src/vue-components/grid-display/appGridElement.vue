@@ -1,7 +1,7 @@
 <template>
     <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
-         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
+         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; background-image: ${gradientBackgroundImage}; box-shadow: ${shadowStyle}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" :metadata="metadata" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
@@ -69,6 +69,29 @@ export default {
         },
         borderColor() {
             return colorUtil.getBorderColor(this.element, this.metadata);
+        },
+        gradientBackgroundImage() {
+            if (!this.metadata.colorConfig.gradientEnabled) {
+                return 'none';
+            }
+            const whiteOpacity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientWhiteOpacity) || 0)) / 100;
+            const blackOpacity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientBlackOpacity) || 0)) / 100;
+            if (whiteOpacity === 0 && blackOpacity === 0) {
+                return 'none';
+            }
+            return 'linear-gradient(to bottom, rgba(255, 255, 255, ' + whiteOpacity + ') 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, ' + blackOpacity + ') 100%)';
+        },
+        shadowStyle() {
+            if (!this.metadata.colorConfig.shadowEnabled) {
+                return 'none';
+            }
+            const offsetY = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowOffsetY) || 0));
+            const blur = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowBlur) || 0));
+            const opacity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowOpacity) || 0)) / 100;
+            if (offsetY === 0 && blur === 0 && opacity === 0) {
+                return 'none';
+            }
+            return '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(0, 0, 0, ' + opacity + ')';
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
@@ -188,4 +211,5 @@ export default {
     overflow: hidden;
     position: relative;
 }
+
 </style>

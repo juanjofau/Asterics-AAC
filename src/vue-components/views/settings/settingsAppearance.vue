@@ -111,6 +111,29 @@
                             <slider-input label="borderRadius" unit="%" id="borderRadius" min="0" max="4" step="0.05" :decimals="2" v-model.number="metadata.colorConfig.borderRadius" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
+                            <input id="gradientEnabled" type="checkbox" v-model="metadata.colorConfig.gradientEnabled" @change="saveMetadata(metadata)"/>
+                            <label for="gradientEnabled">{{ $t('enableCellGradient') }}</label>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="cellGradientWhiteOpacity" unit="%" id="gradientWhiteOpacity" min="0" max="100" step="1" v-model.number="metadata.colorConfig.gradientWhiteOpacity" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="cellGradientBlackOpacity" unit="%" id="gradientBlackOpacity" min="0" max="100" step="1" v-model.number="metadata.colorConfig.gradientBlackOpacity" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <input id="shadowEnabled" type="checkbox" v-model="metadata.colorConfig.shadowEnabled" @change="saveMetadata(metadata)"/>
+                            <label for="shadowEnabled">{{ $t('enableCellShadow') }}</label>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="cellShadowOffset" unit="px" id="shadowOffsetY" min="0" max="50" step="1" v-model.number="metadata.colorConfig.shadowOffsetY" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="cellShadowBlur" unit="px" id="shadowBlur" min="0" max="50" step="1" v-model.number="metadata.colorConfig.shadowBlur" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="cellShadowOpacity" unit="%" id="shadowOpacity" min="0" max="100" step="1" v-model.number="metadata.colorConfig.shadowOpacity" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
                             <label class="three columns" for="colorScheme">
                                 <span>{{ $t('colorSchemeForCategories') }}</span>
                             </label>
