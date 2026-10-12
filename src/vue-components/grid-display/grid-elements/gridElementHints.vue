@@ -214,10 +214,10 @@ export default {
             const shapeHeight = this.navigationShapeHeightPx;
             const center = this.navigationIconCenter(shapeWidth, shapeHeight);
             const iconSize = this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB ?
-                shapeWidth * 0.30 :
+                shapeWidth * 0.40 :
                 Math.min(shapeWidth, shapeHeight) *
-                    (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CORNER ? 0.30 :
-                     this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE ? 0.40 : 0.48);
+                    (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CORNER ? 0.40 :
+                     this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE ? 0.50 : 0.70);
 
             const iconAutoColor = this.metadata.colorConfig.navigationIndicatorIconAutoColor !== false;
             let iconColor = this.normalizeHexColor(this.metadata.colorConfig.navigationIndicatorIconColor) ||
