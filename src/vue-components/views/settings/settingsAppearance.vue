@@ -151,7 +151,7 @@
                             <label for="emptyCellEffectEnabled">{{ $t('enableEmptyCellEffect') }}</label>
                         </div>
                         <div class="srow" v-if="metadata.colorConfig.emptyCellEffectEnabled">
-                            <slider-input label="emptyCellEffectOpacity" unit="%" id="emptyCellEffectOpacity" min="0" max="10" step="1" v-model.number="metadata.colorConfig.emptyCellEffectOpacity" @change="saveMetadata(metadata)"/>
+                            <slider-input label="emptyCellEffectOpacity" unit="%" id="emptyCellEffectOpacity" min="1" max="20" step="1" v-model.number="metadata.colorConfig.emptyCellEffectOpacity" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
                             <input id="gradientEnabled" type="checkbox" v-model="metadata.colorConfig.gradientEnabled" @change="saveMetadata(metadata)"/>
@@ -547,6 +547,9 @@
                         })
                     ];
 
+                    const emptyCellPreviewElement = this.getElement(0, 6, "");
+                    emptyCellPreviewElement.hidden = true;
+
                     this.testGridData = new GridData({
                         gridElements: [
                             testElementWithImage,
@@ -555,6 +558,7 @@
                             this.getElement(0, 3, this.testElementLabel),
                             navigationPreviewElement,
                             darkNavigationPreviewElement,
+                            emptyCellPreviewElement,
                         ]
                     });
                 }, 200, "RESET_TEST_GRD");
