@@ -195,7 +195,7 @@ export default {
                 green = parseInt(hex.slice(2, 4), 16);
                 blue = parseInt(hex.slice(4, 6), 16);
             } else {
-                const rgbMatch = /^rgba?\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)/i.exec(background);
+                const rgbMatch = /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i.exec(background);
                 if (rgbMatch) {
                     red = Number(rgbMatch[1]);
                     green = Number(rgbMatch[2]);
