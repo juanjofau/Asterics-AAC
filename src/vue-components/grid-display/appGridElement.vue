@@ -122,7 +122,8 @@ export default {
             if (offsetY === 0 && blur === 0 && opacity === 0) {
                 return 'none';
             }
-            const match = /^#([0-9a-f]{6})$/i.exec(this.backgroundColor || '');
+            const background = this.gridBackgroundColor || this.metadata.colorConfig.gridBackgroundColor || '#ffffff';
+            const match = /^#([0-9a-f]{6})$/i.exec(background);
             const hex = match ? match[1] : 'ffffff';
             const red = parseInt(hex.slice(0, 2), 16);
             const green = parseInt(hex.slice(2, 4), 16);
