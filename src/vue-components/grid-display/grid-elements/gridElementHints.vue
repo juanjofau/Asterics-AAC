@@ -199,20 +199,13 @@ export default {
             return classes;
         },
         navigationIconStyle() {
-            const shapeWidth = this.navigationShapeWidthPx;
-            const shapeHeight = this.navigationShapeHeightPx;
-            let iconSize = Math.min(shapeWidth, shapeHeight) * 0.48;
-            let centerX = shapeWidth / 2;
-            let centerY = shapeHeight / 2;
-
-            if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CORNER) {
-                iconSize = Math.min(shapeWidth, shapeHeight) * 0.42;
-                centerX = shapeWidth * 2 / 3;
-                centerY = shapeHeight * (this.indicatorAtBottom ? 2 / 3 : 1 / 3);
-            } else if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB) {
-                iconSize = Math.min(shapeHeight * 0.72, shapeWidth * 0.20);
-                centerX = shapeWidth * 0.65;
-            }
+            // Use the same two-pixel overscan as the fill. The icon coordinates
+            // are measured from the fill's rendered box, not the unextended cell corner.
+            const shapeWidth = this.navigationShapeWidthPx + 2;
+            const shapeHeight = this.navigationShapeHeightPx + 2;
+            const center = this.navigationIconCenter(shapeWidth, shapeHeight);
+            const iconSize = Math.min(shapeWidth, shapeHeight) *
+                (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB ? 0.68 : 0.48);
 
             const iconAutoColor = this.metadata.colorConfig.navigationIndicatorIconAutoColor !== false;
             let iconColor = this.normalizeHexColor(this.metadata.colorConfig.navigationIndicatorIconColor) ||
@@ -243,14 +236,14 @@ export default {
                 color: iconColor,
                 pointerEvents: 'none',
                 zIndex: 2,
-                right: (shapeWidth - centerX - iconSize / 2 - 2) + 'px'
+                right: (shapeWidth - center.x - iconSize / 2) + 'px'
             };
 
             if (this.indicatorAtBottom) {
                 style.top = 'auto';
-                style.bottom = (shapeHeight - centerY - iconSize / 2 - 2) + 'px';
+                style.bottom = (shapeHeight - center.y - iconSize / 2) + 'px';
             } else {
-                style.top = (centerY - iconSize / 2 - 2) + 'px';
+                style.top = (center.y - iconSize / 2 - 2) + 'px';
                 style.bottom = 'auto';
             }
 
@@ -258,6 +251,48 @@ export default {
         }
     },
     methods: {
+        navigationIconCenter(width, height) {
+            switch (this.navigationIndicatorShape) {
+                case ColorConfig.NAV_INDICATOR_SHAPE_CORNER:
+                    return {
+                        x: width * 2 / 3,
+                        y: height * (this.indicatorAtBottom ? 2 / 3 : 1 / 3)
+                    };
+                case ColorConfig.NAV_INDICATOR_SHAPE_TAB: {
+                    // The tab is a quadrilateral with a diagonal inner corner.
+                    // Its area centroid is calculated from the same polygon vertices
+                    // used by navigationShapeStyle, including the two-pixel overscan.
+                    const diagonal = Math.min(height, width);
+                    const points = this.indicatorAtBottom ?
+                        [[0, height], [width, height], [width, 0], [diagonal, 0]] :
+                        [[0, 0], [width, 0], [width, height], [diagonal, height]];
+                    let twiceArea = 0;
+                    let centroidX = 0;
+                    let centroidY = 0;
+
+                    points.forEach((point, index) => {
+                        const next = points[(index + 1) % points.length];
+                        const cross = point[0] * next[1] - next[0] * point[1];
+                        twiceArea += cross;
+                        centroidX += (point[0] + next[0]) * cross;
+                        centroidY += (point[1] + next[1]) * cross;
+                    });
+
+                    if (twiceArea === 0) {
+                        return { x: width / 2, y: height / 2 };
+                    }
+
+                    return {
+                        x: centroidX / (3 * twiceArea),
+                        y: centroidY / (3 * twiceArea)
+                    };
+                }
+                case ColorConfig.NAV_INDICATOR_SHAPE_SQUARE:
+                case ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE:
+                default:
+                    return { x: width / 2, y: height / 2 };
+            }
+        },
         normalizeHexColor(color) {
             if (typeof color !== 'string' || !/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(color)) {
                 return null;
