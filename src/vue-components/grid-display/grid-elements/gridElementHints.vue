@@ -166,14 +166,13 @@ export default {
         navigationShapeStyle() {
             const width = this.navigationShapeWidthPx;
             const height = this.navigationShapeHeightPx;
-            const overscan = 2;
             const fillRgb = this.hexToRgb(this.navigationFillColor);
             const style = {
-                width: (width + overscan) + 'px',
-                height: (height + overscan) + 'px',
+                width: width + 'px',
+                height: height + 'px',
                 backgroundColor: 'rgba(' + fillRgb.join(', ') + ', ' + (this.navigationOpacity / 100) + ')',
-                top: this.indicatorAtBottom ? 'auto' : '-2px',
-                bottom: this.indicatorAtBottom ? '-2px' : 'auto'
+                top: this.indicatorAtBottom ? 'auto' : '0',
+                bottom: this.indicatorAtBottom ? '0' : 'auto'
             };
 
             if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CORNER) {
@@ -181,7 +180,7 @@ export default {
                     'polygon(0 100%, 100% 0, 100% 100%)' :
                     'polygon(0 0, 100% 0, 100% 100%)';
             } else if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB) {
-                const diagonalSize = Math.min(height + overscan, width + overscan);
+                const diagonalSize = Math.min(height, width);
                 style.clipPath = this.indicatorAtBottom ?
                     `polygon(0 100%, 100% 100%, 100% 0, ${diagonalSize}px 0)` :
                     `polygon(0 0, 100% 0, 100% 100%, ${diagonalSize}px 100%)`;
@@ -199,13 +198,13 @@ export default {
             return classes;
         },
         navigationIconStyle() {
-            // Use the same two-pixel overscan as the fill. The icon coordinates
-            // are measured from the fill's rendered box, not the unextended cell corner.
-            const shapeWidth = this.navigationShapeWidthPx + 2;
-            const shapeHeight = this.navigationShapeHeightPx + 2;
+            // Measure the icon directly against the indicator's actual fill geometry.
+            const shapeWidth = this.navigationShapeWidthPx;
+            const shapeHeight = this.navigationShapeHeightPx;
             const center = this.navigationIconCenter(shapeWidth, shapeHeight);
             const iconSize = Math.min(shapeWidth, shapeHeight) *
-                (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB ? 0.68 : 0.48);
+                (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB ? 0.68 :
+                    this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CORNER ? 0.30 : 0.48);
 
             const iconAutoColor = this.metadata.colorConfig.navigationIndicatorIconAutoColor !== false;
             let iconColor = this.normalizeHexColor(this.metadata.colorConfig.navigationIndicatorIconColor) ||
@@ -243,7 +242,7 @@ export default {
                 style.top = 'auto';
                 style.bottom = (shapeHeight - center.y - iconSize / 2) + 'px';
             } else {
-                style.top = (center.y - iconSize / 2 - 2) + 'px';
+                style.top = (center.y - iconSize / 2) + 'px';
                 style.bottom = 'auto';
             }
 
@@ -261,7 +260,7 @@ export default {
                 case ColorConfig.NAV_INDICATOR_SHAPE_TAB: {
                     // The tab is a quadrilateral with a diagonal inner corner.
                     // Its area centroid is calculated from the same polygon vertices
-                    // used by navigationShapeStyle, including the two-pixel overscan.
+                    // used by navigationShapeStyle.
                     const diagonal = Math.min(height, width);
                     const points = this.indicatorAtBottom ?
                         [[0, height], [width, height], [width, 0], [diagonal, 0]] :
@@ -333,7 +332,7 @@ export default {
 
 .navigation-indicator-shape {
     position: absolute;
-    right: -2px;
+    right: 0;
     pointer-events: none;
     z-index: 1;
 }
