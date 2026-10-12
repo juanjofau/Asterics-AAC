@@ -94,8 +94,8 @@ export default {
             const blue = parseInt(hex.slice(4, 6), 16);
             const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
             return luminance <= 255 * 0.20
-                ? 'rgba(255, 255, 255, 0.10)'
-                : 'rgba(0, 0, 0, 0.10)';
+                ? 'rgba(255, 255, 255, 0.05)'
+                : 'rgba(0, 0, 0, 0.05)';
         },
         gradientBackgroundImage() {
             if (!this.metadata.colorConfig.gradientEnabled) {
