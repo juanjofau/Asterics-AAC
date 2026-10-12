@@ -68,6 +68,8 @@ ColorConfig.NAV_INDICATOR_ICON_FOLDER_OPEN = 'folder-open';
 ColorConfig.NAV_INDICATOR_ICON_TH = 'th';
 ColorConfig.NAV_INDICATOR_ICON_TH_LARGE = 'th-large';
 ColorConfig.NAV_INDICATOR_ICON_SQUARE = 'square';
+ColorConfig.NAV_INDICATOR_ICON_DOT_CIRCLE = 'dot-circle';
+ColorConfig.NAV_INDICATOR_ICON_CIRCLE = 'circle';
 
 ColorConfig.NAV_INDICATOR_SIZE_MIN = 10;
 ColorConfig.NAV_INDICATOR_SIZE_MAX = 100;

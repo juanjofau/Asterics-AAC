@@ -197,6 +197,12 @@
                             <option :value="ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE">{{ $t('navigationIndicatorIconStickyNote') }}</option>
                             <option :value="ColorConfig.NAV_INDICATOR_ICON_TH">{{ $t('navigationIndicatorIconTh') }}</option>
                             <option :value="ColorConfig.NAV_INDICATOR_ICON_TH_LARGE">{{ $t('navigationIndicatorIconThLarge') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_DOT_CIRCLE">
+                                {{ $t('navigationIndicatorIconDotCircle') }}
+                            </option>
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_CIRCLE">
+                                {{ $t('navigationIndicatorIconCircle') }}
+                            </option>
                         </select>
                     </div>
 

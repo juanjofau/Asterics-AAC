@@ -130,7 +130,9 @@ export default {
                 ColorConfig.NAV_INDICATOR_ICON_FOLDER_OPEN,
                 ColorConfig.NAV_INDICATOR_ICON_TH,
                 ColorConfig.NAV_INDICATOR_ICON_TH_LARGE,
-                ColorConfig.NAV_INDICATOR_ICON_SQUARE
+                ColorConfig.NAV_INDICATOR_ICON_SQUARE,
+                ColorConfig.NAV_INDICATOR_ICON_DOT_CIRCLE,
+                ColorConfig.NAV_INDICATOR_ICON_CIRCLE
             ];
             return validIcons.includes(icon) ? icon : ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE;
         },
@@ -193,10 +195,17 @@ export default {
             return style;
         },
         navigationIconClasses() {
-            const classes = ['fas', 'fa-' + this.navigationIndicatorIcon];
-            if (this.navigationIndicatorIcon === ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE) {
+            const icon = this.navigationIndicatorIcon;
+            const prefix = icon === ColorConfig.NAV_INDICATOR_ICON_DOT_CIRCLE
+                ? 'far'
+                : 'fas';
+
+            const classes = [prefix, 'fa-' + icon];
+
+            if (icon === ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE) {
                 classes.push('fa-rotate-180', 'fa-flip-vertical');
             }
+
             return classes;
         },
         navigationIconStyle() {

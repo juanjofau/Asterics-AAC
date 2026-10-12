@@ -1363,6 +1363,8 @@
   "navigationIndicatorIconFolderOpen": "folder-open",
   "navigationIndicatorIconTh": "th",
   "navigationIndicatorIconThLarge": "th-large",
+  "navigationIndicatorIconDotCircle": "Dot circle",
+  "navigationIndicatorIconCircle": "Filled circle",
   "navigationIndicatorIconSquare": "square",
   "navigationIndicatorSize": "Indicator size",
   "navigationIndicatorColor": "Fill color",
