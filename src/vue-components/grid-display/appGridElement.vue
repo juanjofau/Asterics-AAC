@@ -194,8 +194,8 @@ export default {
             const blue = parseInt(hex.slice(4, 6), 16);
             const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
             const insetColor = luminance <= 51 ? '255, 255, 255' : '0, 0, 0';
-            const insetOpacity = 0.30;
-            const insetShadow = 'inset 0 0 12px 10px rgba(' + insetColor + ', ' + insetOpacity + ')';
+            const insetOpacity = 0.16;
+            const insetShadow = 'inset 0 0 7px 5px rgba(' + insetColor + ', ' + insetOpacity + ')';
 
             return [outerShadow, insetShadow].filter(Boolean).join(', ');
         },
