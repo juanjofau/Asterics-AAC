@@ -147,6 +147,13 @@
                             <slider-input label="borderRadius" unit="%" id="borderRadius" min="0" max="4" step="0.05" :decimals="2" v-model.number="metadata.colorConfig.borderRadius" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
+                            <input id="emptyCellEffectEnabled" type="checkbox" v-model="metadata.colorConfig.emptyCellEffectEnabled" @change="saveMetadata(metadata)"/>
+                            <label for="emptyCellEffectEnabled">{{ $t('enableEmptyCellEffect') }}</label>
+                        </div>
+                        <div class="srow" v-if="metadata.colorConfig.emptyCellEffectEnabled">
+                            <slider-input label="emptyCellEffectOpacity" unit="%" id="emptyCellEffectOpacity" min="0" max="10" step="1" v-model.number="metadata.colorConfig.emptyCellEffectOpacity" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
                             <input id="gradientEnabled" type="checkbox" v-model="metadata.colorConfig.gradientEnabled" @change="saveMetadata(metadata)"/>
                             <label for="gradientEnabled">{{ $t('enableCellGradient') }}</label>
                         </div>
