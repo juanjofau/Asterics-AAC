@@ -210,12 +210,6 @@ export default {
     flex: 1 1 auto;
     overflow: hidden;
     position: relative;
-    transition: transform 100ms ease, filter 100ms ease, box-shadow 100ms ease;
 }
 
-.element-container:active {
-    transform: scale(0.97);
-    filter: brightness(1.08);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.28);
-}
 </style>
