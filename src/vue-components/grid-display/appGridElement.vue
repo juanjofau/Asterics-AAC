@@ -100,7 +100,7 @@ export default {
                 }
             }
             const isDark = rgb ? rgb[0] * 0.299 + rgb[1] * 0.587 + rgb[2] * 0.114 <= 149 : false;
-            return isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)';
+            return isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
         },
         fontColor() {
             if (this.element.type === GridElement.ELEMENT_TYPE_COLLECT) {
