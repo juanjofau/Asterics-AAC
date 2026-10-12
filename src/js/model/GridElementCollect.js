@@ -10,7 +10,8 @@ class GridElementCollect extends GridElement.extend({
     singleLine: [Boolean],
     convertToLowercase: [Boolean],
     textElemSizeFactor: [Number],
-    displayUpsideDown: [Boolean]
+    displayUpsideDown: [Boolean],
+    textBackgroundColor: [String]
 }) {
     constructor(props) {
         props = props || {};
