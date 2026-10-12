@@ -179,10 +179,25 @@ export default {
             const offsetY = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowOffsetY) || 0));
             const blur = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowBlur) || 0));
             const opacity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowOpacity) || 0)) / 100;
-            if (offsetY === 0 && blur === 0 && opacity === 0) {
-                return 'none';
-            }
-            return '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(0, 0, 0, ' + opacity + ')';
+            const outerShadow = offsetY === 0 && blur === 0 && opacity === 0
+                ? ''
+                : '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(0, 0, 0, ' + opacity + ')';
+
+            // Experimental inset shadow: soft shading around all four inner edges.
+            const backgroundMatch = /^#([0-9a-f]{6})$/i.exec(this.backgroundColor || '');
+            const fallbackMatch = /^#([0-9a-f]{6})$/i.exec(
+                this.gridBackgroundColor || this.metadata.colorConfig.gridBackgroundColor || '#ffffff'
+            );
+            const hex = (backgroundMatch || fallbackMatch || [null, 'ffffff'])[1];
+            const red = parseInt(hex.slice(0, 2), 16);
+            const green = parseInt(hex.slice(2, 4), 16);
+            const blue = parseInt(hex.slice(4, 6), 16);
+            const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
+            const insetColor = luminance <= 51 ? '255, 255, 255' : '0, 0, 0';
+            const insetOpacity = luminance <= 51 ? 0.16 : 0.14;
+            const insetShadow = 'inset 0 0 8px 1px rgba(' + insetColor + ', ' + insetOpacity + ')';
+
+            return [outerShadow, insetShadow].filter(Boolean).join(', ');
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
