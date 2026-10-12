@@ -300,6 +300,7 @@ export default {
     min-width: 0;
     min-height: 0;
     background-color: rgba(128, 128, 128, 0.07);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.20);
     pointer-events: none;
 }
 
