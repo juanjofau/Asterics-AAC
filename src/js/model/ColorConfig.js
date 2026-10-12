@@ -13,6 +13,10 @@ class ColorConfig extends Model({
     borderWidth: [Number],
     elementMargin: [Number],
     borderRadius: [Number],
+    gradientEnabled: [Boolean],
+    gradientIntensity: [Number],
+    shadowEnabled: [Boolean],
+    shadowIntensity: [Number],
     colorMode: [String]
 }) {
     constructor(properties) {
@@ -43,6 +47,10 @@ ColorConfig.defaults({
     borderWidth: ColorConfig.BORDER_WIDTH_BG_COLORED,
     elementMargin: 0.15,
     borderRadius: 0.4,
+    gradientEnabled: true,
+    gradientIntensity: 100,
+    shadowEnabled: true,
+    shadowIntensity: 100,
     colorMode: ColorConfig.COLOR_MODE_BACKGROUND
 });
 
