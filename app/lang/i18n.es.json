@@ -1206,6 +1206,7 @@
   "cellGradientBlackOpacity": "Opacidad del negro del degradado",
   "enableCellShadow": "Activar sombra de las celdas",
   "cellShadowOffset": "Desplazamiento vertical de la sombra",
+  "cellShadowBlur": "Desenfoque de la sombra",
   "cellShadowOpacity": "Opacidad de la sombra",
   "elementMargin": "Espacio entre celdas",
   "fontColor": "Color del texto",
