@@ -12,6 +12,12 @@
         <grid-element-hints :grid-element="element" :metadata="metadata" :background-color="backgroundColor" :container-size="calculatedSize" :border-color="borderColor" :border-width-px="borderWidthPx"/>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
+    <div
+        v-else-if="!editable"
+        class="empty-cell-shadow"
+        aria-hidden="true"
+        :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px;`">
+    </div>
 </template>
 
 <script>
@@ -219,6 +225,16 @@ export default {
     flex: 1 1 auto;
     overflow: hidden;
     position: relative;
+}
+
+.empty-cell-shadow {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    background-color: rgba(128, 128, 128, 0.07);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+    pointer-events: none;
 }
 
 </style>
