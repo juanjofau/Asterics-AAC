@@ -12,7 +12,6 @@ import { encryptionService } from '../service/data/encryptionService';
 import { gridLayoutUtil } from '../../vue-components/grid-layout/utils/gridLayoutUtil';
 import { localStorageService } from '../service/data/localStorageService';
 import { util } from './util';
-import { fontUtil } from './fontUtil';
 
 const USED_LOCALES_KEY = 'AG_USED_LOCALES';
 
@@ -826,105 +825,11 @@ gridUtil.getCursorType = function(metadata, defaultCursorType = "default") {
  * @param defaultBackground
  * @returns {string|string}
  */
-gridUtil.getElemBackgroundCss = function(
-    elem,
-    childGrid = {},
-    globalGrid,
-    defaultBackground = '',
-    borderRadius = 0
-) {
-    const globalElements =
-        globalGrid && globalGrid.gridElements
-            ? globalGrid.gridElements
-            : [];
-
-    const globalIds = new Set(globalElements.map(e => e.id));
-    const fromGlobal = globalIds.has(elem.id);
-
-    const isDynamicMergedGrid =
-        !!globalGrid && gridUtil.hasDynamicGridPlaceholder(globalGrid);
-
-    const backgroundColor = (
-        isDynamicMergedGrid || fromGlobal
-            ? globalGrid.backgroundColor
-            : childGrid.backgroundColor
-    ) || defaultBackground || constants.DEFAULT_GRID_BACKGROUND_COLOR;
-
-    const basicStyle = `background-color: ${backgroundColor};`;
-
-    if (!globalGrid ||
-        !gridUtil.hasDynamicGridPlaceholder(globalGrid) ||
-        fromGlobal) {
-        return basicStyle;
-    }
-
-    const radius = Math.max(0, fontUtil.pctToPx(borderRadius));
-
-    if (radius <= 0) {
-        return basicStyle;
-    }
-
-    const childElements = (childGrid.gridElements || [])
-        .filter(e => !globalIds.has(e.id));
-
-    if (!childElements.length) {
-        return basicStyle;
-    }
-
-    const left = Math.min(...childElements.map(e => e.x));
-    const top = Math.min(...childElements.map(e => e.y));
-    const right = Math.max(...childElements.map(e => e.x + e.width));
-    const bottom = Math.max(...childElements.map(e => e.y + e.height));
-
-    const corners = [
-        {
-            match: elem.x === left && elem.y === top,
-            center: 'right bottom',
-            position: 'left top'
-        },
-        {
-            match: elem.x + elem.width === right && elem.y === top,
-            center: 'left bottom',
-            position: 'right top'
-        },
-        {
-            match: elem.x === left && elem.y + elem.height === bottom,
-            center: 'right top',
-            position: 'left bottom'
-        },
-        {
-            match: elem.x + elem.width === right &&
-                elem.y + elem.height === bottom,
-            center: 'left top',
-            position: 'right bottom'
-        }
-    ].filter(corner => corner.match);
-
-    if (!corners.length) {
-        return basicStyle;
-    }
-
-    const outerColor =
-        globalGrid.backgroundColor ||
-        defaultBackground ||
-        constants.DEFAULT_GRID_BACKGROUND_COLOR;
-
-    const innerStop = Math.max(0, radius - 0.5);
-
-    const gradients = corners.map(corner =>
-        `radial-gradient(circle at ${corner.center}, ` +
-        `${backgroundColor} ${innerStop}px, ` +
-        `${outerColor} ${radius}px)`
-    );
-
-    const sizes = corners.map(() => `${radius}px ${radius}px`);
-    const positions = corners.map(corner => corner.position);
-
-    return basicStyle +
-        ` background-image: ${gradients.join(', ')};` +
-        ` background-size: ${sizes.join(', ')};` +
-        ` background-position: ${positions.join(', ')};` +
-        ' background-repeat: no-repeat;';
+gridUtil.getElemBackgroundCss = function(elem, childGrid = {}, globalGrid, defaultBackground = '') {
+    let fromGlobal = globalGrid && !!globalGrid.gridElements.find(e => e.id === elem.id);
+    let backgroundColor = fromGlobal ? globalGrid.backgroundColor : childGrid.backgroundColor;
+    backgroundColor = backgroundColor || defaultBackground || constants.DEFAULT_GRID_BACKGROUND_COLOR;
+    return backgroundColor ? `background-color: ${backgroundColor};` : '';
 };
 
 gridUtil.getFirstWordForm = function(element, lang = null) {

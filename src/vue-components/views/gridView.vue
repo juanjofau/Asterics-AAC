@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="srow content d-flex" v-if="showGrid && renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
-            <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata" :background-color-override="dynamicAreaBackgroundColor" :elem-css-fn="(elem) => gridUtil.getElemBackgroundCss(elem, renderGridData, activeGlobalGridData, metadata.colorConfig.gridBackgroundColor, metadata.colorConfig.borderRadius)"/>
+            <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata" :elem-css-fn="(elem) => gridUtil.getElemBackgroundCss(elem, renderGridData, globalGridData, metadata.colorConfig.gridBackgroundColor)"/>
         </div>
     </div>
 </template>
@@ -108,7 +108,6 @@
         data() {
             return {
                 globalGridData: null,
-                activeGlobalGridData: null,
                 renderGridData: null,
                 showGrid: false,
                 metadata: null,
@@ -129,21 +128,6 @@
                 highlightedElementId: null,
                 systemActionService: systemActionService,
                 gridUtil: gridUtil
-            }
-        },
-        computed: {
-            dynamicAreaBackgroundColor() {
-                const globalGrid = this.activeGlobalGridData;
-
-                if (!this.metadata ||
-                    !globalGrid ||
-                    !gridUtil.hasDynamicGridPlaceholder(globalGrid)) {
-                    return null;
-                }
-
-                return globalGrid.backgroundColor ||
-                    this.metadata.colorConfig.gridBackgroundColor ||
-                    constants.DEFAULT_GRID_BACKGROUND_COLOR;
             }
         },
         components: {
@@ -438,7 +422,6 @@
                 } else {
                     this.renderGridData = gridData;
                 }
-                this.activeGlobalGridData = globalGrid;
                 this.renderGridData = gridUtil.adaptFirstRowHeight(this.renderGridData, this.metadata.firstRowHeightFactor);
                 this.renderGridData.minColumnCount = gridUtil.getWidthWithBounds(this.renderGridData);
                 this.renderGridData.rowCount = gridUtil.getHeightWithBounds(this.renderGridData);

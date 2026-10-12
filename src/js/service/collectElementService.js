@@ -350,7 +350,6 @@ async function updateCollectElements(isSecondTry) {
         let imageMode = isSeparateMode(collectElement.mode);
         let outerContainerJqueryElem = $(`#${collectElement.id} .collect-outer-container`);
         let darkMode = metadata.colorConfig.elementBackgroundColor === constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
-        let backgroundColor = darkMode ? constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR_DARK : constants.DEFAULT_COLLECT_ELEMENT_BACKGROUND_COLOR;
         let textColor = darkMode ? constants.DEFAULT_ELEMENT_FONT_COLOR_DARK : constants.DEFAULT_ELEMENT_FONT_COLOR;
 
         let rotationClass = collectElement.rotationActive ? ' upside-down' : '';
@@ -362,7 +361,7 @@ async function updateCollectElements(isSecondTry) {
                             ${text}
                         </span>`;
             outerContainerJqueryElem.html(
-                (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
+                (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: transparent; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
@@ -446,7 +445,7 @@ async function updateCollectElements(isSecondTry) {
                              </div>`;
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">
+            html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: transparent; text-align: justify; ${additionalCSS}">
                         <div class="collect-items-container" style="display: flex; flex-direction: row; ">${html}</div>
                     </div>`;
             outerContainerJqueryElem.html(html);
