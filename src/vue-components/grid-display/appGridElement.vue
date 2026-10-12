@@ -183,21 +183,8 @@ export default {
                 ? ''
                 : '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(0, 0, 0, ' + opacity + ')';
 
-            // Experimental inset shadow: soft shading around all four inner edges.
-            const backgroundMatch = /^#([0-9a-f]{6})$/i.exec(this.backgroundColor || '');
-            const fallbackMatch = /^#([0-9a-f]{6})$/i.exec(
-                this.gridBackgroundColor || this.metadata.colorConfig.gridBackgroundColor || '#ffffff'
-            );
-            const hex = (backgroundMatch || fallbackMatch || [null, 'ffffff'])[1];
-            const red = parseInt(hex.slice(0, 2), 16);
-            const green = parseInt(hex.slice(2, 4), 16);
-            const blue = parseInt(hex.slice(4, 6), 16);
-            const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
-            const insetColor = luminance <= 51 ? '255, 255, 255' : '0, 0, 0';
-            const insetOpacity = 0.20;
-            const insetShadow = 'inset 0 0 10px 10px rgba(' + insetColor + ', ' + insetOpacity + ')';
-
-            return [outerShadow, insetShadow].filter(Boolean).join(', ');
+            // Se desactiva la sombra interior experimental para recuperar el rendimiento.
+            return outerShadow || 'none';
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
