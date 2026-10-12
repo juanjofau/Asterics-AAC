@@ -1,7 +1,7 @@
 <template>
     <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
-         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; background-image: ${gradientBackgroundImage}; box-shadow: ${shadowStyle}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
+         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; background-image: ${gradientBackgroundImage}; background-size: ${gradientBackgroundSize}; background-position: ${gradientBackgroundPosition}; background-repeat: no-repeat; box-shadow: ${shadowStyle}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" :metadata="metadata" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
@@ -79,7 +79,14 @@ export default {
             if (whiteOpacity === 0 && blackOpacity === 0) {
                 return 'none';
             }
-            return 'linear-gradient(to bottom, rgba(255, 255, 255, ' + whiteOpacity + ') 0%, rgba(255, 255, 255, 0) 49.99%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, ' + blackOpacity + ') 100%)';
+            return 'linear-gradient(to bottom, rgba(255, 255, 255, ' + whiteOpacity + ') 0%, rgba(255, 255, 255, 0) 100%), ' +
+                'linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, ' + blackOpacity + ') 100%)';
+        },
+        gradientBackgroundSize() {
+            return this.metadata.colorConfig.gradientEnabled ? '100% 50%, 100% 50%' : 'auto';
+        },
+        gradientBackgroundPosition() {
+            return 'top, bottom';
         },
         shadowStyle() {
             if (!this.metadata.colorConfig.shadowEnabled) {
