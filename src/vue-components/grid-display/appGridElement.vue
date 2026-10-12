@@ -86,6 +86,11 @@ export default {
             return colorUtil.getBorderColor(this.element, this.metadata);
         },
         emptyCellEffectColor() {
+            const config = this.metadata.colorConfig;
+            const opacity = Math.max(0, Math.min(10, Number(config.emptyCellEffectOpacity) || 0)) / 100;
+            if (config.emptyCellEffectEnabled === false || opacity === 0) {
+                return 'transparent';
+            }
             const background = this.gridBackgroundColor || '#ffffff';
             const match = /^#([0-9a-f]{6})$/i.exec(background);
             const hex = match ? match[1] : 'ffffff';
@@ -93,9 +98,8 @@ export default {
             const green = parseInt(hex.slice(2, 4), 16);
             const blue = parseInt(hex.slice(4, 6), 16);
             const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
-            return luminance <= 255 * 0.20
-                ? 'rgba(255, 255, 255, 0.05)'
-                : 'rgba(0, 0, 0, 0.05)';
+            const color = luminance <= 255 * 0.20 ? '255, 255, 255' : '0, 0, 0';
+            return 'rgba(' + color + ', ' + opacity + ')';
         },
         gradientBackgroundImage() {
             if (!this.metadata.colorConfig.gradientEnabled) {
