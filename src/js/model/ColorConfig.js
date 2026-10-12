@@ -20,7 +20,11 @@ class ColorConfig extends Model({
     navigationIndicatorColor: [String],
     navigationIndicatorOpacity: [Number],
     navigationIndicatorAutoColor: [Boolean],
-    navigationIndicatorShowBorder: [Boolean]
+    navigationIndicatorShowBorder: [Boolean],
+    navigationIndicatorEnabled: [Boolean],
+    navigationIndicatorShape: [String],
+    navigationIndicatorIconAutoColor: [Boolean],
+    navigationIndicatorIconColor: [String]
 }) {
     constructor(properties) {
         super(properties);
@@ -43,6 +47,12 @@ ColorConfig.NAV_INDICATOR_STYLE_SHADED = 'shaded';
 ColorConfig.NAV_INDICATOR_STYLE_TAB = 'tab';
 ColorConfig.NAV_INDICATOR_STYLE_NONE = 'none';
 
+ColorConfig.NAV_INDICATOR_SHAPE_SQUARE = 'square';
+ColorConfig.NAV_INDICATOR_SHAPE_CORNER = 'corner';
+ColorConfig.NAV_INDICATOR_SHAPE_TAB = 'tab';
+ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE = 'circle';
+ColorConfig.NAV_INDICATOR_ICON_NONE = 'none';
+
 ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE = 'sticky-note';
 ColorConfig.NAV_INDICATOR_ICON_FOLDER = 'folder';
 ColorConfig.NAV_INDICATOR_ICON_ARROW = 'arrow-right';
@@ -57,6 +67,7 @@ ColorConfig.NAV_INDICATOR_SIZE_MAX = 100;
 ColorConfig.NAV_INDICATOR_SIZE_DEFAULT = 30;
 
 ColorConfig.NAV_INDICATOR_COLOR_DEFAULT = '#3478b8';
+ColorConfig.NAV_INDICATOR_ICON_COLOR_DEFAULT = '#ffffff';
 ColorConfig.NAV_INDICATOR_OPACITY_DEFAULT = 80;
 
 ColorConfig.defaults({
@@ -78,7 +89,9 @@ ColorConfig.defaults({
     navigationIndicatorColor: ColorConfig.NAV_INDICATOR_COLOR_DEFAULT,
     navigationIndicatorOpacity: ColorConfig.NAV_INDICATOR_OPACITY_DEFAULT,
     navigationIndicatorAutoColor: true,
-    navigationIndicatorShowBorder: true
+    navigationIndicatorShowBorder: true,
+    navigationIndicatorIconAutoColor: true,
+    navigationIndicatorIconColor: ColorConfig.NAV_INDICATOR_ICON_COLOR_DEFAULT
 });
 
 export { ColorConfig };
