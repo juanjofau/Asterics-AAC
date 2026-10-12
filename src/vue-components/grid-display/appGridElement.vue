@@ -85,11 +85,12 @@ export default {
             if (!this.metadata.colorConfig.shadowEnabled) {
                 return 'none';
             }
-            const intensity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowIntensity) || 0)) / 100;
-            if (intensity === 0) {
+            const offsetY = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowOffsetY) || 0));
+            const opacity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowOpacity) || 0)) / 100;
+            if (offsetY === 0 && opacity === 0) {
                 return 'none';
             }
-            return `0 ${10 * intensity}px 10px 0 rgba(0, 0, 0, ${0.5 * intensity})`;
+            return '0 ' + offsetY + 'px 10px 0 rgba(0, 0, 0, ' + opacity + ')';
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
