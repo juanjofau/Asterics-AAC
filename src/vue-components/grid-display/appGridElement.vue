@@ -183,11 +183,29 @@ export default {
                 return 'none';
             }
             const background = this.gridBackgroundColor || this.metadata.colorConfig.gridBackgroundColor || '#ffffff';
-            const match = /^#([0-9a-f]{6})$/i.exec(background);
-            const hex = match ? match[1] : 'ffffff';
-            const red = parseInt(hex.slice(0, 2), 16);
-            const green = parseInt(hex.slice(2, 4), 16);
-            const blue = parseInt(hex.slice(4, 6), 16);
+            const hexMatch = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(background);
+            let red;
+            let green;
+            let blue;
+            if (hexMatch) {
+                const hex = hexMatch[1].length === 3
+                    ? hexMatch[1].split('').map(char => char + char).join('')
+                    : hexMatch[1];
+                red = parseInt(hex.slice(0, 2), 16);
+                green = parseInt(hex.slice(2, 4), 16);
+                blue = parseInt(hex.slice(4, 6), 16);
+            } else {
+                const rgbMatch = /^rgba?\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)/i.exec(background);
+                if (rgbMatch) {
+                    red = Number(rgbMatch[1]);
+                    green = Number(rgbMatch[2]);
+                    blue = Number(rgbMatch[3]);
+                } else {
+                    red = 255;
+                    green = 255;
+                    blue = 255;
+                }
+            }
             const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
             const color = luminance <= 255 * 0.20 ? '255, 255, 255' : '0, 0, 0';
             return '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(' + color + ', ' + opacity + ')';
