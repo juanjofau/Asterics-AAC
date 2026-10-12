@@ -73,7 +73,7 @@ export default {
         emptyCellBackgroundColor() {
             const background = this.gridBackgroundColor || this.metadata.colorConfig.gridBackgroundColor || '#ffffff';
             let rgb = null;
-            const hexMatch = background.match(/^#?([a-f\\d]{3}|[a-f\\d]{6})$/i);
+            const hexMatch = background.match(/^#?([a-f\d]{3}|[a-f\d]{6})$/i);
             if (hexMatch) {
                 let hex = hexMatch[1];
                 if (hex.length === 3) {
@@ -85,7 +85,7 @@ export default {
                     parseInt(hex.slice(4, 6), 16)
                 ];
             } else {
-                const rgbMatch = background.match(/^rgba?\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)/i);
+                const rgbMatch = background.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
                 if (rgbMatch) {
                     rgb = [Number(rgbMatch[1]), Number(rgbMatch[2]), Number(rgbMatch[3])];
                 } else if (background.toLowerCase() === 'black') {
