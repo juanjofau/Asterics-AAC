@@ -14,8 +14,8 @@ class ColorConfig extends Model({
     elementMargin: [Number],
     borderRadius: [Number],
     gradientEnabled: [Boolean],
-    gradientWhiteOpacity: [Number],
-    gradientBlackOpacity: [Number],
+    gradientTopLightness: [Number],
+    gradientBottomDarkness: [Number],
     shadowEnabled: [Boolean],
     shadowOffsetY: [Number],
     shadowBlur: [Number],
@@ -36,6 +36,14 @@ class ColorConfig extends Model({
     navigationIndicatorIconColor: [String]
 }) {
     constructor(properties) {
+        if (properties &&
+            properties.gradientTopLightness === undefined &&
+            properties.gradientWhiteOpacity !== undefined) {
+            properties = Object.assign({}, properties, {
+                gradientTopLightness: properties.gradientWhiteOpacity,
+                gradientBottomDarkness: properties.gradientBlackOpacity
+            });
+        }
         super(properties);
     }
 
@@ -94,8 +102,8 @@ ColorConfig.defaults({
     elementMargin: 0.15,
     borderRadius: 0.4,
     gradientEnabled: true,
-    gradientWhiteOpacity: 20,
-    gradientBlackOpacity: 10,
+    gradientTopLightness: 10,
+    gradientBottomDarkness: 10,
     shadowEnabled: true,
     shadowOffsetY: 10,
     shadowBlur: 10,
