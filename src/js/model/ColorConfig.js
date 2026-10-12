@@ -51,12 +51,12 @@ ColorConfig.defaults({
     elementMargin: 0.15,
     borderRadius: 0.4,
     gradientEnabled: true,
-    gradientWhiteOpacity: 50,
-    gradientBlackOpacity: 50,
+    gradientWhiteOpacity: 20,
+    gradientBlackOpacity: 10,
     shadowEnabled: true,
     shadowOffsetY: 10,
     shadowBlur: 10,
-    shadowOpacity: 50,
+    shadowOpacity: 30,
     colorMode: ColorConfig.COLOR_MODE_BACKGROUND
 });
 
