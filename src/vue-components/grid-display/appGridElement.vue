@@ -79,7 +79,27 @@ export default {
             if (whiteOpacity === 0 && blackOpacity === 0) {
                 return 'none';
             }
-            return 'linear-gradient(to bottom, rgba(255, 255, 255, ' + whiteOpacity + ') 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, ' + blackOpacity + ') 100%)';
+            // Approximate a cosine easing curve so the gradient fades gently to and from the transparent midpoint.
+            const white853 = whiteOpacity * 0.853553;
+            const white5 = whiteOpacity * 0.5;
+            const white146 = whiteOpacity * 0.146447;
+            const white038 = whiteOpacity * 0.03806;
+            const black038 = blackOpacity * 0.03806;
+            const black146 = blackOpacity * 0.146447;
+            const black5 = blackOpacity * 0.5;
+            const black853 = blackOpacity * 0.853553;
+            return 'linear-gradient(to bottom, ' +
+                'rgba(255, 255, 255, ' + whiteOpacity + ') 0%, ' +
+                'rgba(255, 255, 255, ' + white853 + ') 12.5%, ' +
+                'rgba(255, 255, 255, ' + white5 + ') 25%, ' +
+                'rgba(255, 255, 255, ' + white146 + ') 37.5%, ' +
+                'rgba(255, 255, 255, ' + white038 + ') 43.75%, ' +
+                'rgba(0, 0, 0, 0) 50%, ' +
+                'rgba(0, 0, 0, ' + black038 + ') 56.25%, ' +
+                'rgba(0, 0, 0, ' + black146 + ') 62.5%, ' +
+                'rgba(0, 0, 0, ' + black5 + ') 75%, ' +
+                'rgba(0, 0, 0, ' + black853 + ') 87.5%, ' +
+                'rgba(0, 0, 0, ' + blackOpacity + ') 100%)';
         },
         shadowStyle() {
             if (!this.metadata.colorConfig.shadowEnabled) {
