@@ -158,10 +158,10 @@
                             <label for="gradientEnabled">{{ $t('enableCellGradient') }}</label>
                         </div>
                         <div class="srow">
-                            <slider-input label="cellGradientTopLightness" unit="%" id="gradientTopLightness" min="0" max="100" step="1" v-model.number="metadata.colorConfig.gradientTopLightness" @change="saveMetadata(metadata)"/>
+                            <slider-input label="cellGradientTopLightness" unit="%" id="gradientTopLightness" min="0" max="50" step="1" v-model.number="metadata.colorConfig.gradientTopLightness" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="cellGradientBottomDarkness" unit="%" id="gradientBottomDarkness" min="0" max="100" step="1" v-model.number="metadata.colorConfig.gradientBottomDarkness" @change="saveMetadata(metadata)"/>
+                            <slider-input label="cellGradientBottomDarkness" unit="%" id="gradientBottomDarkness" min="0" max="50" step="1" v-model.number="metadata.colorConfig.gradientBottomDarkness" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
                             <input id="shadowEnabled" type="checkbox" v-model="metadata.colorConfig.shadowEnabled" @change="saveMetadata(metadata)"/>
