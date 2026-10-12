@@ -1379,6 +1379,8 @@
   "cellGradientWhiteOpacity": "Top white opacity",
   "cellGradientBlackOpacity": "Bottom black opacity",
   "enableCellShadow": "Enable cell shadow",
+  "enableEmptyCellEffect": "Show empty cell effect",
+  "emptyCellEffectOpacity": "Empty cell effect intensity",
   "cellShadowOffset": "Shadow vertical offset",
   "cellShadowBlur": "Shadow blur",
   "cellShadowOpacity": "Shadow opacity"
