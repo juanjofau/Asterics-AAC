@@ -79,11 +79,13 @@ export default {
         },
         navigationIndicatorShape() {
             const shape = this.metadata.colorConfig.navigationIndicatorShape;
+            if (shape === 'wide-tab') {
+                return ColorConfig.NAV_INDICATOR_SHAPE_TAB;
+            }
             const validShapes = [
                 ColorConfig.NAV_INDICATOR_SHAPE_SQUARE,
                 ColorConfig.NAV_INDICATOR_SHAPE_CORNER,
                 ColorConfig.NAV_INDICATOR_SHAPE_TAB,
-                ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB,
                 ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE
             ];
             if (validShapes.includes(shape)) {
@@ -110,10 +112,6 @@ export default {
         },
         navigationIndicatorIcon() {
             const config = this.metadata.colorConfig;
-            // The narrow tab intentionally has no icon; keep the configured icon untouched.
-            if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB) {
-                return ColorConfig.NAV_INDICATOR_ICON_NONE;
-            }
             if (config.navigationIndicatorEnabled === undefined &&
                 config.navigationIndicatorShape === undefined &&
                 (this.legacyNavigationStyle === ColorConfig.NAV_INDICATOR_STYLE_SHADED ||
@@ -154,16 +152,10 @@ export default {
             return this.metadata.textConfig.textPosition === TextConfig.TEXT_POS_ABOVE;
         },
         navigationShapeWidthPx() {
-            const width = Math.max(0, Number(this.containerSize && this.containerSize.width) || 0);
-            return this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB ?
-                width * this.navigationIndicatorSize / 100 : this.cornerSizePx;
+            return this.cornerSizePx;
         },
         navigationShapeHeightPx() {
-            const height = Math.max(0, Number(this.containerSize && this.containerSize.height) || 0);
-            if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB) {
-                return height * 0.10;
-            }
-            return this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB ?
+            return this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB ?
                 this.cornerSizePx / 2 : this.cornerSizePx;
         },
         cornerSizePx() {
@@ -188,11 +180,6 @@ export default {
                     'polygon(0 100%, 100% 0, 100% 100%)' :
                     'polygon(0 0, 100% 0, 100% 100%)';
             } else if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB) {
-                const diagonalSize = Math.min(height, width);
-                style.clipPath = this.indicatorAtBottom ?
-                    `polygon(0 100%, 100% 100%, 100% 0, ${diagonalSize}px 0)` :
-                    `polygon(0 0, 100% 0, 100% 100%, ${diagonalSize}px 100%)`;
-            } else if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB) {
                 style.clipPath = this.indicatorAtBottom ?
                     'polygon(0 100%, 100% 100%, 100% 0, 50% 0)' :
                     'polygon(0 0, 100% 0, 100% 100%, 50% 100%)';
@@ -217,11 +204,11 @@ export default {
             const shapeWidth = this.navigationShapeWidthPx;
             const shapeHeight = this.navigationShapeHeightPx;
             const center = this.navigationIconCenter(shapeWidth, shapeHeight);
-            const iconSize = Math.min(shapeWidth, shapeHeight) *
-                (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB ? 0.68 :
-                    this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CORNER ? 0.30 :
-                    this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB ? 0.36 :
-                    this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE ? 0.40 : 0.48);
+            const iconSize = this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB ?
+                shapeWidth * 0.30 :
+                Math.min(shapeWidth, shapeHeight) *
+                    (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CORNER ? 0.30 :
+                     this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE ? 0.40 : 0.48);
 
             const iconAutoColor = this.metadata.colorConfig.navigationIndicatorIconAutoColor !== false;
             let iconColor = this.normalizeHexColor(this.metadata.colorConfig.navigationIndicatorIconColor) ||
@@ -271,53 +258,19 @@ export default {
             switch (this.navigationIndicatorShape) {
                 case ColorConfig.NAV_INDICATOR_SHAPE_CORNER:
                     return {
-                        x: width * 3 / 4,
-                        y: height * (this.indicatorAtBottom ? 3 / 4 : 1 / 4)
+                        x: width * 0.70,
+                        y: height * (this.indicatorAtBottom ? 0.70 : 0.30)
                     };
-                case ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE: {
-                    const offset = width * 4 / (3 * Math.PI);
-                    return {
-                        x: width - offset,
-                        y: this.indicatorAtBottom ? height - offset : offset
-                    };
-                }
                 case ColorConfig.NAV_INDICATOR_SHAPE_TAB:
-                case ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB: {
-                    // The tab is a quadrilateral with a diagonal inner corner.
-                    // Its area centroid is calculated from the same polygon vertices
-                    // used by navigationShapeStyle.
-                    const diagonal = Math.min(height, width);
-                    let points;
-                    if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB) {
-                        points = this.indicatorAtBottom ?
-                            [[0, height], [width, height], [width, 0], [width / 2, 0]] :
-                            [[0, 0], [width, 0], [width, height], [width / 2, height]];
-                    } else {
-                        points = this.indicatorAtBottom ?
-                            [[0, height], [width, height], [width, 0], [diagonal, 0]] :
-                            [[0, 0], [width, 0], [width, height], [diagonal, height]];
-                    }
-                    let twiceArea = 0;
-                    let centroidX = 0;
-                    let centroidY = 0;
-
-                    points.forEach((point, index) => {
-                        const next = points[(index + 1) % points.length];
-                        const cross = point[0] * next[1] - next[0] * point[1];
-                        twiceArea += cross;
-                        centroidX += (point[0] + next[0]) * cross;
-                        centroidY += (point[1] + next[1]) * cross;
-                    });
-
-                    if (twiceArea === 0) {
-                        return { x: width / 2, y: height / 2 };
-                    }
-
                     return {
-                        x: centroidX / (3 * twiceArea),
-                        y: centroidY / (3 * twiceArea)
+                        x: width * 0.75,
+                        y: height * 0.50
                     };
-                }
+                case ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE:
+                    return {
+                        x: width * 0.63,
+                        y: height * (this.indicatorAtBottom ? 0.63 : 0.37)
+                    };
                 case ColorConfig.NAV_INDICATOR_SHAPE_SQUARE:
                 default:
                     return { x: width / 2, y: height / 2 };

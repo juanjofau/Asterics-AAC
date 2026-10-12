@@ -1342,7 +1342,7 @@
   "navigationIndicatorShape": "Fill shape",
   "navigationIndicatorShapeSquare": "Square",
   "navigationIndicatorShapeCorner": "Corner",
-  "navigationIndicatorShapeTab": "Narrow tab",
+  "navigationIndicatorShapeTab": "Tab",
   "navigationIndicatorShapeCircle": "Quarter circle",
   "navigationIndicatorIconNone": "No icon",
   "navigationIndicatorIconAutoColor": "Automatic icon color",
@@ -1373,6 +1373,5 @@
   "enableCellShadow": "Enable cell shadow",
   "cellShadowOffset": "Shadow vertical offset",
   "cellShadowBlur": "Shadow blur",
-  "cellShadowOpacity": "Shadow opacity",
-  "navigationIndicatorShapeWideTab": "Wide tab"
+  "cellShadowOpacity": "Shadow opacity"
 }

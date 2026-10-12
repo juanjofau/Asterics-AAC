@@ -176,12 +176,11 @@
                             <option :value="ColorConfig.NAV_INDICATOR_SHAPE_SQUARE">{{ $t('navigationIndicatorShapeSquare') }}</option>
                             <option :value="ColorConfig.NAV_INDICATOR_SHAPE_CORNER">{{ $t('navigationIndicatorShapeCorner') }}</option>
                             <option :value="ColorConfig.NAV_INDICATOR_SHAPE_TAB">{{ $t('navigationIndicatorShapeTab') }}</option>
-                            <option :value="ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB">{{ $t('navigationIndicatorShapeWideTab') }}</option>
                             <option :value="ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE">{{ $t('navigationIndicatorShapeCircle') }}</option>
                         </select>
                     </div>
 
-                    <div class="srow" v-if="metadata.colorConfig.navigationIndicatorShape !== ColorConfig.NAV_INDICATOR_SHAPE_TAB">
+                    <div class="srow">
                         <label class="three columns" for="navigationIndicatorIcon">
                             {{ $t('navigationIndicatorIcon') }}
                         </label>
@@ -247,7 +246,7 @@
                                     v-model.number="metadata.colorConfig.navigationIndicatorOpacity"
                                     @change="saveMetadata(metadata)"/>
                             </div>
-                            <template v-if="metadata.colorConfig.navigationIndicatorShape !== ColorConfig.NAV_INDICATOR_SHAPE_TAB && metadata.colorConfig.navigationIndicatorIcon !== ColorConfig.NAV_INDICATOR_ICON_NONE">
+                            <template v-if="metadata.colorConfig.navigationIndicatorIcon !== ColorConfig.NAV_INDICATOR_ICON_NONE">
                                 <div class="srow">
                                     <input id="navigationIndicatorIconAutoColor"
                                            type="checkbox"
@@ -327,6 +326,9 @@
         mixins: [settingsSaveMixin],
         created() {
             const config = this.metadata.colorConfig;
+            if (config.navigationIndicatorShape === 'wide-tab') {
+                this.$set(config, 'navigationIndicatorShape', ColorConfig.NAV_INDICATOR_SHAPE_TAB);
+            }
             const legacyStyle = config.navigationIndicatorStyle;
 
             if (config.navigationIndicatorEnabled === undefined) {

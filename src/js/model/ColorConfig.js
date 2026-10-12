@@ -57,7 +57,6 @@ ColorConfig.NAV_INDICATOR_STYLE_NONE = 'none';
 ColorConfig.NAV_INDICATOR_SHAPE_SQUARE = 'square';
 ColorConfig.NAV_INDICATOR_SHAPE_CORNER = 'corner';
 ColorConfig.NAV_INDICATOR_SHAPE_TAB = 'tab';
-ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB = 'wide-tab';
 ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE = 'circle';
 ColorConfig.NAV_INDICATOR_ICON_NONE = 'none';
 
