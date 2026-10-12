@@ -1375,6 +1375,8 @@
   "cellGradientWhiteOpacity": "Opacidad del blanco superior",
   "cellGradientBlackOpacity": "Opacidad del negro inferior",
   "enableCellShadow": "Activar sombra de las celdas",
+  "enableEmptyCellEffect": "Mostrar efecto de celda vacía",
+  "emptyCellEffectOpacity": "Intensidad del efecto de celda vacía",
   "cellShadowOffset": "Desplazamiento vertical de la sombra",
   "cellShadowBlur": "Desenfoque de la sombra",
   "cellShadowOpacity": "Opacidad de la sombra"
