@@ -68,7 +68,7 @@ export default {
             }
         },
         backgroundColor() {
-            if (this.element.type === GridElement.ELEMENT_TYPE_COLLECT) {
+            if (this.element.type === GridElement.ELEMENT_TYPE_COLLECT && this.element.backgroundColor) {
                 return this.element.backgroundColor;
             }
             return colorUtil.getBackgroundColor(this.element, this.metadata);

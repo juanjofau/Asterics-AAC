@@ -11,11 +11,7 @@ class GridElementCollect extends GridElement.extend({
     convertToLowercase: [Boolean],
     textElemSizeFactor: [Number],
     displayUpsideDown: [Boolean],
-    textBackgroundColor: [String],
-    fontColorAuto: [Boolean],
-    textBackgroundEnabled: [Boolean],
-    textBackgroundOpacity: [Number],
-    textBackgroundFullWidth: [Boolean]
+    textBackgroundColor: [String]
 }) {
     constructor(props) {
         props = props || {};
@@ -27,10 +23,6 @@ class GridElementCollect extends GridElement.extend({
         props.type = GridElement.ELEMENT_TYPE_COLLECT;
         props.textElemSizeFactor = 1.5;
         props.displayUpsideDown = props.displayUpsideDown !== undefined ? props.displayUpsideDown : false;
-        props.fontColorAuto = props.fontColorAuto !== undefined ? props.fontColorAuto : true;
-        props.textBackgroundEnabled = props.textBackgroundEnabled !== undefined ? props.textBackgroundEnabled : false;
-        props.textBackgroundOpacity = props.textBackgroundOpacity !== undefined ? props.textBackgroundOpacity : 50;
-        props.textBackgroundFullWidth = props.textBackgroundFullWidth !== undefined ? props.textBackgroundFullWidth : true;
         props.actions = props.actions || [
             new GridActionCollectElement({ action: GridActionCollectElement.COLLECT_ACTION_SPEAK_CONTINUOUS }),
             new GridActionPredict({ suggestOnChange: true, dictionaryKey: GridActionPredict.USE_DICTIONARY_CURRENT_LANG })

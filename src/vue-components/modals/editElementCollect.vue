@@ -50,49 +50,72 @@
                 <label for="convertToLowercase">{{ $t('convertUppercaseKeyboardLettersToLowercase') }}</label>
             </div>
         </div>
-        <div class="srow mb-4" v-if="metadata">
-            <label class="four columns" for="collectBackgroundColor">
-                {{ metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER
-                    ? $t('customBorderColor')
-                    : $t('customBackgroundColor') }}
-            </label>
-            <input id="collectBackgroundColor" class="five columns" type="color" v-model="gridElement.backgroundColor" @input="gridElement.colorCategory = undefined"/>
-            <button class="two columns" :disabled="!gridElement.backgroundColor" @click="gridElement.backgroundColor = null">{{ $t('clear') }}</button>
-        </div>
+        <div class="srow" v-if="metadata">
+            <accordion :acc-label="$t('advancedOptions')">
 
-        <div class="srow mb-2">
-            <div class="twelve columns">
-                <input id="collectFontColorAuto" type="checkbox" v-model="gridElement.fontColorAuto"/>
-                <label for="collectFontColorAuto">{{ $t('fontColorAuto') }}</label>
-            </div>
-        </div>
+                <div class="srow mb-4">
+                    <label class="four columns" for="collectBackgroundColor">
+                        {{ metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER
+                            ? $t('customBorderColor')
+                            : $t('customBackgroundColor') }}
+                    </label>
 
-        <div class="srow mb-4">
-            <label class="four columns" for="collectFontColor">{{ $t('fontColor') }}</label>
-            <input id="collectFontColor" class="five columns" type="color" v-model="gridElement.fontColor" :disabled="gridElement.fontColorAuto"/>
-            <button class="two columns" :disabled="gridElement.fontColorAuto || !gridElement.fontColor" @click="gridElement.fontColor = null">{{ $t('clear') }}</button>
-        </div>
+                    <input
+                        id="collectBackgroundColor"
+                        class="five columns"
+                        type="color"
+                        v-model="gridElement.backgroundColor"
+                        @input="gridElement.colorCategory = undefined"
+                    />
 
-        <div class="srow mb-2">
-            <div class="twelve columns">
-                <input id="collectTextBackgroundEnabled" type="checkbox" v-model="gridElement.textBackgroundEnabled"/>
-                <label for="collectTextBackgroundEnabled">{{ $t('textBackground') }}</label>
-            </div>
-        </div>
+                    <button class="two columns"
+                            :disabled="!gridElement.backgroundColor"
+                            @click="gridElement.backgroundColor = null">
+                        {{ $t('clear') }}
+                    </button>
+                </div>
 
-        <div class="srow mb-4">
-            <label class="four columns" for="collectTextBackgroundColor">{{ $t('textBackgroundColor') }}</label>
-            <input id="collectTextBackgroundColor" class="five columns" type="color" :value="gridElement.textBackgroundColor || '#000000'" :disabled="!gridElement.textBackgroundEnabled" @input="$set(gridElement, 'textBackgroundColor', $event.target.value)"/>
-            <button class="two columns" :disabled="!gridElement.textBackgroundEnabled || !gridElement.textBackgroundColor" @click="$set(gridElement, 'textBackgroundColor', null)">{{ $t('clear') }}</button>
-        </div>
+                <div class="srow mb-4">
+                    <label class="four columns" for="collectFontColor">
+                        {{ $t('fontColor') }}
+                    </label>
 
-        <slider-input id="collectTextBackgroundOpacity" label="textBackgroundOpacity" :value="gridElement.textBackgroundOpacity" min="0" max="100" step="5" @input="$set(gridElement, 'textBackgroundOpacity', Number($event))"/>
+                    <input
+                        id="collectFontColor"
+                        class="five columns"
+                        type="color"
+                        v-model="gridElement.fontColor"
+                    />
 
-        <div class="srow mb-4">
-            <div class="twelve columns">
-                <input id="collectTextBackgroundFullWidth" type="checkbox" v-model="gridElement.textBackgroundFullWidth" :disabled="!gridElement.textBackgroundEnabled"/>
-                <label for="collectTextBackgroundFullWidth">{{ $t('textBackgroundFullWidth') }}</label>
-            </div>
+                    <button class="two columns"
+                            :disabled="!gridElement.fontColor"
+                            @click="gridElement.fontColor = null">
+                        {{ $t('clear') }}
+                    </button>
+                </div>
+
+                <div class="srow mb-4">
+                    <label class="four columns" for="collectTextBackgroundColor">
+                        {{ $t('textBackgroundColor') }}
+                    </label>
+
+                    <input
+                        id="collectTextBackgroundColor"
+                        class="five columns"
+                        type="color"
+                        :value="gridElement.textBackgroundColor ||
+                            metadata.textConfig.textBackgroundColor || '#000000'"
+                        @input="$set(gridElement, 'textBackgroundColor', $event.target.value)"
+                    />
+
+                    <button class="two columns"
+                            :disabled="!gridElement.textBackgroundColor"
+                            @click="$set(gridElement, 'textBackgroundColor', null)">
+                        {{ $t('clear') }}
+                    </button>
+                </div>
+
+            </accordion>
         </div>
     </div>
 </template>
@@ -100,12 +123,12 @@
 <script>
     import './../../css/modal.css';
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
-    import SliderInput from './input/sliderInput.vue';
+    import Accordion from '../components/accordion.vue';
     import { dataService } from '../../js/service/data/dataService.js';
     import { ColorConfig } from '../../js/model/ColorConfig.js';
 
     export default {
-        components: { SliderInput },
+        components: { Accordion },
         props: ['gridElement'],
         data: function () {
             return {
