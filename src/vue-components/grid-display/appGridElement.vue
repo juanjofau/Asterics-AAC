@@ -79,7 +79,7 @@ export default {
             if (whiteOpacity === 0 && blackOpacity === 0) {
                 return 'none';
             }
-            return 'linear-gradient(to bottom, rgba(255, 255, 255, ' + whiteOpacity + ') 0%, rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, ' + blackOpacity + ') 100%)';
+            return 'linear-gradient(to bottom, rgba(255, 255, 255, ' + whiteOpacity + ') 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, ' + blackOpacity + ') 100%)';
         },
         shadowStyle() {
             if (!this.metadata.colorConfig.shadowEnabled) {
