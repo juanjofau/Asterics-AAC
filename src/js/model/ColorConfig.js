@@ -14,9 +14,11 @@ class ColorConfig extends Model({
     elementMargin: [Number],
     borderRadius: [Number],
     gradientEnabled: [Boolean],
-    gradientIntensity: [Number],
+    gradientWhiteOpacity: [Number],
+    gradientBlackOpacity: [Number],
     shadowEnabled: [Boolean],
-    shadowIntensity: [Number],
+    shadowOffsetY: [Number],
+    shadowOpacity: [Number],
     colorMode: [String]
 }) {
     constructor(properties) {
@@ -48,9 +50,11 @@ ColorConfig.defaults({
     elementMargin: 0.15,
     borderRadius: 0.4,
     gradientEnabled: true,
-    gradientIntensity: 100,
+    gradientWhiteOpacity: 50,
+    gradientBlackOpacity: 50,
     shadowEnabled: true,
-    shadowIntensity: 100,
+    shadowOffsetY: 10,
+    shadowOpacity: 50,
     colorMode: ColorConfig.COLOR_MODE_BACKGROUND
 });
 
