@@ -85,13 +85,15 @@ colorUtil.getFontColor = function(metadata, backgroundColor) {
     if (!metadata || !metadata.textConfig) {
         return constants.COLORS.BLACK;
     }
-    if (!metadata.textConfig.fontColor ||
-        [constants.COLORS.BLACK, constants.COLORS.WHITE].includes(metadata.textConfig.fontColor)) {
-        // if not set or set to black or white - do auto-contrast
-        let isDark = fontUtil.isHexDark(backgroundColor);
+
+    const config = metadata.textConfig;
+
+    if (config.fontColorAuto !== false) {
+        const isDark = fontUtil.isHexDark(backgroundColor);
         return isDark ? constants.COLORS.WHITE : constants.COLORS.BLACK;
     }
-    return metadata.textConfig.fontColor;
+
+    return config.fontColor || constants.COLORS.BLACK;
 },
 
 colorUtil.getUseColorScheme = function (metadata) {

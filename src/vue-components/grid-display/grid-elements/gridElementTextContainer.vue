@@ -76,7 +76,10 @@ export default {
             const green = parseInt(color.slice(3, 5), 16);
             const blue = parseInt(color.slice(5, 7), 16);
 
-            return `background-color: rgba(${red}, ${green}, ${blue}, ${alpha}); padding: 0 4px; box-sizing: border-box;`;
+            const fullWidth = config.textBackgroundFullWidth !== false;
+
+            return `background-color: rgba(${red}, ${green}, ${blue}, ${alpha}); padding: 0 4px; box-sizing: border-box;` +
+                (fullWidth ? ' width: 100%; margin: 0;' : '');
         },
     },
     methods: {
@@ -104,7 +107,9 @@ export default {
                 kbdContainerPct = 100;
             }
             const backgroundPadding = this.metadata.textConfig.textBackgroundEnabled ? 4 : 0;
-            const fittingPadding = this.txtMargin + backgroundPadding;
+            const fullWidthBackground = this.metadata.textConfig.textBackgroundEnabled &&
+                this.metadata.textConfig.textBackgroundFullWidth !== false;
+            const fittingPadding = (fullWidthBackground ? 0 : this.txtMargin) + backgroundPadding;
             if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * fittingPadding) {
                 let newFontSize = fontUtil.getFittingFontSize(label, this.$refs.txtContainer.parentElement, {
                     maxLines: this.maxLines,

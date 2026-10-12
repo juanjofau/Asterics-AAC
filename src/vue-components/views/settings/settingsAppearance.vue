@@ -72,11 +72,20 @@
                             <slider-input label="onlyTextLineHeight" id="onlyTextLineHeight" min="1" max="3" step="0.1" v-model.number="metadata.textConfig.onlyTextLineHeight" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
+                            <input id="fontColorAuto"
+                                   type="checkbox"
+                                   v-model="metadata.textConfig.fontColorAuto"
+                                   @change="saveMetadata(metadata)"/>
+                            <label for="fontColorAuto">
+                                {{ $t('fontColorAuto') }}
+                            </label>
+                        </div>
+                        <div class="srow">
                             <label class="three columns" for="fontColor">
                                 <span>{{ $t('fontColor') }}</span>
                             </label>
-                            <input id="fontColor" v-model="metadata.textConfig.fontColor" class="five columns" type="color" @change="saveMetadata(metadata)">
-                            <button class="three columns" @click="metadata.textConfig.fontColor = constants.DEFAULT_ELEMENT_FONT_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
+                            <input id="fontColor" v-model="metadata.textConfig.fontColor" class="five columns" type="color" :disabled="metadata.textConfig.fontColorAuto !== false" @change="saveMetadata(metadata)">
+                            <button class="three columns" :disabled="metadata.textConfig.fontColorAuto !== false" @click="metadata.textConfig.fontColor = constants.DEFAULT_ELEMENT_FONT_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
                         </div>
                         <div class="srow" v-if="metadata.textConfig.textBackgroundEnabled">
                             <label class="three columns" for="textBackgroundColor">
@@ -84,6 +93,15 @@
                             </label>
                             <input id="textBackgroundColor" v-model="metadata.textConfig.textBackgroundColor" class="five columns" type="color" @change="saveMetadata(metadata)">
                             <button class="three columns" @click="metadata.textConfig.textBackgroundColor = '#000000'; saveMetadata(metadata)">{{ $t('reset') }}</button>
+                        </div>
+                        <div class="srow" v-if="metadata.textConfig.textBackgroundEnabled">
+                            <input id="textBackgroundFullWidth"
+                                   type="checkbox"
+                                   v-model="metadata.textConfig.textBackgroundFullWidth"
+                                   @change="saveMetadata(metadata)"/>
+                            <label for="textBackgroundFullWidth">
+                                {{ $t('textBackgroundFullWidth') }}
+                            </label>
                         </div>
                         <div class="srow" v-if="metadata.textConfig.textBackgroundEnabled">
                             <slider-input label="textBackgroundOpacity" unit="%" id="textBackgroundOpacity" min="0" max="100" step="1" v-model.number="metadata.textConfig.textBackgroundOpacity" @change="saveMetadata(metadata)"/>
@@ -349,6 +367,16 @@
         props: ["metadata", "userSettingsLocal"],
         mixins: [settingsSaveMixin],
         created() {
+            const textConfig = this.metadata.textConfig;
+
+            if (textConfig.fontColorAuto === undefined) {
+                this.$set(textConfig, 'fontColorAuto', true);
+            }
+
+            if (textConfig.textBackgroundFullWidth === undefined) {
+                this.$set(textConfig, 'textBackgroundFullWidth', true);
+            }
+
             const config = this.metadata.colorConfig;
             if (config.navigationIndicatorShape === 'wide-tab') {
                 this.$set(config, 'navigationIndicatorShape', ColorConfig.NAV_INDICATOR_SHAPE_TAB);

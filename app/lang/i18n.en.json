@@ -1170,6 +1170,8 @@
   "textHeading": "Text",
   "textBackground": "Text background",
   "textBackgroundColor": "Background color",
+  "textBackgroundFullWidth": "Full-width background",
+  "fontColorAuto": "Automatic font color",
   "textBackgroundOpacity": "Background opacity",
   "overlayText": "Overlay text",
   "textPosition": "Text position",
