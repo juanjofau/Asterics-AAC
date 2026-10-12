@@ -16,7 +16,7 @@
         v-else-if="!editable"
         class="empty-cell-shadow"
         aria-hidden="true"
-        :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; background-color: ${emptyCellBackgroundColor};`">
+        :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px;`">
     </div>
 </template>
 
@@ -74,33 +74,6 @@ export default {
                     : '#ffffff';
             }
             return colorUtil.getBackgroundColor(this.element, this.metadata);
-        },
-        emptyCellBackgroundColor() {
-            const background = this.gridBackgroundColor || this.metadata.colorConfig.gridBackgroundColor || '#ffffff';
-            let rgb = null;
-            const hexMatch = background.match(/^#?([a-f\d]{3}|[a-f\d]{6})$/i);
-            if (hexMatch) {
-                let hex = hexMatch[1];
-                if (hex.length === 3) {
-                    hex = hex.split('').map(char => char + char).join('');
-                }
-                rgb = [
-                    parseInt(hex.slice(0, 2), 16),
-                    parseInt(hex.slice(2, 4), 16),
-                    parseInt(hex.slice(4, 6), 16)
-                ];
-            } else {
-                const rgbMatch = background.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
-                if (rgbMatch) {
-                    rgb = [Number(rgbMatch[1]), Number(rgbMatch[2]), Number(rgbMatch[3])];
-                } else if (background.toLowerCase() === 'black') {
-                    rgb = [0, 0, 0];
-                } else if (background.toLowerCase() === 'white') {
-                    rgb = [255, 255, 255];
-                }
-            }
-            const isDark = rgb ? rgb[0] * 0.299 + rgb[1] * 0.587 + rgb[2] * 0.114 <= 149 : false;
-            return isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
         },
         fontColor() {
             if (this.element.type === GridElement.ELEMENT_TYPE_COLLECT) {
@@ -299,7 +272,6 @@ export default {
     flex: 1 1 auto;
     min-width: 0;
     min-height: 0;
-    background-color: rgba(128, 128, 128, 0.07);
     box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.20);
     pointer-events: none;
 }
