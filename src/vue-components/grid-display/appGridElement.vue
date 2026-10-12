@@ -77,6 +77,9 @@ export default {
         },
         fontColor() {
             if (this.element.type === GridElement.ELEMENT_TYPE_COLLECT) {
+                const validHex = value =>
+                    /^#[0-9a-f]{6}$/i.test(value || '');
+
                 const hasCustomFontColor = !!this.element.fontColor;
                 if (this.element.fontColorAuto === false ||
                     (this.element.fontColorAuto === undefined && hasCustomFontColor)) {
