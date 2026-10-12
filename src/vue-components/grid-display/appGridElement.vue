@@ -7,7 +7,7 @@
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
         <grid-element-predict v-if="element.type === GridElement.ELEMENT_TYPE_PREDICTION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-live v-if="element.type === GridElement.ELEMENT_TYPE_LIVE" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
-        <grid-element-matrix-conversation v-if="element.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" aria-hidden="true"/>
+        <grid-element-matrix-conversation v-if="element.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION" :grid-element="element" :metadata="metadata" aria-hidden="true"/>
         <grid-element-child-placeholder v-if="element.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER"/>
         <grid-element-hints :grid-element="element" :metadata="metadata" :background-color="backgroundColor" :container-size="calculatedSize" :border-color="borderColor" :border-width-px="borderWidthPx"/>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 6; bottom: 0; right: 0; cursor: se-resize; pointer-events: auto;"></div>
@@ -183,8 +183,21 @@ export default {
                 ? ''
                 : '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(0, 0, 0, ' + opacity + ')';
 
-            // Se desactiva la sombra interior experimental para recuperar el rendimiento.
-            return outerShadow || 'none';
+            // Sombra interior más marcada; en fondos oscuros se utiliza blanco.
+            const backgroundMatch = /^#([0-9a-f]{6})$/i.exec(this.backgroundColor || '');
+            const fallbackMatch = /^#([0-9a-f]{6})$/i.exec(
+                this.gridBackgroundColor || this.metadata.colorConfig.gridBackgroundColor || '#ffffff'
+            );
+            const hex = (backgroundMatch || fallbackMatch || [null, 'ffffff'])[1];
+            const red = parseInt(hex.slice(0, 2), 16);
+            const green = parseInt(hex.slice(2, 4), 16);
+            const blue = parseInt(hex.slice(4, 6), 16);
+            const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
+            const insetColor = luminance <= 51 ? '255, 255, 255' : '0, 0, 0';
+            const insetOpacity = 0.30;
+            const insetShadow = 'inset 0 0 12px 10px rgba(' + insetColor + ', ' + insetOpacity + ')';
+
+            return [outerShadow, insetShadow].filter(Boolean).join(', ');
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
