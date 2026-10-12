@@ -105,12 +105,72 @@ export default {
             if (!this.metadata.colorConfig.gradientEnabled) {
                 return 'none';
             }
-            const whiteOpacity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientWhiteOpacity) || 0)) / 100;
-            const blackOpacity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientBlackOpacity) || 0)) / 100;
-            if (whiteOpacity === 0 && blackOpacity === 0) {
+            const topLightness = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientTopLightness) || 0));
+            const bottomDarkness = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientBottomDarkness) || 0));
+            if (topLightness === 0 && bottomDarkness === 0) {
                 return 'none';
             }
-            return 'linear-gradient(to bottom, rgba(255, 255, 255, ' + whiteOpacity + ') 0%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, ' + blackOpacity + ') 100%)';
+
+            const adjustLightness = (hexColor, amount) => {
+                const match = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(hexColor || '');
+                if (!match) {
+                    return hexColor;
+                }
+
+                const hex = match[1].length === 3
+                    ? match[1].split('').map(char => char + char).join('')
+                    : match[1];
+                const red = parseInt(hex.slice(0, 2), 16) / 255;
+                const green = parseInt(hex.slice(2, 4), 16) / 255;
+                const blue = parseInt(hex.slice(4, 6), 16) / 255;
+                const max = Math.max(red, green, blue);
+                const min = Math.min(red, green, blue);
+                const delta = max - min;
+                let hue = 0;
+                let saturation = 0;
+                let lightness = (max + min) / 2;
+
+                if (delta !== 0) {
+                    saturation = delta / (1 - Math.abs(2 * lightness - 1));
+                    if (max === red) {
+                        hue = 60 * (((green - blue) / delta) % 6);
+                    } else if (max === green) {
+                        hue = 60 * ((blue - red) / delta + 2);
+                    } else {
+                        hue = 60 * ((red - green) / delta + 4);
+                    }
+                    if (hue < 0) {
+                        hue += 360;
+                    }
+                }
+
+                lightness = Math.max(0, Math.min(1, lightness + amount / 100));
+                const chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
+                const hueSection = hue / 60;
+                const secondary = chroma * (1 - Math.abs((hueSection % 2) - 1));
+                let rgb;
+                if (hueSection < 1) {
+                    rgb = [chroma, secondary, 0];
+                } else if (hueSection < 2) {
+                    rgb = [secondary, chroma, 0];
+                } else if (hueSection < 3) {
+                    rgb = [0, chroma, secondary];
+                } else if (hueSection < 4) {
+                    rgb = [0, secondary, chroma];
+                } else if (hueSection < 5) {
+                    rgb = [secondary, 0, chroma];
+                } else {
+                    rgb = [chroma, 0, secondary];
+                }
+                const offset = lightness - chroma / 2;
+                return '#' + rgb.map(value =>
+                    Math.round((value + offset) * 255).toString(16).padStart(2, '0')
+                ).join('');
+            };
+
+            const topColor = adjustLightness(this.backgroundColor, topLightness);
+            const bottomColor = adjustLightness(this.backgroundColor, -bottomDarkness);
+            return 'linear-gradient(to bottom, ' + topColor + ' 0%, ' + this.backgroundColor + ' 50%, ' + bottomColor + ' 100%)';
         },
         shadowStyle() {
             if (!this.metadata.colorConfig.shadowEnabled) {
