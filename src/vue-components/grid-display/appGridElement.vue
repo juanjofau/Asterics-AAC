@@ -87,7 +87,7 @@ export default {
         },
         emptyCellEffectColor() {
             const config = this.metadata.colorConfig;
-            const opacity = Math.max(0, Math.min(10, Number(config.emptyCellEffectOpacity) || 0)) / 100;
+            const opacity = Math.max(1, Math.min(20, Number(config.emptyCellEffectOpacity) || 1)) / 100;
             if (config.emptyCellEffectEnabled === false || opacity === 0) {
                 return 'transparent';
             }
