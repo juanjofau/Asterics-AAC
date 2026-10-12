@@ -122,7 +122,14 @@ export default {
             if (offsetY === 0 && blur === 0 && opacity === 0) {
                 return 'none';
             }
-            return '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(0, 0, 0, ' + opacity + ')';
+            const match = /^#([0-9a-f]{6})$/i.exec(this.backgroundColor || '');
+            const hex = match ? match[1] : 'ffffff';
+            const red = parseInt(hex.slice(0, 2), 16);
+            const green = parseInt(hex.slice(2, 4), 16);
+            const blue = parseInt(hex.slice(4, 6), 16);
+            const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
+            const color = luminance <= 255 * 0.20 ? '255, 255, 255' : '0, 0, 0';
+            return '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(' + color + ', ' + opacity + ')';
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
