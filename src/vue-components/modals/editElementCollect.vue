@@ -50,91 +50,51 @@
                 <label for="convertToLowercase">{{ $t('convertUppercaseKeyboardLettersToLowercase') }}</label>
             </div>
         </div>
-        <div class="srow" v-if="metadata">
-            <accordion :acc-label="$t('advancedOptions')">
-
-                <div class="srow mb-4">
-                    <label class="four columns" for="collectBackgroundColor">
-                        {{ metadata.colorConfig.colorMode === ColorConfig.COLOR_MODE_BORDER
-                            ? $t('customBorderColor')
-                            : $t('customBackgroundColor') }}
-                    </label>
-
-                    <input
-                        id="collectBackgroundColor"
-                        class="five columns"
-                        type="color"
-                        v-model="gridElement.backgroundColor"
-                        @input="gridElement.colorCategory = undefined"
-                    />
-
-                    <button class="two columns"
-                            :disabled="!gridElement.backgroundColor"
-                            @click="gridElement.backgroundColor = null">
-                        {{ $t('clear') }}
-                    </button>
-                </div>
-
-                <div class="srow mb-4">
-                    <label class="four columns" for="collectFontColor">
-                        {{ $t('fontColor') }}
-                    </label>
-
-                    <input
-                        id="collectFontColor"
-                        class="five columns"
-                        type="color"
-                        v-model="gridElement.fontColor"
-                    />
-
-                    <button class="two columns"
-                            :disabled="!gridElement.fontColor"
-                            @click="gridElement.fontColor = null">
-                        {{ $t('clear') }}
-                    </button>
-                </div>
-
-                <div class="srow mb-4">
-                    <label class="four columns" for="collectTextBackgroundColor">
-                        {{ $t('textBackgroundColor') }}
-                    </label>
-
-                    <input
-                        id="collectTextBackgroundColor"
-                        class="five columns"
-                        type="color"
-                        :value="gridElement.textBackgroundColor ||
-                            metadata.textConfig.textBackgroundColor || '#000000'"
-                        @input="$set(gridElement, 'textBackgroundColor', $event.target.value)"
-                    />
-
-                    <button class="two columns"
-                            :disabled="!gridElement.textBackgroundColor"
-                            @click="$set(gridElement, 'textBackgroundColor', null)">
-                        {{ $t('clear') }}
-                    </button>
-                </div>
-
-            </accordion>
+        <div class="srow mb-4">
+            <label class="four columns" for="collectBackgroundColor">{{ $t('backgroundColor') }}</label>
+            <input id="collectBackgroundColor" class="five columns" type="color" v-model="gridElement.backgroundColor" />
         </div>
+        <div class="srow mb-4">
+            <label class="four columns" for="collectFontColorAuto">{{ $t('fontColorAuto') }}</label>
+            <input id="collectFontColorAuto" class="one column" type="checkbox" v-model="gridElement.fontColorAuto" />
+        </div>
+        <div class="srow mb-4">
+            <label class="four columns" for="collectFontColor">{{ $t('fontColor') }}</label>
+            <input id="collectFontColor" class="five columns" type="color" v-model="gridElement.fontColor" :disabled="gridElement.fontColorAuto" />
+        </div>
+        <div class="srow mb-4">
+            <label class="four columns" for="collectTextBackgroundEnabled">{{ $t('textBackground') }}</label>
+            <input id="collectTextBackgroundEnabled" class="one column" type="checkbox" v-model="gridElement.textBackgroundEnabled" />
+        </div>
+        <div v-if="gridElement.textBackgroundEnabled" class="srow mb-4">
+            <label class="four columns" for="collectTextBackgroundColor">{{ $t('textBackgroundColor') }}</label>
+            <input id="collectTextBackgroundColor" class="five columns" type="color" v-model="gridElement.textBackgroundColor" />
+        </div>
+        <slider-input
+            v-if="gridElement.textBackgroundEnabled"
+            id="collectTextBackgroundOpacity"
+            label="textBackgroundOpacity"
+            :value="gridElement.textBackgroundOpacity"
+            :min="0"
+            :max="100"
+            :step="1"
+            unit="%"
+            @input="$set(gridElement, 'textBackgroundOpacity', Number($event))"
+        />
     </div>
 </template>
 
 <script>
     import './../../css/modal.css';
     import {GridElementCollect} from "../../js/model/GridElementCollect.js";
-    import Accordion from '../components/accordion.vue';
-    import { dataService } from '../../js/service/data/dataService.js';
-    import { ColorConfig } from '../../js/model/ColorConfig.js';
+    import SliderInput from './input/sliderInput.vue';
 
     export default {
-        components: { Accordion },
+        components: { SliderInput },
         props: ['gridElement'],
         data: function () {
             return {
-                GridElementCollect: GridElementCollect,
-                metadata: null,
-                ColorConfig: ColorConfig
+                GridElementCollect: GridElementCollect
             }
         },
         computed: {
@@ -145,9 +105,22 @@
         methods: {
         },
         mounted() {
-            dataService.getMetadata().then(metadata => {
-                this.metadata = metadata;
-            });
+            if (!/^#[0-9a-f]{6}$/i.test(this.gridElement.backgroundColor || '')) {
+                this.$set(this.gridElement, 'backgroundColor', '#ffffff');
+            }
+            if (typeof this.gridElement.fontColorAuto !== 'boolean') {
+                this.$set(this.gridElement, 'fontColorAuto', !this.gridElement.fontColor);
+            }
+            if (!/^#[0-9a-f]{6}$/i.test(this.gridElement.fontColor || '')) {
+                this.$set(this.gridElement, 'fontColor', '#000000');
+            }
+            if (typeof this.gridElement.textBackgroundEnabled !== 'boolean') this.$set(this.gridElement, 'textBackgroundEnabled', false);
+            if (!/^#[0-9a-f]{6}$/i.test(this.gridElement.textBackgroundColor || '')) {
+                this.$set(this.gridElement, 'textBackgroundColor', '#000000');
+            }
+            if (this.gridElement.textBackgroundOpacity === undefined || this.gridElement.textBackgroundOpacity === null) {
+                this.$set(this.gridElement, 'textBackgroundOpacity', 50);
+            }
         },
         beforeDestroy() {
         }

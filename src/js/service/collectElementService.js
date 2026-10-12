@@ -342,64 +342,31 @@ function getActionTypes(elem) {
     return elem.actions.map((action) => action.modelName);
 }
 
-function getCollectTextBackgroundStyles(metadata, collectElement) {
-    const config = metadata.textConfig;
-
-    const validHex = value =>
-        /^#[0-9a-f]{6}$/i.test(value || '');
-
-    const customColor = validHex(collectElement.textBackgroundColor)
-        ? collectElement.textBackgroundColor
-        : null;
-
-    const enabled = !!customColor || config.textBackgroundEnabled === true;
-
-    if (!enabled) {
-        return {
-            containerStyle: '',
-            textStyle: ''
-        };
+function getCollectTextBackgroundStyles(collectElement) {
+    if (collectElement.textBackgroundEnabled !== true) {
+        return '';
     }
 
-    const color = customColor ||
-        (validHex(config.textBackgroundColor)
-            ? config.textBackgroundColor
-            : '#000000');
-
-    const opacityValue = Number(config.textBackgroundOpacity);
-    const opacity = Number.isFinite(opacityValue)
-        ? Math.max(0, Math.min(100, opacityValue)) / 100
-        : 0.5;
-
+    const validHex = value => /^#[0-9a-f]{6}$/i.test(value || '');
+    const color = validHex(collectElement.textBackgroundColor)
+        ? collectElement.textBackgroundColor
+        : '#000000';
+    const opacityValue = collectElement.textBackgroundOpacity;
+    const opacity = opacityValue === undefined || opacityValue === null
+        ? 0.5
+        : Math.max(0, Math.min(100, Number(opacityValue))) / 100;
     const red = parseInt(color.slice(1, 3), 16);
     const green = parseInt(color.slice(3, 5), 16);
     const blue = parseInt(color.slice(5, 7), 16);
 
-    const css =
-        `background-color: rgba(${red}, ${green}, ${blue}, ${opacity});`;
-
-    if (config.textBackgroundFullWidth !== false) {
-        return {
-            containerStyle: css,
-            textStyle: ''
-        };
-    }
-
-    return {
-        containerStyle: '',
-        textStyle: css + ' padding: 0 4px; box-sizing: border-box;'
-    };
+    return `background-color: rgba(${red}, ${green}, ${blue}, ${Number.isFinite(opacity) ? opacity : 0.5}); padding: 0 4px; box-sizing: border-box;`;
 }
 
 async function updateCollectElements(isSecondTry) {
     autoCollectImage = collectedElements.some((e) => !!getImageData(e));
     let metadata = _localMetadata || new MetaData();
     for (let collectElement of registeredCollectElements) {
-        const {
-            containerStyle,
-            textStyle
-        } = getCollectTextBackgroundStyles(metadata, collectElement);
-        let txtBackgroundColor = metadata.colorConfig.gridBackgroundColor || '#ffffff';
+        const textStyle = getCollectTextBackgroundStyles(collectElement);
         let imageMode = isSeparateMode(collectElement.mode);
         let outerContainerJqueryElem = $(`#${collectElement.id} .collect-outer-container`);
         let darkMode = metadata.colorConfig.elementBackgroundColor === constants.DEFAULT_ELEMENT_BACKGROUND_COLOR_DARK;
@@ -409,10 +376,8 @@ async function updateCollectElements(isSecondTry) {
             let text = getPrintText();
             $(`#${collectElement.id}`).attr('aria-label', `${text}, ${i18nService.t('ELEMENT_TYPE_COLLECT')}`);
             predictionService.learnFromInput(text, dictionaryKey);
-            const displayedText = textStyle
-                ? `<span style="${textStyle}">${text}</span>`
-                : text;
-            let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left; font-weight: bold; ${containerStyle}">
+            const displayedText = `<span style="${textStyle}">${text}</span>`;
+            let html = `<span style="padding: 5px; display: flex; align-items: center; flex: 1; text-align: left; font-weight: bold;">
                             ${displayedText}
                         </span>`;
             outerContainerJqueryElem.html(
@@ -484,18 +449,18 @@ async function updateCollectElements(isSecondTry) {
                     elemWidth =
                         fontUtil.getTextWidth(label, outerContainerJqueryElem[0], `${fontSize}px`) + 2 * imgMargin;
                     totalWidth += elemWidth + 4 * imgMargin;
-                    imgHTML = `<div style="padding: ${imgMargin}px; font-size: ${fontSize}px; width: ${elemWidth}px; height: ${imgHeight}px; display: flex; justify-content: center; align-items: center; text-align: center;"><span style="${textStyle || containerStyle}">${label}</span></div>`;
+                    imgHTML = `<div style="padding: ${imgMargin}px; font-size: ${fontSize}px; width: ${elemWidth}px; height: ${imgHeight}px; display: flex; justify-content: center; align-items: center; text-align: center;"><span style="${textStyle}">${label}</span></div>`;
                 }
-                const labelMarkup = textStyle
-                    ? `<span style="${textStyle}">${image ? label : ''}</span>`
-                    : (image ? label : '');
+                const labelMarkup = image
+                    ? `<span style="${textStyle}">${label}</span>`
+                    : '';
                 html += `<div id="collect${index}" style="display: flex; flex:0; justify-content: center; flex-direction: column; padding: ${imgMargin}px; color: inherit; ${
                     marked ? `background-color: ${darkMode ? 'darkgreen' : 'lightgreen'};` : ''
                 }" title="${label}">
                                 <div style="display:flex; justify-content: center">
                                         ${imgHTML}
                                 </div>
-                                <div style="text-align: center; font-weight: bold; font-size: ${textHeight}px; line-height: ${lineHeight}px; height: ${lineHeight}px; width: ${elemWidth}px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ${containerStyle} ${
+                                <div style="text-align: center; font-weight: bold; font-size: ${textHeight}px; line-height: ${lineHeight}px; height: ${lineHeight}px; width: ${elemWidth}px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; ${
                     !showLabel ? 'display: none' : ''
                 }">
                                     ${labelMarkup}

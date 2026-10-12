@@ -1208,6 +1208,7 @@
   "borderWidth": "Border width",
   "borderRadius": "Border radius",
   "elementMargin": "Space between elements",
+  "backgroundColor": "Background color",
   "fontColor": "Font color",
   "showGlobalGrid": "Show global grid",
   "selectGlobalGrid": "Select global grid",
