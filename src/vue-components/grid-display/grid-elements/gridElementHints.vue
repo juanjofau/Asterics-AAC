@@ -83,6 +83,7 @@ export default {
                 ColorConfig.NAV_INDICATOR_SHAPE_SQUARE,
                 ColorConfig.NAV_INDICATOR_SHAPE_CORNER,
                 ColorConfig.NAV_INDICATOR_SHAPE_TAB,
+                ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB,
                 ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE
             ];
             if (validShapes.includes(shape)) {
@@ -109,6 +110,10 @@ export default {
         },
         navigationIndicatorIcon() {
             const config = this.metadata.colorConfig;
+            // The narrow tab intentionally has no icon; keep the configured icon untouched.
+            if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB) {
+                return ColorConfig.NAV_INDICATOR_ICON_NONE;
+            }
             if (config.navigationIndicatorEnabled === undefined &&
                 config.navigationIndicatorShape === undefined &&
                 (this.legacyNavigationStyle === ColorConfig.NAV_INDICATOR_STYLE_SHADED ||
@@ -155,8 +160,11 @@ export default {
         },
         navigationShapeHeightPx() {
             const height = Math.max(0, Number(this.containerSize && this.containerSize.height) || 0);
-            return this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB ?
-                height * 0.10 : this.cornerSizePx;
+            if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB) {
+                return height * 0.10;
+            }
+            return this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB ?
+                this.cornerSizePx / 2 : this.cornerSizePx;
         },
         cornerSizePx() {
             const width = Math.max(0, Number(this.containerSize && this.containerSize.width) || 0);
@@ -184,8 +192,15 @@ export default {
                 style.clipPath = this.indicatorAtBottom ?
                     `polygon(0 100%, 100% 100%, 100% 0, ${diagonalSize}px 0)` :
                     `polygon(0 0, 100% 0, 100% 100%, ${diagonalSize}px 100%)`;
+            } else if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB) {
+                style.clipPath = this.indicatorAtBottom ?
+                    'polygon(0 100%, 100% 100%, 100% 0, 50% 0)' :
+                    'polygon(0 0, 100% 0, 100% 100%, 50% 100%)';
             } else if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE) {
-                style.borderRadius = '50%';
+                // A circle clipped to the cell corner leaves a single inward-facing arc.
+                style.clipPath = this.indicatorAtBottom ?
+                    `circle(${width}px at ${width}px ${height}px)` :
+                    `circle(${width}px at ${width}px 0px)`;
             }
 
             return style;
@@ -204,7 +219,9 @@ export default {
             const center = this.navigationIconCenter(shapeWidth, shapeHeight);
             const iconSize = Math.min(shapeWidth, shapeHeight) *
                 (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_TAB ? 0.68 :
-                    this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CORNER ? 0.30 : 0.48);
+                    this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CORNER ? 0.30 :
+                    this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB ? 0.36 :
+                    this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE ? 0.40 : 0.48);
 
             const iconAutoColor = this.metadata.colorConfig.navigationIndicatorIconAutoColor !== false;
             let iconColor = this.normalizeHexColor(this.metadata.colorConfig.navigationIndicatorIconColor) ||
@@ -254,17 +271,32 @@ export default {
             switch (this.navigationIndicatorShape) {
                 case ColorConfig.NAV_INDICATOR_SHAPE_CORNER:
                     return {
-                        x: width * 2 / 3,
-                        y: height * (this.indicatorAtBottom ? 2 / 3 : 1 / 3)
+                        x: width * 3 / 4,
+                        y: height * (this.indicatorAtBottom ? 3 / 4 : 1 / 4)
                     };
-                case ColorConfig.NAV_INDICATOR_SHAPE_TAB: {
+                case ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE: {
+                    const offset = width * 4 / (3 * Math.PI);
+                    return {
+                        x: width - offset,
+                        y: this.indicatorAtBottom ? height - offset : offset
+                    };
+                }
+                case ColorConfig.NAV_INDICATOR_SHAPE_TAB:
+                case ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB: {
                     // The tab is a quadrilateral with a diagonal inner corner.
                     // Its area centroid is calculated from the same polygon vertices
                     // used by navigationShapeStyle.
                     const diagonal = Math.min(height, width);
-                    const points = this.indicatorAtBottom ?
-                        [[0, height], [width, height], [width, 0], [diagonal, 0]] :
-                        [[0, 0], [width, 0], [width, height], [diagonal, height]];
+                    let points;
+                    if (this.navigationIndicatorShape === ColorConfig.NAV_INDICATOR_SHAPE_WIDE_TAB) {
+                        points = this.indicatorAtBottom ?
+                            [[0, height], [width, height], [width, 0], [width / 2, 0]] :
+                            [[0, 0], [width, 0], [width, height], [width / 2, height]];
+                    } else {
+                        points = this.indicatorAtBottom ?
+                            [[0, height], [width, height], [width, 0], [diagonal, 0]] :
+                            [[0, 0], [width, 0], [width, height], [diagonal, height]];
+                    }
                     let twiceArea = 0;
                     let centroidX = 0;
                     let centroidY = 0;
@@ -287,7 +319,6 @@ export default {
                     };
                 }
                 case ColorConfig.NAV_INDICATOR_SHAPE_SQUARE:
-                case ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE:
                 default:
                     return { x: width / 2, y: height / 2 };
             }
