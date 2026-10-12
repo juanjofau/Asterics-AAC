@@ -74,11 +74,12 @@ export default {
             if (!this.metadata.colorConfig.gradientEnabled) {
                 return 'none';
             }
-            const intensity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientIntensity) || 0)) / 100;
-            if (intensity === 0) {
+            const whiteOpacity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientWhiteOpacity) || 0)) / 100;
+            const blackOpacity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientBlackOpacity) || 0)) / 100;
+            if (whiteOpacity === 0 && blackOpacity === 0) {
                 return 'none';
             }
-            return `linear-gradient(to bottom, rgba(255, 255, 255, ${0.5 * intensity}), rgba(0, 0, 0, ${0.5 * intensity}))`;
+            return 'linear-gradient(to bottom, rgba(255, 255, 255, ' + whiteOpacity + '), rgba(0, 0, 0, ' + blackOpacity + '))';
         },
         shadowStyle() {
             if (!this.metadata.colorConfig.shadowEnabled) {
