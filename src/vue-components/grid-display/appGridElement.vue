@@ -78,7 +78,7 @@ export default {
             if (intensity === 0) {
                 return 'none';
             }
-            return `linear-gradient(to bottom, rgba(255, 255, 255, ${0.28 * intensity}), rgba(0, 0, 0, ${0.18 * intensity}))`;
+            return `linear-gradient(to bottom, rgba(255, 255, 255, ${0.5 * intensity}), rgba(0, 0, 0, ${0.5 * intensity}))`;
         },
         shadowStyle() {
             if (!this.metadata.colorConfig.shadowEnabled) {
@@ -88,7 +88,7 @@ export default {
             if (intensity === 0) {
                 return 'none';
             }
-            return `0 4px 10px rgba(0, 0, 0, ${0.32 * intensity})`;
+            return `0 ${10 * intensity}px 10px 0 rgba(0, 0, 0, ${0.5 * intensity})`;
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
