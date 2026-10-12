@@ -68,52 +68,9 @@ export default {
             }
         },
         backgroundColor() {
-            if (this.element.type === GridElement.ELEMENT_TYPE_COLLECT) {
-                return /^#[0-9a-f]{6}$/i.test(this.element.backgroundColor || '')
-                    ? this.element.backgroundColor
-                    : '#ffffff';
-            }
             return colorUtil.getBackgroundColor(this.element, this.metadata);
         },
         fontColor() {
-            if (this.element.type === GridElement.ELEMENT_TYPE_COLLECT) {
-                const validHex = value =>
-                    /^#[0-9a-f]{6}$/i.test(value || '');
-
-                const hasCustomFontColor = !!this.element.fontColor;
-                if (this.element.fontColorAuto === false ||
-                    (this.element.fontColorAuto === undefined && hasCustomFontColor)) {
-                    return this.element.fontColor || '#000000';
-                }
-
-                const cellColor = validHex(this.backgroundColor)
-                    ? this.backgroundColor
-                    : '#ffffff';
-                let visibleColor = cellColor;
-                if (this.element.textBackgroundEnabled === true) {
-                    const textBackgroundColor = validHex(this.element.textBackgroundColor)
-                        ? this.element.textBackgroundColor
-                        : '#000000';
-                    const opacityValue = this.element.textBackgroundOpacity;
-                    const opacity = opacityValue === undefined || opacityValue === null
-                        ? 0.5
-                        : Math.max(0, Math.min(100, Number(opacityValue))) / 100;
-                    const toRgb = hex => [
-                        parseInt(hex.slice(1, 3), 16),
-                        parseInt(hex.slice(3, 5), 16),
-                        parseInt(hex.slice(5, 7), 16)
-                    ];
-                    const fillRgb = toRgb(textBackgroundColor);
-                    const backgroundRgb = toRgb(cellColor);
-                    const effectiveOpacity = Number.isFinite(opacity) ? opacity : 0.5;
-                    const visibleRgb = fillRgb.map((value, index) =>
-                        Math.round(value * effectiveOpacity + backgroundRgb[index] * (1 - effectiveOpacity))
-                    );
-                    visibleColor = '#' + visibleRgb.map(value => value.toString(16).padStart(2, '0')).join('');
-                }
-                return fontUtil.getHighContrastColor(visibleColor, '#ffffff', '#000000');
-            }
-
             const hasImage =
                 this.element.type === GridElement.ELEMENT_TYPE_NORMAL &&
                 !!(this.element.image &&

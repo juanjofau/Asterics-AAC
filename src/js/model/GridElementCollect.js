@@ -10,21 +10,10 @@ class GridElementCollect extends GridElement.extend({
     singleLine: [Boolean],
     convertToLowercase: [Boolean],
     textElemSizeFactor: [Number],
-    displayUpsideDown: [Boolean],
-    textBackgroundColor: [String],
-    fontColorAuto: [Boolean],
-    textBackgroundEnabled: [Boolean],
-    textBackgroundOpacity: [Number]
+    displayUpsideDown: [Boolean]
 }) {
     constructor(props) {
         props = props || {};
-        if (!props.backgroundColor) props.backgroundColor = '#ffffff';
-        const hasCustomFontColor = !!props.fontColor;
-        if (typeof props.fontColorAuto !== 'boolean') props.fontColorAuto = !hasCustomFontColor;
-        if (!props.fontColor) props.fontColor = '#000000';
-        if (typeof props.textBackgroundEnabled !== 'boolean') props.textBackgroundEnabled = false;
-        if (!props.textBackgroundColor) props.textBackgroundColor = '#000000';
-        if (props.textBackgroundOpacity === undefined || props.textBackgroundOpacity === null) props.textBackgroundOpacity = 50;
         props.showLabels = true;
         props.singleLine = true;
         props.convertToLowercase = props.convertToLowercase !== undefined ? props.convertToLowercase : false;
