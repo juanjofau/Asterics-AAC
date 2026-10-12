@@ -841,8 +841,11 @@ gridUtil.getElemBackgroundCss = function(
     const globalIds = new Set(globalElements.map(e => e.id));
     const fromGlobal = globalIds.has(elem.id);
 
+    const isDynamicMergedGrid =
+        !!globalGrid && gridUtil.hasDynamicGridPlaceholder(globalGrid);
+
     const backgroundColor = (
-        fromGlobal
+        isDynamicMergedGrid || fromGlobal
             ? globalGrid.backgroundColor
             : childGrid.backgroundColor
     ) || defaultBackground || constants.DEFAULT_GRID_BACKGROUND_COLOR;
