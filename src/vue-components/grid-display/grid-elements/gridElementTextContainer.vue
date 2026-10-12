@@ -59,7 +59,7 @@ export default {
         textBackgroundCss() {
             const config = this.metadata.textConfig;
 
-            if (!config.textBackgroundEnabled) {
+            if (!this.withImage || !config.textBackgroundEnabled) {
                 return '';
             }
 
@@ -106,8 +106,11 @@ export default {
                 this.txtMargin = 0;
                 kbdContainerPct = 100;
             }
-            const backgroundPadding = this.metadata.textConfig.textBackgroundEnabled ? 4 : 0;
-            const fullWidthBackground = this.metadata.textConfig.textBackgroundEnabled &&
+            const backgroundPadding =
+                this.withImage && this.metadata.textConfig.textBackgroundEnabled ? 4 : 0;
+            const fullWidthBackground =
+                this.withImage &&
+                this.metadata.textConfig.textBackgroundEnabled &&
                 this.metadata.textConfig.textBackgroundFullWidth !== false;
             const fittingPadding = (fullWidthBackground ? 0 : this.txtMargin) + backgroundPadding;
             if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * fittingPadding) {

@@ -81,19 +81,62 @@ colorUtil.getBorderColor = function (element = {}, metadata, returnHex) {
     return color;
 }
 
-colorUtil.getFontColor = function(metadata, backgroundColor) {
+colorUtil.getFontColor = function(metadata, backgroundColor, hasImage = false) {
     if (!metadata || !metadata.textConfig) {
         return constants.COLORS.BLACK;
     }
 
     const config = metadata.textConfig;
 
-    if (config.fontColorAuto !== false) {
-        const isDark = fontUtil.isHexDark(backgroundColor);
-        return isDark ? constants.COLORS.WHITE : constants.COLORS.BLACK;
+    if (config.fontColorAuto === false) {
+        return config.fontColor || constants.COLORS.BLACK;
     }
 
-    return config.fontColor || constants.COLORS.BLACK;
+    const isValidHex = value =>
+        /^#[0-9a-f]{6}$/i.test(value || '');
+
+    const cellColor = isValidHex(backgroundColor)
+        ? backgroundColor
+        : constants.COLORS.WHITE;
+
+    let visibleColor = cellColor;
+
+    if (hasImage && config.textBackgroundEnabled === true) {
+        const fillColor = isValidHex(config.textBackgroundColor)
+            ? config.textBackgroundColor
+            : '#000000';
+
+        const opacityValue = Number(config.textBackgroundOpacity);
+        const opacity = Number.isFinite(opacityValue)
+            ? Math.max(0, Math.min(100, opacityValue)) / 100
+            : 0.5;
+
+        const hexToRgb = hex => [
+            parseInt(hex.slice(1, 3), 16),
+            parseInt(hex.slice(3, 5), 16),
+            parseInt(hex.slice(5, 7), 16)
+        ];
+
+        const fillRgb = hexToRgb(fillColor);
+        const backgroundRgb = hexToRgb(cellColor);
+
+        const visibleRgb = fillRgb.map((value, index) =>
+            Math.round(
+                value * opacity +
+                backgroundRgb[index] * (1 - opacity)
+            )
+        );
+
+        visibleColor = '#' + visibleRgb
+            .map(value => value.toString(16).padStart(2, '0'))
+            .join('');
+    }
+
+    return fontUtil.getHighContrastColor(
+        visibleColor,
+        constants.COLORS.WHITE,
+        constants.COLORS.BLACK
+    );
 },
 
 colorUtil.getUseColorScheme = function (metadata) {

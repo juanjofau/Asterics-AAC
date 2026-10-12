@@ -59,6 +59,10 @@
     justify-content: center;
 }
 
+.grid-item-content.text-overlay > .img-container {
+    align-items: center;
+}
+
 .grid-item-content .text-container {
     display: flex;
     justify-content: center;

@@ -65,7 +65,16 @@ export default {
             return colorUtil.getBackgroundColor(this.element, this.metadata);
         },
         fontColor() {
-            return colorUtil.getFontColor(this.metadata, this.backgroundColor);
+            const hasImage =
+                this.element.type === GridElement.ELEMENT_TYPE_NORMAL &&
+                !!(this.element.image &&
+                   (this.element.image.data || this.element.image.url));
+
+            return colorUtil.getFontColor(
+                this.metadata,
+                this.backgroundColor,
+                hasImage
+            );
         },
         borderColor() {
             return colorUtil.getBorderColor(this.element, this.metadata);

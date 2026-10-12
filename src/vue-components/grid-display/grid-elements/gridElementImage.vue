@@ -1,6 +1,6 @@
 <template>
     <div class="img-container" v-if="imageData" :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 0 : 1}`">
-        <img ref="imgElement" :src="imageData" draggable="false" :crossorigin="corsActive ? 'anonymous' : null" @error="handleImageError" alt=""/>
+        <img ref="imgElement" :src="imageData" draggable="false" :crossorigin="corsActive ? 'anonymous' : null" :style="overlayActive ? { transform: 'translateY(' + (overlayOffsetPx || 0) + 'px)' } : null" @load="$emit('image-loaded')" @error="handleImageError" alt=""/>
     </div>
 </template>
 
@@ -10,7 +10,7 @@ import { TextConfig } from '../../../js/model/TextConfig';
 
 export default {
     components: { GridElementTextContainer },
-    props: ["gridImage", "metadata"],
+    props: ["gridImage", "metadata", "overlayActive", "overlayOffsetPx"],
     data() {
         return {
             TextConfig: TextConfig,
