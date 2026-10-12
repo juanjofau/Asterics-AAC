@@ -105,8 +105,8 @@ export default {
             if (!this.metadata.colorConfig.gradientEnabled) {
                 return 'none';
             }
-            const topLightness = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientTopLightness) || 0));
-            const bottomDarkness = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.gradientBottomDarkness) || 0));
+            const topLightness = Math.max(0, Math.min(50, Number(this.metadata.colorConfig.gradientTopLightness) || 0));
+            const bottomDarkness = Math.max(0, Math.min(50, Number(this.metadata.colorConfig.gradientBottomDarkness) || 0));
             if (topLightness === 0 && bottomDarkness === 0) {
                 return 'none';
             }
