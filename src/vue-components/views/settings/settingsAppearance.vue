@@ -125,10 +125,10 @@
                             <label for="shadowEnabled">{{ $t('enableCellShadow') }}</label>
                         </div>
                         <div class="srow">
-                            <slider-input label="cellShadowOffset" unit="px" id="shadowOffsetY" min="0" max="100" step="1" v-model.number="metadata.colorConfig.shadowOffsetY" @change="saveMetadata(metadata)"/>
+                            <slider-input label="cellShadowOffset" unit="px" id="shadowOffsetY" min="0" max="50" step="1" v-model.number="metadata.colorConfig.shadowOffsetY" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="cellShadowBlur" unit="px" id="shadowBlur" min="0" max="100" step="1" v-model.number="metadata.colorConfig.shadowBlur" @change="saveMetadata(metadata)"/>
+                            <slider-input label="cellShadowBlur" unit="px" id="shadowBlur" min="0" max="50" step="1" v-model.number="metadata.colorConfig.shadowBlur" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
                             <slider-input label="cellShadowOpacity" unit="%" id="shadowOpacity" min="0" max="100" step="1" v-model.number="metadata.colorConfig.shadowOpacity" @change="saveMetadata(metadata)"/>
