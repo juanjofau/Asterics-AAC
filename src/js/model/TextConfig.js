@@ -14,7 +14,11 @@ class TextConfig extends Model({
     onlyTextLineHeight: [Number],
     fittingMode: [String],
     autoSizeKeyboardLetters: [Boolean],
-    fontColor: [String]
+    fontColor: [String],
+    textBackgroundEnabled: [Boolean],
+    textBackgroundColor: [String],
+    textBackgroundOpacity: [Number],
+    textOverlay: [Boolean]
 }) {
     constructor(properties) {
         super(properties);
@@ -67,7 +71,11 @@ TextConfig.defaults({
     onlyTextLineHeight: 1.5,
     fittingMode: TextConfig.TOO_LONG_AUTO,
     autoSizeKeyboardLetters: true,
-    fontColor: constants.DEFAULT_ELEMENT_FONT_COLOR
+    fontColor: constants.DEFAULT_ELEMENT_FONT_COLOR,
+    textBackgroundEnabled: false,
+    textBackgroundColor: '#000000',
+    textBackgroundOpacity: 50,
+    textOverlay: false
 });
 
 export { TextConfig };

@@ -32,6 +32,26 @@
     flex-flow: column;
 }
 
+.grid-item-content.text-overlay {
+    position: relative;
+}
+
+.grid-item-content.text-overlay > .text-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 3;
+    max-height: 100%;
+}
+
+.grid-item-content.text-overlay-above > .text-container {
+    top: 0;
+}
+
+.grid-item-content.text-overlay-below > .text-container {
+    bottom: 0;
+}
+
 .grid-item-content .img-container {
     flex: 1;
     display: flex;

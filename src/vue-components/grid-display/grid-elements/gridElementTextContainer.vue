@@ -3,7 +3,7 @@
          :style="`order: ${metadata.textConfig.textPosition === TextConfig.TEXT_POS_BELOW ? 1 : 0};
                   text-align: center; font-size: ${fontSizePx}px; line-height: ${lineHeight}; color: ${gridElement && gridElement.fontColor ? gridElement.fontColor : 'unset'};
                   flex-grow: ${withImage ? '0' : '1'};`">
-        <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 ${txtMargin}px;`">
+        <span :style="`max-height: ${maxTextContainerHeight}; text-overflow: ${textOverflow}; white-space: ${whiteSpaceWrap}; margin: 0 ${txtMargin}px; ${textBackgroundCss}`">
             <span v-html="displayLabel"/>
         </span>
     </div>
@@ -56,6 +56,28 @@ export default {
             label = util.replaceAll(label, '\\\\n', '<br>');
             return util.replaceAll(label, '\\\\N', '<br>');
         },
+        textBackgroundCss() {
+            const config = this.metadata.textConfig;
+
+            if (!config.textBackgroundEnabled) {
+                return '';
+            }
+
+            const color = /^#[0-9a-f]{6}$/i.test(config.textBackgroundColor || '')
+                ? config.textBackgroundColor
+                : '#000000';
+
+            const opacity = Number(config.textBackgroundOpacity);
+            const alpha = Number.isFinite(opacity)
+                ? Math.max(0, Math.min(100, opacity)) / 100
+                : 0.5;
+
+            const red = parseInt(color.slice(1, 3), 16);
+            const green = parseInt(color.slice(3, 5), 16);
+            const blue = parseInt(color.slice(5, 7), 16);
+
+            return `background-color: rgba(${red}, ${green}, ${blue}, ${alpha}); padding: 0 4px; box-sizing: border-box;`;
+        },
     },
     methods: {
         calcFontSize() {
@@ -81,10 +103,12 @@ export default {
                 this.txtMargin = 0;
                 kbdContainerPct = 100;
             }
-            if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * this.txtMargin) {
+            const backgroundPadding = this.metadata.textConfig.textBackgroundEnabled ? 4 : 0;
+            const fittingPadding = this.txtMargin + backgroundPadding;
+            if (this.metadata.textConfig.fittingMode === TextConfig.TOO_LONG_AUTO && realWidth > size.width - 2 * fittingPadding) {
                 let newFontSize = fontUtil.getFittingFontSize(label, this.$refs.txtContainer.parentElement, {
                     maxLines: this.maxLines,
-                    padding: this.txtMargin,
+                    padding: fittingPadding,
                     maxSize: fontSize,
                     lineHeight: this.lineHeight,
                     containerSize: size
@@ -100,7 +124,7 @@ export default {
                 fontSize = fontUtil.getFittingFontSize(label, this.$refs.txtContainer.parentElement, {
                     containerPct: kbdContainerPct,
                     lineHeight: this.lineHeight,
-                    padding: this.txtMargin,
+                    padding: fittingPadding,
                     containerSize: size
                 });
             }

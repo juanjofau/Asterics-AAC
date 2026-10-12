@@ -39,6 +39,14 @@
                 <div class="srow">
                     <slider-input label="onlyTextFontSize" unit="%" id="onlyTextFontSize" min="0" max="100" step="1" v-model.number="metadata.textConfig.onlyTextFontSizePct" @change="saveMetadata(metadata)"/>
                 </div>
+                <div class="srow">
+                    <input id="textBackgroundEnabled" type="checkbox" v-model="metadata.textConfig.textBackgroundEnabled" @change="saveMetadata(metadata)"/>
+                    <label for="textBackgroundEnabled">{{ $t('textBackground') }}</label>
+                </div>
+                <div class="srow">
+                    <input id="textOverlay" type="checkbox" v-model="metadata.textConfig.textOverlay" @change="saveMetadata(metadata)"/>
+                    <label for="textOverlay">{{ $t('overlayText') }}</label>
+                </div>
                 <div class="srow mb-5">
                     <accordion :acc-label="$t('advancedOptions')" class="eleven columns">
                         <div class="srow">
@@ -69,6 +77,16 @@
                             </label>
                             <input id="fontColor" v-model="metadata.textConfig.fontColor" class="five columns" type="color" @change="saveMetadata(metadata)">
                             <button class="three columns" @click="metadata.textConfig.fontColor = constants.DEFAULT_ELEMENT_FONT_COLOR; saveMetadata(metadata)">{{ $t('reset') }}</button>
+                        </div>
+                        <div class="srow" v-if="metadata.textConfig.textBackgroundEnabled">
+                            <label class="three columns" for="textBackgroundColor">
+                                <span>{{ $t('textBackgroundColor') }}</span>
+                            </label>
+                            <input id="textBackgroundColor" v-model="metadata.textConfig.textBackgroundColor" class="five columns" type="color" @change="saveMetadata(metadata)">
+                            <button class="three columns" @click="metadata.textConfig.textBackgroundColor = '#000000'; saveMetadata(metadata)">{{ $t('reset') }}</button>
+                        </div>
+                        <div class="srow" v-if="metadata.textConfig.textBackgroundEnabled">
+                            <slider-input label="textBackgroundOpacity" unit="%" id="textBackgroundOpacity" min="0" max="100" step="1" v-model.number="metadata.textConfig.textBackgroundOpacity" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
                             <input id="autoSizeKeyboardLetters" type="checkbox" v-model="metadata.textConfig.autoSizeKeyboardLetters" @change="saveMetadata(metadata)"/>
