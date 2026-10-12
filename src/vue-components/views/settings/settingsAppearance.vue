@@ -134,127 +134,121 @@
                 <h3 class="mt-5">{{ $t('navigationIndicator') }}</h3>
 
                 <div class="srow">
-                    <label class="three columns" for="navigationIndicatorStyle">
-                        {{ $t('navigationIndicatorStyle') }}
-                    </label>
-                    <select id="navigationIndicatorStyle"
-                            v-model="metadata.colorConfig.navigationIndicatorStyle"
-                            class="five columns"
-                            @change="saveMetadata(metadata)">
-                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_NONE">
-                            {{ $t('navigationIndicatorStyleNone') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_ICON">
-                            {{ $t('navigationIndicatorStyleIcon') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_SHADED">
-                            {{ $t('navigationIndicatorStyleShaded') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_STYLE_TAB">
-                            {{ $t('navigationIndicatorStyleTab') }}
-                        </option>
-                    </select>
+                    <input id="navigationIndicatorEnabled"
+                           type="checkbox"
+                           v-model="metadata.colorConfig.navigationIndicatorEnabled"
+                           @change="saveMetadata(metadata)"/>
+                    <label for="navigationIndicatorEnabled">{{ $t('navigationIndicatorEnabled') }}</label>
                 </div>
 
-                <div v-if="metadata.colorConfig.navigationIndicatorStyle === ColorConfig.NAV_INDICATOR_STYLE_ICON"
-                     class="srow">
-                    <label class="three columns" for="navigationIndicatorIcon">
-                        {{ $t('navigationIndicatorIcon') }}
-                    </label>
-                    <select id="navigationIndicatorIcon"
-                            v-model="metadata.colorConfig.navigationIndicatorIcon"
-                            class="five columns"
-                            @change="saveMetadata(metadata)">
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_ARROW">
-                            {{ $t('navigationIndicatorIconArrow') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_FOLDER">
-                            {{ $t('navigationIndicatorIconFolder') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_FOLDER_OPEN">
-                            {{ $t('navigationIndicatorIconFolderOpen') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_SIGN_OUT_ALT">
-                            {{ $t('navigationIndicatorIconSignOutAlt') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_SQUARE">
-                            {{ $t('navigationIndicatorIconSquare') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE">
-                            {{ $t('navigationIndicatorIconStickyNote') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_TH">
-                            {{ $t('navigationIndicatorIconTh') }}
-                        </option>
-                        <option :value="ColorConfig.NAV_INDICATOR_ICON_TH_LARGE">
-                            {{ $t('navigationIndicatorIconThLarge') }}
-                        </option>
-                    </select>
-                </div>
+                <template v-if="metadata.colorConfig.navigationIndicatorEnabled">
+                    <div class="srow">
+                        <label class="three columns" for="navigationIndicatorShape">
+                            {{ $t('navigationIndicatorShape') }}
+                        </label>
+                        <select id="navigationIndicatorShape"
+                                v-model="metadata.colorConfig.navigationIndicatorShape"
+                                class="five columns"
+                                @change="saveMetadata(metadata)">
+                            <option :value="ColorConfig.NAV_INDICATOR_SHAPE_SQUARE">{{ $t('navigationIndicatorShapeSquare') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_SHAPE_CORNER">{{ $t('navigationIndicatorShapeCorner') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_SHAPE_TAB">{{ $t('navigationIndicatorShapeTab') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_SHAPE_CIRCLE">{{ $t('navigationIndicatorShapeCircle') }}</option>
+                        </select>
+                    </div>
 
-                <div v-if="metadata.colorConfig.navigationIndicatorStyle !== ColorConfig.NAV_INDICATOR_STYLE_NONE"
-                     class="srow">
-                    <slider-input
-                        label="navigationIndicatorSize"
-                        unit="%"
-                        id="navigationIndicatorSize"
-                        :min="ColorConfig.NAV_INDICATOR_SIZE_MIN"
-                        :max="ColorConfig.NAV_INDICATOR_SIZE_MAX"
-                        step="1"
-                        v-model.number="metadata.colorConfig.navigationIndicatorSize"
-                        @change="saveMetadata(metadata)"/>
-                </div>
+                    <div class="srow">
+                        <label class="three columns" for="navigationIndicatorIcon">
+                            {{ $t('navigationIndicatorIcon') }}
+                        </label>
+                        <select id="navigationIndicatorIcon"
+                                v-model="metadata.colorConfig.navigationIndicatorIcon"
+                                class="five columns"
+                                @change="saveMetadata(metadata)">
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_NONE">{{ $t('navigationIndicatorIconNone') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_ARROW">{{ $t('navigationIndicatorIconArrow') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_FOLDER">{{ $t('navigationIndicatorIconFolder') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_FOLDER_OPEN">{{ $t('navigationIndicatorIconFolderOpen') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_SIGN_OUT_ALT">{{ $t('navigationIndicatorIconSignOutAlt') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_SQUARE">{{ $t('navigationIndicatorIconSquare') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_STICKY_NOTE">{{ $t('navigationIndicatorIconStickyNote') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_TH">{{ $t('navigationIndicatorIconTh') }}</option>
+                            <option :value="ColorConfig.NAV_INDICATOR_ICON_TH_LARGE">{{ $t('navigationIndicatorIconThLarge') }}</option>
+                        </select>
+                    </div>
 
-                <div v-if="metadata.colorConfig.navigationIndicatorStyle !== ColorConfig.NAV_INDICATOR_STYLE_NONE"
-                     class="srow mb-0">
-                    <accordion :acc-label="$t('advancedOptions')" class="eleven columns">
-                        <div class="srow">
-                            <input id="navigationIndicatorAutoColor"
-                                   type="checkbox"
-                                   v-model="metadata.colorConfig.navigationIndicatorAutoColor"
-                                   @change="saveMetadata(metadata)"/>
-                            <label for="navigationIndicatorAutoColor">
-                                {{ $t('navigationIndicatorAutoColor') }}
-                            </label>
-                        </div>
-                        <div class="srow">
-                            <label class="three columns" for="navigationIndicatorColor">
-                                {{ $t('navigationIndicatorColor') }}
-                            </label>
-                            <input id="navigationIndicatorColor"
-                                   v-model="metadata.colorConfig.navigationIndicatorColor"
-                                   class="five columns"
-                                   type="color"
-                                   :disabled="metadata.colorConfig.navigationIndicatorAutoColor"
-                                   @change="saveMetadata(metadata)">
-                            <button class="three columns"
-                                    :disabled="metadata.colorConfig.navigationIndicatorAutoColor"
-                                    @click="metadata.colorConfig.navigationIndicatorColor = ColorConfig.NAV_INDICATOR_COLOR_DEFAULT; saveMetadata(metadata)">
-                                {{ $t('reset') }}
-                            </button>
-                        </div>
-                        <div class="srow">
-                            <slider-input
-                                label="navigationIndicatorOpacity"
-                                unit="%"
-                                id="navigationIndicatorOpacity"
-                                min="0"
-                                max="100"
-                                step="1"
-                                v-model.number="metadata.colorConfig.navigationIndicatorOpacity"
-                                @change="saveMetadata(metadata)"/>
-                        </div>
-                        <div class="srow">
-                            <input id="navigationIndicatorShowBorder"
-                                   type="checkbox"
-                                   v-model="metadata.colorConfig.navigationIndicatorShowBorder"
-                                   @change="saveMetadata(metadata)"/>
-                            <label for="navigationIndicatorShowBorder">
-                                {{ $t('navigationIndicatorShowBorder') }}
-                            </label>
-                        </div>
-                    </accordion>
-                </div>
+                    <div class="srow">
+                        <slider-input
+                            label="navigationIndicatorSize"
+                            unit="%"
+                            id="navigationIndicatorSize"
+                            :min="ColorConfig.NAV_INDICATOR_SIZE_MIN"
+                            :max="ColorConfig.NAV_INDICATOR_SIZE_MAX"
+                            step="1"
+                            v-model.number="metadata.colorConfig.navigationIndicatorSize"
+                            @change="saveMetadata(metadata)"/>
+                    </div>
+
+                    <div class="srow mb-0">
+                        <accordion :acc-label="$t('advancedOptions')" class="eleven columns">
+                            <div class="srow">
+                                <input id="navigationIndicatorAutoColor"
+                                       type="checkbox"
+                                       v-model="metadata.colorConfig.navigationIndicatorAutoColor"
+                                       @change="saveMetadata(metadata)"/>
+                                <label for="navigationIndicatorAutoColor">{{ $t('navigationIndicatorAutoColor') }}</label>
+                            </div>
+                            <div class="srow">
+                                <label class="three columns" for="navigationIndicatorColor">{{ $t('navigationIndicatorColor') }}</label>
+                                <input id="navigationIndicatorColor"
+                                       v-model="metadata.colorConfig.navigationIndicatorColor"
+                                       class="five columns"
+                                       type="color"
+                                       :disabled="metadata.colorConfig.navigationIndicatorAutoColor"
+                                       @change="saveMetadata(metadata)">
+                                <button class="three columns"
+                                        :disabled="metadata.colorConfig.navigationIndicatorAutoColor"
+                                        @click="metadata.colorConfig.navigationIndicatorColor = ColorConfig.NAV_INDICATOR_COLOR_DEFAULT; saveMetadata(metadata)">
+                                    {{ $t('reset') }}
+                                </button>
+                            </div>
+                            <div class="srow">
+                                <slider-input
+                                    label="navigationIndicatorOpacity"
+                                    unit="%"
+                                    id="navigationIndicatorOpacity"
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                    v-model.number="metadata.colorConfig.navigationIndicatorOpacity"
+                                    @change="saveMetadata(metadata)"/>
+                            </div>
+                            <template v-if="metadata.colorConfig.navigationIndicatorIcon !== ColorConfig.NAV_INDICATOR_ICON_NONE">
+                                <div class="srow">
+                                    <input id="navigationIndicatorIconAutoColor"
+                                           type="checkbox"
+                                           v-model="metadata.colorConfig.navigationIndicatorIconAutoColor"
+                                           @change="saveMetadata(metadata)"/>
+                                    <label for="navigationIndicatorIconAutoColor">{{ $t('navigationIndicatorIconAutoColor') }}</label>
+                                </div>
+                                <div class="srow">
+                                    <label class="three columns" for="navigationIndicatorIconColor">{{ $t('navigationIndicatorIconColor') }}</label>
+                                    <input id="navigationIndicatorIconColor"
+                                           v-model="metadata.colorConfig.navigationIndicatorIconColor"
+                                           class="five columns"
+                                           type="color"
+                                           :disabled="metadata.colorConfig.navigationIndicatorIconAutoColor"
+                                           @change="saveMetadata(metadata)">
+                                    <button class="three columns"
+                                            :disabled="metadata.colorConfig.navigationIndicatorIconAutoColor"
+                                            @click="metadata.colorConfig.navigationIndicatorIconColor = ColorConfig.NAV_INDICATOR_ICON_COLOR_DEFAULT; saveMetadata(metadata)">
+                                        {{ $t('reset') }}
+                                    </button>
+                                </div>
+                            </template>
+                        </accordion>
+                    </div>
+                </template>
 
                 <h3 class="mt-5">{{ $t('grid') }}</h3>
                 <div class="srow">
@@ -307,6 +301,39 @@
         components: { AppGridDisplay, Accordion, SliderInput },
         props: ["metadata", "userSettingsLocal"],
         mixins: [settingsSaveMixin],
+        created() {
+            const config = this.metadata.colorConfig;
+            const legacyStyle = config.navigationIndicatorStyle;
+
+            if (config.navigationIndicatorEnabled === undefined) {
+                this.$set(config, 'navigationIndicatorEnabled',
+                    legacyStyle !== ColorConfig.NAV_INDICATOR_STYLE_NONE);
+            }
+
+            if (config.navigationIndicatorShape === undefined) {
+                const legacyShapes = {
+                    [ColorConfig.NAV_INDICATOR_STYLE_ICON]: ColorConfig.NAV_INDICATOR_SHAPE_SQUARE,
+                    [ColorConfig.NAV_INDICATOR_STYLE_SHADED]: ColorConfig.NAV_INDICATOR_SHAPE_CORNER,
+                    [ColorConfig.NAV_INDICATOR_STYLE_TAB]: ColorConfig.NAV_INDICATOR_SHAPE_TAB,
+                    [ColorConfig.NAV_INDICATOR_STYLE_NONE]: ColorConfig.NAV_INDICATOR_SHAPE_SQUARE
+                };
+                this.$set(config, 'navigationIndicatorShape',
+                    legacyShapes[legacyStyle] || ColorConfig.NAV_INDICATOR_SHAPE_SQUARE);
+
+                if (legacyStyle === ColorConfig.NAV_INDICATOR_STYLE_SHADED ||
+                    legacyStyle === ColorConfig.NAV_INDICATOR_STYLE_TAB) {
+                    this.$set(config, 'navigationIndicatorIcon', ColorConfig.NAV_INDICATOR_ICON_NONE);
+                }
+            }
+
+            if (config.navigationIndicatorIconAutoColor === undefined) {
+                this.$set(config, 'navigationIndicatorIconAutoColor', true);
+            }
+            if (config.navigationIndicatorIconColor === undefined) {
+                this.$set(config, 'navigationIndicatorIconColor',
+                    ColorConfig.NAV_INDICATOR_ICON_COLOR_DEFAULT);
+            }
+        },
         data() {
             return {
                 TextConfig: TextConfig,
