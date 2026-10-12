@@ -16,7 +16,7 @@
         v-else-if="!editable"
         class="empty-cell-shadow"
         aria-hidden="true"
-        :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; background-color: ${emptyCellEffectColor}; box-shadow: inset 0 0 8px ${emptyCellShadowColor};`">
+        :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; background-color: ${emptyCellEffectColor};`">
     </div>
 </template>
 
@@ -87,13 +87,15 @@ export default {
         },
         emptyCellEffectColor() {
             const background = this.gridBackgroundColor || '#ffffff';
-            const useLightTint = fontUtil.isHexDark(background);
-            return useLightTint ? 'rgba(255, 255, 255, 0.10)' : 'rgba(0, 0, 0, 0.10)';
-        },
-        emptyCellShadowColor() {
-            const background = this.gridBackgroundColor || '#ffffff';
-            const useLightTint = fontUtil.isHexDark(background);
-            return useLightTint ? 'rgba(255, 255, 255, 0.10)' : 'rgba(0, 0, 0, 0.10)';
+            const match = /^#([0-9a-f]{6})$/i.exec(background);
+            const hex = match ? match[1] : 'ffffff';
+            const red = parseInt(hex.slice(0, 2), 16);
+            const green = parseInt(hex.slice(2, 4), 16);
+            const blue = parseInt(hex.slice(4, 6), 16);
+            const luminance = red * 0.299 + green * 0.587 + blue * 0.114;
+            return luminance <= 255 * 0.20
+                ? 'rgba(255, 255, 255, 0.10)'
+                : 'rgba(0, 0, 0, 0.10)';
         },
         gradientBackgroundImage() {
             if (!this.metadata.colorConfig.gradientEnabled) {
