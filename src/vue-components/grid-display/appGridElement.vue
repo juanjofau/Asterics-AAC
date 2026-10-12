@@ -16,7 +16,7 @@
         v-else-if="!editable"
         class="empty-cell-shadow"
         aria-hidden="true"
-        :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px;`">
+        :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; background-color: ${emptyCellEffectColor}; box-shadow: inset 0 0 8px ${emptyCellShadowColor};`">
     </div>
 </template>
 
@@ -127,6 +127,16 @@ export default {
         },
         borderColor() {
             return colorUtil.getBorderColor(this.element, this.metadata);
+        },
+        emptyCellEffectColor() {
+            const background = this.gridBackgroundColor || '#ffffff';
+            const useLightTint = fontUtil.isHexDark(background);
+            return useLightTint ? 'rgba(255, 255, 255, 0.10)' : 'rgba(0, 0, 0, 0.10)';
+        },
+        emptyCellShadowColor() {
+            const background = this.gridBackgroundColor || '#ffffff';
+            const useLightTint = fontUtil.isHexDark(background);
+            return useLightTint ? 'rgba(255, 255, 255, 0.10)' : 'rgba(0, 0, 0, 0.10)';
         },
         gradientBackgroundImage() {
             if (!this.metadata.colorConfig.gradientEnabled) {
@@ -275,8 +285,6 @@ export default {
     flex: 1 1 auto;
     min-width: 0;
     min-height: 0;
-    background-color: rgba(128, 128, 128, 0.07);
-    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.20);
     pointer-events: none;
 }
 
