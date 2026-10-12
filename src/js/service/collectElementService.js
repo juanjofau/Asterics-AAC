@@ -362,7 +362,7 @@ async function updateCollectElements(isSecondTry) {
                             ${text}
                         </span>`;
             outerContainerJqueryElem.html(
-                (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: ${backgroundColor}; text-align: justify;">${html}</div>`)
+                (html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; background-color: transparent; text-align: justify;">${html}</div>`)
             );
             fontUtil.adaptFontSize($(`#${collectElement.id}`));
         } else {
@@ -446,7 +446,7 @@ async function updateCollectElements(isSecondTry) {
                              </div>`;
             }
             let additionalCSS = useSingleLine ? 'overflow-x: auto; overflow-y: hidden;' : 'flex-wrap: wrap;';
-            html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: ${backgroundColor}; text-align: justify; ${additionalCSS}">
+            html = `<div class="collect-container${rotationClass}" dir="auto" style="height: 100%; flex: 1; display: flex; flex-direction: row; background-color: transparent; text-align: justify; ${additionalCSS}">
                         <div class="collect-items-container" style="display: flex; flex-direction: row; ">${html}</div>
                     </div>`;
             outerContainerJqueryElem.html(html);
