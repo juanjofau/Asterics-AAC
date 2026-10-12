@@ -18,6 +18,7 @@ class ColorConfig extends Model({
     gradientBlackOpacity: [Number],
     shadowEnabled: [Boolean],
     shadowOffsetY: [Number],
+    shadowBlur: [Number],
     shadowOpacity: [Number],
     colorMode: [String]
 }) {
@@ -54,6 +55,7 @@ ColorConfig.defaults({
     gradientBlackOpacity: 50,
     shadowEnabled: true,
     shadowOffsetY: 10,
+    shadowBlur: 10,
     shadowOpacity: 50,
     colorMode: ColorConfig.COLOR_MODE_BACKGROUND
 });
