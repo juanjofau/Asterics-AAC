@@ -110,53 +110,53 @@
                         <div class="srow">
                             <slider-input label="borderRadius" unit="%" id="borderRadius" min="0" max="4" step="0.05" :decimals="2" v-model.number="metadata.colorConfig.borderRadius" @change="saveMetadata(metadata)"/>
                         </div>
-                        <h4 class="mt-4">Cell depth effects</h4>
-                        <p>Shadow measurements are percentages of the cell height.</p>
+                        <h4 class="mt-4">{{ $t('cellDepthEffects') }}</h4>
+                        <p>{{ $t('shadowMeasurementsDescription') }}</p>
                         <div class="srow">
-                            <button type="button" @click="applyShadowPreset('flat')">Flat</button>
-                            <button type="button" @click="applyShadowPreset('soft')">Soft</button>
-                            <button type="button" @click="applyShadowPreset('raised')">Raised</button>
-                            <button type="button" @click="applyShadowPreset('pressed')">Pressed</button>
+                            <button type="button" @click="applyShadowPreset('flat')">{{ $t('shadowPresetFlat') }}</button>
+                            <button type="button" @click="applyShadowPreset('soft')">{{ $t('shadowPresetSoft') }}</button>
+                            <button type="button" @click="applyShadowPreset('raised')">{{ $t('shadowPresetRaised') }}</button>
+                            <button type="button" @click="applyShadowPreset('pressed')">{{ $t('shadowPresetPressed') }}</button>
                         </div>
                         <div class="srow">
                             <input id="outerShadowEnabled" type="checkbox" v-model="metadata.colorConfig.outerShadowEnabled" @change="saveMetadata(metadata)"/>
-                            <label for="outerShadowEnabled">Enable outer shadow</label>
+                            <label for="outerShadowEnabled">{{ $t('enableOuterShadow') }}</label>
                         </div>
                         <div class="srow">
-                            <label class="three columns" for="outerShadowColor">Outer shadow color</label>
+                            <label class="three columns" for="outerShadowColor">{{ $t('outerShadowColor') }}</label>
                             <input id="outerShadowColor" class="five columns" type="color" v-model="metadata.colorConfig.outerShadowColor" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="Outer shadow horizontal offset" unit="%" id="outerShadowOffsetX" min="-5" max="5" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.outerShadowOffsetX" @change="saveMetadata(metadata)"/>
+                            <slider-input label="outerShadowHorizontalOffset" unit="%" id="outerShadowOffsetX" min="-5" max="5" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.outerShadowOffsetX" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="Outer shadow vertical offset" unit="%" id="outerShadowOffsetY" min="-5" max="5" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.outerShadowOffsetY" @change="saveMetadata(metadata)"/>
+                            <slider-input label="outerShadowVerticalOffset" unit="%" id="outerShadowOffsetY" min="-5" max="5" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.outerShadowOffsetY" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="Outer shadow blur" unit="%" id="outerShadowBlur" min="0" max="8" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.outerShadowBlur" @change="saveMetadata(metadata)"/>
+                            <slider-input label="outerShadowBlur" unit="%" id="outerShadowBlur" min="0" max="8" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.outerShadowBlur" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="Outer shadow spread" unit="%" id="outerShadowSpread" min="-2" max="2" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.outerShadowSpread" @change="saveMetadata(metadata)"/>
+                            <slider-input label="outerShadowSpread" unit="%" id="outerShadowSpread" min="-2" max="2" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.outerShadowSpread" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
                             <input id="innerShadowEnabled" type="checkbox" v-model="metadata.colorConfig.innerShadowEnabled" @change="saveMetadata(metadata)"/>
-                            <label for="innerShadowEnabled">Enable inner shadow</label>
+                            <label for="innerShadowEnabled">{{ $t('enableInnerShadow') }}</label>
                         </div>
                         <div class="srow">
-                            <label class="three columns" for="innerShadowColor">Inner shadow color</label>
+                            <label class="three columns" for="innerShadowColor">{{ $t('innerShadowColor') }}</label>
                             <input id="innerShadowColor" class="five columns" type="color" v-model="metadata.colorConfig.innerShadowColor" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="Inner shadow horizontal offset" unit="%" id="innerShadowOffsetX" min="-5" max="5" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.innerShadowOffsetX" @change="saveMetadata(metadata)"/>
+                            <slider-input label="innerShadowHorizontalOffset" unit="%" id="innerShadowOffsetX" min="-5" max="5" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.innerShadowOffsetX" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="Inner shadow vertical offset" unit="%" id="innerShadowOffsetY" min="-5" max="5" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.innerShadowOffsetY" @change="saveMetadata(metadata)"/>
+                            <slider-input label="innerShadowVerticalOffset" unit="%" id="innerShadowOffsetY" min="-5" max="5" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.innerShadowOffsetY" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="Inner shadow blur" unit="%" id="innerShadowBlur" min="0" max="8" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.innerShadowBlur" @change="saveMetadata(metadata)"/>
+                            <slider-input label="innerShadowBlur" unit="%" id="innerShadowBlur" min="0" max="8" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.innerShadowBlur" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="Inner shadow spread" unit="%" id="innerShadowSpread" min="-2" max="2" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.innerShadowSpread" @change="saveMetadata(metadata)"/>
+                            <slider-input label="innerShadowSpread" unit="%" id="innerShadowSpread" min="-2" max="2" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.innerShadowSpread" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
                             <label class="three columns" for="colorScheme">
