@@ -1,7 +1,7 @@
 <template>
     <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
-         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
+         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; box-shadow: ${boxShadow}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" :metadata="metadata" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
@@ -69,6 +69,19 @@ export default {
         },
         borderColor() {
             return colorUtil.getBorderColor(this.element, this.metadata);
+        },
+        boxShadow() {
+            const config = this.metadata.colorConfig;
+            const size = { height: this.oneElementSize && this.oneElementSize.height || 100 };
+            const toPx = (value) => fontUtil.pctToPx(Number(value) || 0, size);
+            const shadows = [];
+            if (config.outerShadowEnabled) {
+                shadows.push(`${toPx(config.outerShadowOffsetX)}px ${toPx(config.outerShadowOffsetY)}px ${toPx(config.outerShadowBlur)}px ${toPx(config.outerShadowSpread)}px ${config.outerShadowColor || '#000000'}`);
+            }
+            if (config.innerShadowEnabled) {
+                shadows.push(`inset ${toPx(config.innerShadowOffsetX)}px ${toPx(config.innerShadowOffsetY)}px ${toPx(config.innerShadowBlur)}px ${toPx(config.innerShadowSpread)}px ${config.innerShadowColor || '#000000'}`);
+            }
+            return shadows.length ? shadows.join(', ') : 'none';
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
