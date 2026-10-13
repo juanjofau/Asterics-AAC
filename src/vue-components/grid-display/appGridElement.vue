@@ -173,19 +173,18 @@ export default {
             return 'linear-gradient(to bottom, ' + topColor + ' 0%, ' + this.backgroundColor + ' 50%, ' + bottomColor + ' 100%)';
         },
         shadowStyle() {
-            if (!this.metadata.colorConfig.shadowEnabled) {
-                return 'none';
-            }
-            const offsetY = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowOffsetY) || 0));
-            const blur = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowBlur) || 0));
-            const opacity = Math.max(0, Math.min(100, Number(this.metadata.colorConfig.shadowOpacity) || 0)) / 100;
-            const outerShadow = offsetY === 0 && blur === 0 && opacity === 0
-                ? ''
-                : '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(0, 0, 0, ' + opacity + ')';
+            const config = this.metadata.colorConfig;
+            const offsetY = Math.max(0, Math.min(100, Number(config.shadowOffsetY) || 0));
+            const blur = Math.max(0, Math.min(100, Number(config.shadowBlur) || 0));
+            const opacity = Math.max(0, Math.min(100, Number(config.shadowOpacity) || 0)) / 100;
+            const outerShadow = config.shadowEnabled && !(offsetY === 0 && blur === 0 && opacity === 0)
+                ? '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(0, 0, 0, ' + opacity + ')'
+                : '';
 
-            // Relieve interior solo vertical: luz arriba y sombra abajo, sin sombrear los laterales.
-            const topHighlight = 'inset 0 6px 6px -6px rgba(255, 255, 255, 0.45)';
-            const bottomShade = 'inset 0 -6px 6px -6px rgba(0, 0, 0, 0.25)';
+            // Relieve interior visible solo en los bordes superior e inferior.
+            // Se mantiene independiente de la opción de sombra exterior.
+            const topHighlight = 'inset 0 10px 8px -4px rgba(255, 255, 255, 0.8)';
+            const bottomShade = 'inset 0 -10px 8px -4px rgba(0, 0, 0, 0.45)';
 
             return [outerShadow, topHighlight, bottomShade].filter(Boolean).join(', ');
         },
