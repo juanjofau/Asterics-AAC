@@ -72,18 +72,24 @@ export default {
         },
         boxShadow() {
             const config = this.metadata.colorConfig;
-            const size = { height: this.oneElementSize && this.oneElementSize.height ? this.oneElementSize.height * (this.element.height || 1) : 100 };
-            const toPx = (value) => fontUtil.pctToPx(Number(value) || 0, size);
+            // Shadow percentages must be relative to the rendered cell, not the viewport.
+            // calculatedSize already accounts for the cell's margins and border.
+            const cellHeight = this.calculatedSize && this.calculatedSize.height > 0
+                ? this.calculatedSize.height
+                : (this.oneElementSize && this.oneElementSize.height
+                    ? this.oneElementSize.height * (this.element.height || 1)
+                    : 100);
+            const toPx = (value) => cellHeight * (Number(value) || 0) / 100;
             const toRgba = (hex, opacity) => {
                 const match = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || '');
                 return match ? `rgba(${parseInt(match[1], 16)}, ${parseInt(match[2], 16)}, ${parseInt(match[3], 16)}, ${opacity})` : (hex || '#000000');
             };
             const shadows = [];
             if (config.outerShadowEnabled) {
-                shadows.push(`${toPx(config.outerShadowOffsetX)}px ${toPx(config.outerShadowOffsetY)}px ${toPx(config.outerShadowBlur)}px ${toPx(config.outerShadowSpread)}px ${toRgba(config.outerShadowColor, 0.24)}`);
+                shadows.push(`${toPx(config.outerShadowOffsetX)}px ${toPx(config.outerShadowOffsetY)}px ${toPx(config.outerShadowBlur)}px ${toPx(config.outerShadowSpread)}px ${toRgba(config.outerShadowColor, 0.32)}`);
             }
             if (config.innerShadowEnabled) {
-                shadows.push(`inset ${toPx(config.innerShadowOffsetX)}px ${toPx(config.innerShadowOffsetY)}px ${toPx(config.innerShadowBlur)}px ${toPx(config.innerShadowSpread)}px ${toRgba(config.innerShadowColor, 0.2)}`);
+                shadows.push(`inset ${toPx(config.innerShadowOffsetX)}px ${toPx(config.innerShadowOffsetY)}px ${toPx(config.innerShadowBlur)}px ${toPx(config.innerShadowSpread)}px ${toRgba(config.innerShadowColor, 0.28)}`);
             }
             return shadows.length ? shadows.join(', ') : 'none';
         },
