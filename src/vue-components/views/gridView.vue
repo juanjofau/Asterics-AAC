@@ -708,6 +708,7 @@
     border: 0;
     background: transparent;
     box-shadow: none;
+    border-radius: 999px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -730,11 +731,17 @@
     outline-offset: 2px;
 }
 
+@media (hover: hover) and (pointer: fine) {
+    .floating-controls-trigger:hover {
+        background: rgba(128, 128, 128, 0.16);
+    }
+}
+
     .floating-controls-indicator {
     display: block;
     width: 6em;
-    height: 0.25em;
-    border-radius: 0.125em;
+    height: 0.4em;
+    border-radius: 999px;
     background: linear-gradient(
         to bottom,
         rgba(55, 55, 55, 0.85) 50%,
