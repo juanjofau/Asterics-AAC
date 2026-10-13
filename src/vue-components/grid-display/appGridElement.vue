@@ -1,7 +1,7 @@
 <template>
     <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
-         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; box-shadow: ${shadowStyles.outer}; z-index: ${metadata.colorConfig.outerShadowEnabled ? 1 : 'auto'}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
+         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; box-shadow: ${shadowStyles.outer}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" :metadata="metadata" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
