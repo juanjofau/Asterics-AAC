@@ -1,6 +1,6 @@
 <template>
     <div class="box" id="gridView" v-cloak>
-        <header class="srow header" role="toolbar" v-if="metadata" v-show="!metadata.fullscreen">
+        <header class="srow header" role="toolbar" v-if="metadata" v-show="!metadata.fullscreen && !metadata.locked">
             <header-icon class="left" v-show="!metadata.locked"></header-icon>
             <div class="btn-group left">
                 <button tabindex="30" v-show="!metadata.locked" @click="toEditGrid()" class="spaced small" :aria-label="$t('editingOn')"><i class="fas fa-pencil-alt"/> <span class="hide-mobile">{{ $t('editingOn') }}</span></button>
@@ -20,6 +20,25 @@
             <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
 
         </header>
+        <div v-if="metadata && (metadata.locked || metadata.fullscreen)" class="floating-controls">
+            <button v-if="metadata.locked && !metadata.fullscreen"
+                    tabindex="30"
+                    @click="unlock()"
+                    class="floating-control-button"
+                    :aria-label="$t('unlock')"
+                    :title="$t('unlock')">
+                <i class="fas fa-unlock"></i>
+                <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
+            </button>
+
+            <button tabindex="31"
+                    @click="toggleFullscreen()"
+                    class="floating-control-button"
+                    :aria-label="$t('fullscreen')"
+                    :title="$t('fullscreen')">
+                <i :class="metadata.fullscreen ? 'fas fa-compress' : 'fas fa-expand'"></i>
+            </button>
+        </div>
         <div class="srow content text-content" v-show="!renderGridData">
             <div class="grid-container grid-mask">
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
@@ -140,6 +159,12 @@
             ScanningModal, HeaderIcon
         },
         methods: {
+            toggleFullscreen() {
+                if (this.metadata.fullscreen) {
+                    return systemActionService.exitFullscreen();
+                }
+                return systemActionService.enterFullscreen();
+            },
             openModal(modalType) {
                 this.showModal = modalType;
                 stopInputMethods();
@@ -641,4 +666,30 @@
 </script>
 
 <style scoped>
+    .floating-controls {
+        position: fixed;
+        top: 0.2em;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: inline-flex;
+        gap: 0.15em;
+        opacity: 0.78;
+    }
+
+    .floating-controls:hover,
+    .floating-controls:focus-within {
+        opacity: 1;
+    }
+
+    .floating-control-button {
+        height: 1.4em;
+        min-width: 2.4em;
+        padding: 0 0.65em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25em;
+        line-height: 1;
+    }
 </style>
