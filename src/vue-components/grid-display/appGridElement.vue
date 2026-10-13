@@ -72,7 +72,7 @@ export default {
         },
         boxShadow() {
             const config = this.metadata.colorConfig;
-            const size = { height: this.oneElementSize && this.oneElementSize.height || 100 };
+            const size = { height: this.oneElementSize && this.oneElementSize.height ? this.oneElementSize.height * (this.element.height || 1) : 100 };
             const toPx = (value) => fontUtil.pctToPx(Number(value) || 0, size);
             const toRgba = (hex, opacity) => {
                 const match = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || '');
