@@ -197,7 +197,8 @@ export default {
                         thiz.$emit('moveend');
                         thiz.$emit('interactend');
                         setTimeout(() => {
-                            event.target.style.zIndex = 'unset';
+                            // Restore the stacking level required by outer shadows after dragging.
+                            event.target.style.zIndex = thiz.outerShadowEnabled ? 1 : 'unset';
                             thiz.noMoveId = null;
                         }, thiz.animationDurationMs + 100);
                     }
@@ -217,7 +218,8 @@ export default {
                     end(event) {
                         event.target.style.width = '';
                         event.target.style.height = '';
-                        event.target.style.zIndex = 0;
+                        // Keep shadow-enabled cells above their neighbors after resizing.
+                        event.target.style.zIndex = thiz.outerShadowEnabled ? 1 : 0;
                         let resizedElement = event.target;
                         thiz.handleResize(resizedElement, {
                             width: Math.round(event.rect.width / thiz.getRasterX()),
