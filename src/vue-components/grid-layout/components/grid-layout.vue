@@ -198,7 +198,7 @@ export default {
                         thiz.$emit('interactend');
                         setTimeout(() => {
                             // Restore the stacking level required by outer shadows after dragging.
-                            event.target.style.zIndex = thiz.outerShadowEnabled ? 1 : 'unset';
+                            event.target.style.zIndex = thiz.outerShadowEnabled ? 1 : 'auto';
                             thiz.noMoveId = null;
                         }, thiz.animationDurationMs + 100);
                     }
