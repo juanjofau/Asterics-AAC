@@ -1,5 +1,5 @@
 <template>
-    <component :is="tag || defaultTag" class="grid-layout-element" :style="`display: flex; grid-column-start:${x + 1}; grid-column-end:${x + 1 + width}; grid-row-start:${y + 1}; grid-row-end:${y + 1 + height}; ${elemCssFn(element)}`">
+    <component :is="tag || defaultTag" class="grid-layout-element" :style="`display: flex; grid-column-start:${x + 1}; grid-column-end:${x + 1 + width}; grid-row-start:${y + 1}; grid-row-end:${y + 1 + height}; z-index: ${outerShadowEnabled ? 1 : 'auto'}; ${elemCssFn(element)}`">
         <slot></slot>
     </component>
 </template>
@@ -7,7 +7,7 @@
 <script>
 
 export default {
-    props: ["x", "y", "width", "height", "tag", "element", "elemCssFn"],
+    props: ["x", "y", "width", "height", "tag", "element", "elemCssFn", "outerShadowEnabled"],
     data() {
         return {
             defaultTag: "div"
