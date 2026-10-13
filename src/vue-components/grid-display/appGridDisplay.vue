@@ -4,7 +4,7 @@
                      :elements="gridData.gridElements" :render-component="AppGridElement"
                      :background-color="gridData.backgroundColor || metadata.colorConfig.gridBackgroundColor"
                      :rows="gridData.rowCount" :columns="gridData.minColumnCount"
-                     :metadata="metadata" :one-element-size="oneElementSize" v-on="$listeners" v-bind="$attrs"
+                     :metadata="metadata" :outer-shadow-enabled="metadata.colorConfig.outerShadowEnabled" :one-element-size="oneElementSize" v-on="$listeners" v-bind="$attrs"
                      :show-resize-handle="editable" :editable="editable" :background-lines="editable"
                      :key-function="getKey" :elem-css-fn="elemCssFn">
         </grid-layout>
