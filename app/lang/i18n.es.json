@@ -1380,7 +1380,7 @@
   "cellShadowOffset": "Desplazamiento vertical de la sombra exterior",
   "cellShadowBlur": "Desenfoque de la sombra exterior",
   "cellShadowOpacity": "Opacidad de la sombra exterior",
-  "cellInnerShadow": "Sombra interior",
+  "enableCellInnerShadow": "Activar sombra interior",
   "cellInnerShadowOffset": "Desplazamiento interior",
   "cellInnerShadowBlur": "Desenfoque interior",
   "cellInnerShadowOpacity": "Opacidad de la sombra interior"
