@@ -13,7 +13,19 @@ class ColorConfig extends Model({
     borderWidth: [Number],
     elementMargin: [Number],
     borderRadius: [Number],
-    colorMode: [String]
+    colorMode: [String],
+    outerShadowEnabled: [Boolean],
+    outerShadowOffsetX: [Number],
+    outerShadowOffsetY: [Number],
+    outerShadowBlur: [Number],
+    outerShadowSpread: [Number],
+    outerShadowColor: [String],
+    innerShadowEnabled: [Boolean],
+    innerShadowOffsetX: [Number],
+    innerShadowOffsetY: [Number],
+    innerShadowBlur: [Number],
+    innerShadowSpread: [Number],
+    innerShadowColor: [String]
 }) {
     constructor(properties) {
         super(properties);
@@ -43,7 +55,19 @@ ColorConfig.defaults({
     borderWidth: ColorConfig.BORDER_WIDTH_BG_COLORED,
     elementMargin: 0.15,
     borderRadius: 0.4,
-    colorMode: ColorConfig.COLOR_MODE_BACKGROUND
+    colorMode: ColorConfig.COLOR_MODE_BACKGROUND,
+    outerShadowEnabled: false,
+    outerShadowOffsetX: 0,
+    outerShadowOffsetY: 0.25,
+    outerShadowBlur: 0.65,
+    outerShadowSpread: 0,
+    outerShadowColor: '#000000',
+    innerShadowEnabled: false,
+    innerShadowOffsetX: 0,
+    innerShadowOffsetY: 0.2,
+    innerShadowBlur: 0.65,
+    innerShadowSpread: 0,
+    innerShadowColor: '#000000'
 });
 
 export { ColorConfig };
