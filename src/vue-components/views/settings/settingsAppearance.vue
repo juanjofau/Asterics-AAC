@@ -168,13 +168,23 @@
                             <label for="shadowEnabled">{{ $t('enableCellShadow') }}</label>
                         </div>
                         <div class="srow">
-                            <slider-input label="cellShadowOffset" unit="px" id="shadowOffsetY" min="0" max="50" step="1" v-model.number="metadata.colorConfig.shadowOffsetY" @change="saveMetadata(metadata)"/>
+                            <slider-input label="cellShadowOffset" unit="%" id="shadowOffsetY" min="0" max="10" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.shadowOffsetY" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
-                            <slider-input label="cellShadowBlur" unit="px" id="shadowBlur" min="0" max="50" step="1" v-model.number="metadata.colorConfig.shadowBlur" @change="saveMetadata(metadata)"/>
+                            <slider-input label="cellShadowBlur" unit="%" id="shadowBlur" min="0" max="10" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.shadowBlur" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
                             <slider-input label="cellShadowOpacity" unit="%" id="shadowOpacity" min="0" max="100" step="1" v-model.number="metadata.colorConfig.shadowOpacity" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <h4>{{ $t('cellInnerShadow') }}</h4>
+                        <div class="srow">
+                            <slider-input label="cellInnerShadowOffset" unit="%" id="shadowInnerOffset" min="0" max="10" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.shadowInnerOffset" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="cellInnerShadowBlur" unit="%" id="shadowInnerBlur" min="0" max="10" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.shadowInnerBlur" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="cellInnerShadowOpacity" unit="%" id="shadowInnerOpacity" min="0" max="100" step="1" v-model.number="metadata.colorConfig.shadowInnerOpacity" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
                             <label class="three columns" for="colorScheme">
