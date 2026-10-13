@@ -73,11 +73,12 @@ export default {
         },
         shadowStyles() {
             const config = this.metadata.colorConfig;
-            // Shadow percentages are relative to the rendered cell height.
-            const cellHeight = this.calculatedSize && this.calculatedSize.height > 0
-                ? this.calculatedSize.height
-                : (this.oneElementSize && this.oneElementSize.height
-                    ? this.oneElementSize.height * (this.element.height || 1)
+            // Shadow percentages are relative to the full grid-cell height,
+            // not the inner content area after margins and borders are removed.
+            const cellHeight = this.oneElementSize && this.oneElementSize.height > 0
+                ? this.oneElementSize.height * (this.element.height || 1)
+                : (this.calculatedSize && this.calculatedSize.height > 0
+                    ? this.calculatedSize.height + 2 * this.getElementMargin() + 2 * this.getBorderWidth()
                     : 100);
             const toPx = (value) => cellHeight * (Number(value) || 0) / 100;
             const toRgba = (hex, opacity) => {
