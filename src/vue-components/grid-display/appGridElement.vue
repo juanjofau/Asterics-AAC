@@ -183,7 +183,11 @@ export default {
                 ? ''
                 : '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(0, 0, 0, ' + opacity + ')';
 
-            return outerShadow || 'none';
+            // Relieve interior solo vertical: luz arriba y sombra abajo, sin sombrear los laterales.
+            const topHighlight = 'inset 0 6px 6px -6px rgba(255, 255, 255, 0.45)';
+            const bottomShade = 'inset 0 -6px 6px -6px rgba(0, 0, 0, 0.25)';
+
+            return [outerShadow, topHighlight, bottomShade].filter(Boolean).join(', ');
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
