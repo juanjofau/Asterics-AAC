@@ -21,19 +21,20 @@
 
         </header>
         <div v-if="metadata && (metadata.locked || metadata.fullscreen)"
-             class="floating-controls"
-             @click="showFloatingControls()">
+             class="floating-controls">
             <button v-if="!floatingControlsVisible"
                     type="button"
+                    tabindex="30"
+                    @click="showFloatingControls()"
                     class="floating-controls-trigger"
-                    :aria-label="$t('fullscreen')"
-                    :title="$t('fullscreen')">
+                    :aria-label="$t('show')"
+                    :title="$t('show')">
                 <span class="floating-controls-indicator"></span>
             </button>
 
             <template v-else>
                 <button tabindex="30"
-                        @click="metadata.fullscreen ? systemActionService.exitFullscreen() : systemActionService.enterFullscreen()"
+                        @click="showFloatingControls(); metadata.fullscreen ? systemActionService.exitFullscreen() : systemActionService.enterFullscreen()"
                         class="floating-control-button"
                         :aria-label="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')"
                         :title="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')">
@@ -42,7 +43,7 @@
 
                 <button v-if="metadata.locked && !metadata.fullscreen"
                         tabindex="31"
-                        @click="unlock()"
+                        @click="showFloatingControls(); unlock()"
                         class="floating-control-button"
                         :aria-label="$t('unlock')"
                         :title="$t('unlock')">
@@ -185,6 +186,8 @@
                 stopInputMethods();
             },
             lock() {
+                this.floatingControlsVisible = false;
+                util.clearDebounce(FLOATING_CONTROLS_DEBOUNCE_KEY);
                 let thiz = this;
                 thiz.metadata.locked = true;
                 thiz.unlockCounter = UNLOCK_COUNT;
@@ -712,9 +715,9 @@
 
     .floating-controls-indicator {
         display: block;
-        width: 45px;
-        height: 4px;
-        border-radius: 2px;
+        width: 3em;
+        height: 0.25em;
+        border-radius: 0.125em;
         background: rgba(128, 128, 128, 0.65);
     }
 
