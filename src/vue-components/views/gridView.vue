@@ -21,6 +21,14 @@
 
         </header>
         <div v-if="metadata && (metadata.locked || metadata.fullscreen)" class="floating-controls">
+            <button tabindex="31"
+                    @click="toggleFullscreen()"
+                    class="floating-control-button"
+                    :aria-label="$t('fullscreen')"
+                    :title="$t('fullscreen')">
+                <i :class="metadata.fullscreen ? 'fas fa-compress' : 'fas fa-expand'"></i>
+            </button>
+
             <button v-if="metadata.locked && !metadata.fullscreen"
                     tabindex="30"
                     @click="unlock()"
@@ -29,14 +37,6 @@
                     :title="$t('unlock')">
                 <i class="fas fa-unlock"></i>
                 <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
-            </button>
-
-            <button tabindex="31"
-                    @click="toggleFullscreen()"
-                    class="floating-control-button"
-                    :aria-label="$t('fullscreen')"
-                    :title="$t('fullscreen')">
-                <i :class="metadata.fullscreen ? 'fas fa-compress' : 'fas fa-expand'"></i>
             </button>
         </div>
         <div class="srow content text-content" v-show="!renderGridData">
