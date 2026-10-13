@@ -58,14 +58,14 @@ ColorConfig.defaults({
     colorMode: ColorConfig.COLOR_MODE_BACKGROUND,
     outerShadowEnabled: false,
     outerShadowOffsetX: 0,
-    outerShadowOffsetY: 0.25,
-    outerShadowBlur: 0.65,
+    outerShadowOffsetY: 0.8,
+    outerShadowBlur: 2.5,
     outerShadowSpread: 0,
     outerShadowColor: '#000000',
     innerShadowEnabled: false,
     innerShadowOffsetX: 0,
-    innerShadowOffsetY: 0.2,
-    innerShadowBlur: 0.65,
+    innerShadowOffsetY: 0.6,
+    innerShadowBlur: 2,
     innerShadowSpread: 0,
     innerShadowColor: '#000000'
 });
