@@ -20,24 +20,36 @@
             <button tabindex="32" @click="systemActionService.enterFullscreen()" class="spaced small" :aria-label="$t('fullscreen')"><i class="fas fa-expand"/> <span class="hide-mobile">{{ $t('fullscreen') }}</span></button>
 
         </header>
-        <div v-if="metadata && (metadata.locked || metadata.fullscreen)" class="floating-controls">
-            <button tabindex="30"
-                    @click="metadata.fullscreen ? systemActionService.exitFullscreen() : systemActionService.enterFullscreen()"
-                    class="floating-control-button"
-                    :aria-label="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')"
-                    :title="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')">
-                <i :class="metadata.fullscreen ? 'fas fa-compress' : 'fas fa-expand'"></i>
+        <div v-if="metadata && (metadata.locked || metadata.fullscreen)"
+             class="floating-controls"
+             @click="showFloatingControls()">
+            <button v-if="!floatingControlsVisible"
+                    type="button"
+                    class="floating-controls-trigger"
+                    :aria-label="$t('fullscreen')"
+                    :title="$t('fullscreen')">
+                <span class="floating-controls-indicator"></span>
             </button>
 
-            <button v-if="metadata.locked && !metadata.fullscreen"
-                    tabindex="31"
-                    @click="unlock()"
-                    class="floating-control-button"
-                    :aria-label="$t('unlock')"
-                    :title="$t('unlock')">
-                <i class="fas fa-unlock"></i>
-                <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
-            </button>
+            <template v-else>
+                <button tabindex="30"
+                        @click="metadata.fullscreen ? systemActionService.exitFullscreen() : systemActionService.enterFullscreen()"
+                        class="floating-control-button"
+                        :aria-label="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')"
+                        :title="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')">
+                    <i :class="metadata.fullscreen ? 'fas fa-compress' : 'fas fa-expand'"></i>
+                </button>
+
+                <button v-if="metadata.locked && !metadata.fullscreen"
+                        tabindex="31"
+                        @click="unlock()"
+                        class="floating-control-button"
+                        :aria-label="$t('unlock')"
+                        :title="$t('unlock')">
+                    <i class="fas fa-unlock"></i>
+                    <span v-if="unlockCounter !== unlockCount">{{unlockCounter}}</span>
+                </button>
+            </template>
         </div>
         <div class="srow content text-content" v-show="!renderGridData">
             <div class="grid-container grid-mask">
@@ -110,6 +122,8 @@
 
     let vueApp = null;
     let UNLOCK_COUNT = 8;
+    let FLOATING_CONTROLS_TIMEOUT = 3000;
+    let FLOATING_CONTROLS_DEBOUNCE_KEY = 'FLOATING_CONTROLS_DEBOUNCE_KEY';
     let modalTypes = {
         MODAL_SCANNING: 'MODAL_SCANNING',
         MODAL_MOUSE: 'MODAL_MOUSE',
@@ -142,6 +156,7 @@
                 modalTypes: modalTypes,
                 unlockCount: UNLOCK_COUNT,
                 unlockCounter: UNLOCK_COUNT,
+                floatingControlsVisible: false,
                 MainVue: MainVue,
                 highlightTimeoutHandler: null,
                 highlightedElementId: null,
@@ -159,6 +174,12 @@
             ScanningModal, HeaderIcon
         },
         methods: {
+            showFloatingControls() {
+                this.floatingControlsVisible = true;
+                util.debounce(() => {
+                    this.floatingControlsVisible = false;
+                }, FLOATING_CONTROLS_TIMEOUT, FLOATING_CONTROLS_DEBOUNCE_KEY);
+            },
             openModal(modalType) {
                 this.showModal = modalType;
                 stopInputMethods();
@@ -510,6 +531,7 @@
             $(document).on(constants.EVENT_GRID_RERENDER, this.rerenderGrid);
         },
         beforeDestroy() {
+            util.clearDebounce(FLOATING_CONTROLS_DEBOUNCE_KEY);
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).off(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
@@ -674,6 +696,26 @@
     .floating-controls:hover,
     .floating-controls:focus-within {
         opacity: 1;
+    }
+
+    .floating-controls-trigger {
+        min-width: 3.5em;
+        min-height: 1.5em;
+        padding: 0.45em 0.35em;
+        border: 0;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .floating-controls-indicator {
+        display: block;
+        width: 45px;
+        height: 4px;
+        border-radius: 2px;
+        background: rgba(128, 128, 128, 0.65);
     }
 
     .floating-control-button {
