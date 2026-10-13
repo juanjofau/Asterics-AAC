@@ -746,7 +746,7 @@
     display: block;
     width: 6em;
     height: 0.6em;
-    border-radius: 999px;
+    border-radius: 0.3em;
     background: linear-gradient(
         to bottom,
         rgba(80, 80, 80, 1) 50%,
