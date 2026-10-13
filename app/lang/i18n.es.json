@@ -1377,7 +1377,11 @@
   "enableCellShadow": "Activar sombra de las celdas",
   "enableEmptyCellEffect": "Mostrar efecto de celda vacía",
   "emptyCellEffectOpacity": "Intensidad del efecto de celda vacía",
-  "cellShadowOffset": "Desplazamiento vertical de la sombra",
-  "cellShadowBlur": "Desenfoque de la sombra",
-  "cellShadowOpacity": "Opacidad de la sombra"
+  "cellShadowOffset": "Desplazamiento vertical de la sombra exterior",
+  "cellShadowBlur": "Desenfoque de la sombra exterior",
+  "cellShadowOpacity": "Opacidad de la sombra exterior",
+  "cellInnerShadow": "Sombra interior",
+  "cellInnerShadowOffset": "Desplazamiento interior",
+  "cellInnerShadowBlur": "Desenfoque interior",
+  "cellInnerShadowOpacity": "Opacidad de la sombra interior"
 }
