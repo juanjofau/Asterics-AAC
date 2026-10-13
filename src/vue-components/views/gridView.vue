@@ -702,7 +702,7 @@
     }
 
     .floating-controls-trigger {
-    min-width: 12em;
+    width: 12em;
     min-height: 1.5em;
     padding: 0.45em 0.35em;
     border: 0;
