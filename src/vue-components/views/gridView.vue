@@ -22,7 +22,7 @@
         </header>
         <div v-if="metadata && (metadata.locked || metadata.fullscreen)" class="floating-controls">
             <button tabindex="31"
-                    @click="toggleFullscreen()"
+                    @click="metadata.fullscreen ? systemActionService.exitFullscreen() : systemActionService.enterFullscreen()"
                     class="floating-control-button"
                     :aria-label="$t('fullscreen')"
                     :title="$t('fullscreen')">
@@ -159,12 +159,6 @@
             ScanningModal, HeaderIcon
         },
         methods: {
-            toggleFullscreen() {
-                if (this.metadata.fullscreen) {
-                    return systemActionService.exitFullscreen();
-                }
-                return systemActionService.enterFullscreen();
-            },
             openModal(modalType) {
                 this.showModal = modalType;
                 stopInputMethods();
