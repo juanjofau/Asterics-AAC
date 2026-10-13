@@ -174,19 +174,30 @@ export default {
         },
         shadowStyle() {
             const config = this.metadata.colorConfig;
-            const offsetY = Math.max(0, Math.min(100, Number(config.shadowOffsetY) || 0));
-            const blur = Math.max(0, Math.min(100, Number(config.shadowBlur) || 0));
+            const offsetY = Math.max(0, Math.min(10, Number(config.shadowOffsetY) || 0));
+            const blur = Math.max(0, Math.min(10, Number(config.shadowBlur) || 0));
             const opacity = Math.max(0, Math.min(100, Number(config.shadowOpacity) || 0)) / 100;
+            const offsetYPx = fontUtil.pctToPx(offsetY);
+            const blurPx = fontUtil.pctToPx(blur);
             const outerShadow = config.shadowEnabled && !(offsetY === 0 && blur === 0 && opacity === 0)
-                ? '0 ' + offsetY + 'px ' + blur + 'px 0 rgba(0, 0, 0, ' + opacity + ')'
+                ? '0 ' + offsetYPx + 'px ' + blurPx + 'px 0 rgba(0, 0, 0, ' + opacity + ')'
                 : '';
 
-            // Relieve interior visible solo en los bordes superior e inferior.
-            // Se mantiene independiente de la opción de sombra exterior.
-            const topHighlight = 'inset 0 10px 8px -4px rgba(255, 255, 255, 0.8)';
-            const bottomShade = 'inset 0 -10px 8px -4px rgba(0, 0, 0, 0.45)';
+            // Relieve interior simétrico: blanco arriba y negro abajo, con
+            // desplazamiento, desenfoque y opacidad compartidos.
+            const innerOffset = Math.max(0, Math.min(10, Number(config.shadowInnerOffset) || 0));
+            const innerBlur = Math.max(0, Math.min(10, Number(config.shadowInnerBlur) || 0));
+            const innerOpacity = Math.max(0, Math.min(100, Number(config.shadowInnerOpacity) || 0)) / 100;
+            const innerOffsetPx = fontUtil.pctToPx(innerOffset);
+            const innerBlurPx = fontUtil.pctToPx(innerBlur);
+            const innerShadows = innerOpacity > 0 && (innerOffset > 0 || innerBlur > 0)
+                ? [
+                    'inset 0 ' + innerOffsetPx + 'px ' + innerBlurPx + 'px 0 rgba(255, 255, 255, ' + innerOpacity + ')',
+                    'inset 0 -' + innerOffsetPx + 'px ' + innerBlurPx + 'px 0 rgba(0, 0, 0, ' + innerOpacity + ')'
+                ]
+                : [];
 
-            return [outerShadow, topHighlight, bottomShade].filter(Boolean).join(', ');
+            return [outerShadow].concat(innerShadows).filter(Boolean).join(', ');
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
