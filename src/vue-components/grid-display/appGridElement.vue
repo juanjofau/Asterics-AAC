@@ -74,12 +74,16 @@ export default {
             const config = this.metadata.colorConfig;
             const size = { height: this.oneElementSize && this.oneElementSize.height || 100 };
             const toPx = (value) => fontUtil.pctToPx(Number(value) || 0, size);
+            const toRgba = (hex, opacity) => {
+                const match = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || '');
+                return match ? `rgba(${parseInt(match[1], 16)}, ${parseInt(match[2], 16)}, ${parseInt(match[3], 16)}, ${opacity})` : (hex || '#000000');
+            };
             const shadows = [];
             if (config.outerShadowEnabled) {
-                shadows.push(`${toPx(config.outerShadowOffsetX)}px ${toPx(config.outerShadowOffsetY)}px ${toPx(config.outerShadowBlur)}px ${toPx(config.outerShadowSpread)}px ${config.outerShadowColor || '#000000'}`);
+                shadows.push(`${toPx(config.outerShadowOffsetX)}px ${toPx(config.outerShadowOffsetY)}px ${toPx(config.outerShadowBlur)}px ${toPx(config.outerShadowSpread)}px ${toRgba(config.outerShadowColor, 0.24)}`);
             }
             if (config.innerShadowEnabled) {
-                shadows.push(`inset ${toPx(config.innerShadowOffsetX)}px ${toPx(config.innerShadowOffsetY)}px ${toPx(config.innerShadowBlur)}px ${toPx(config.innerShadowSpread)}px ${config.innerShadowColor || '#000000'}`);
+                shadows.push(`inset ${toPx(config.innerShadowOffsetX)}px ${toPx(config.innerShadowOffsetY)}px ${toPx(config.innerShadowBlur)}px ${toPx(config.innerShadowSpread)}px ${toRgba(config.innerShadowColor, 0.2)}`);
             }
             return shadows.length ? shadows.join(', ') : 'none';
         },
