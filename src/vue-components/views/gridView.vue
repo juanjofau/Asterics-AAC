@@ -702,24 +702,45 @@
     }
 
     .floating-controls-trigger {
-        min-width: 3.5em;
-        min-height: 1.5em;
-        padding: 0.45em 0.35em;
-        border: 0;
-        background: transparent;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-    }
+    min-width: 3.5em;
+    min-height: 1.5em;
+    padding: 0.45em 0.35em;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.floating-controls-trigger:hover,
+.floating-controls-trigger:focus {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.floating-controls-trigger:focus {
+    outline: none;
+}
+
+.floating-controls-trigger:focus-visible {
+    outline: 2px solid lightblue;
+    outline-offset: 2px;
+}
 
     .floating-controls-indicator {
-        display: block;
-        width: 3em;
-        height: 0.25em;
-        border-radius: 0.125em;
-        background: rgba(128, 128, 128, 0.65);
-    }
+    display: block;
+    width: 6em;
+    height: 0.25em;
+    border-radius: 0.125em;
+    background: linear-gradient(
+        to bottom,
+        rgba(55, 55, 55, 0.85) 50%,
+        rgba(235, 235, 235, 0.9) 50%
+    );
+}
 
     .floating-control-button {
         height: 1.4em;
