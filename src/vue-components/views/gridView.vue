@@ -702,7 +702,7 @@
     }
 
     .floating-controls-trigger {
-    min-width: 3.5em;
+    min-width: 12em;
     min-height: 1.5em;
     padding: 0.45em 0.35em;
     border: 0;
@@ -745,12 +745,12 @@
     .floating-controls-indicator {
     display: block;
     width: 6em;
-    height: 0.4em;
+    height: 0.6em;
     border-radius: 999px;
     background: linear-gradient(
         to bottom,
-        rgba(55, 55, 55, 0.85) 50%,
-        rgba(235, 235, 235, 0.9) 50%
+        rgba(80, 80, 80, 1) 50%,
+        rgba(240, 240, 240, 1) 50%
     );
 }
 
