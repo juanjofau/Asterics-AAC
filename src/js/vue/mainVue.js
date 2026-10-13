@@ -15,6 +15,7 @@ import ProgressBarModal from '../../vue-components/modals/progressBarModal.vue';
 import SearchModal from "../../vue-components/modals/searchModal.vue";
 import MessageBox from "../../vue-components/modals/messageBox.vue";
 import { systemActionService } from '../service/systemActionService';
+import { stateService } from '../service/stateService';
 
 let MainVue = {};
 let app = null;
@@ -260,15 +261,19 @@ MainVue.init = function () {
                     );
                 });
                 inputEventHandler.global
-                    .onSwipedDown(openSidebarIfFullscreen)
-                    .onEscape(openSidebarIfFullscreen)
-                    .onExitFullscreen(openSidebarIfFullscreen);
+                    .onExitFullscreen(restoreSidebarAfterFullscreen);
                 inputEventHandler.global.startListening();
                 thiz.openSidebar();
 
-                async function openSidebarIfFullscreen() {
+                async function restoreSidebarAfterFullscreen() {
+                    let wasSidebarOpen = stateService.getState('sidebarBeforeFullscreen');
+                    stateService.setState('sidebarBeforeFullscreen', false);
+
                     await systemActionService.exitFullscreen();
-                    thiz.openSidebar();
+
+                    if (wasSidebarOpen) {
+                        thiz.openSidebar();
+                    }
                 }
             }
         });
