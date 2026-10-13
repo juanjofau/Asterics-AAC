@@ -24,8 +24,8 @@
             <button tabindex="30"
                     @click="metadata.fullscreen ? systemActionService.exitFullscreen() : systemActionService.enterFullscreen()"
                     class="floating-control-button"
-                    :aria-label="$t('fullscreen')"
-                    :title="$t('fullscreen')">
+                    :aria-label="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')"
+                    :title="metadata.fullscreen ? $t('SYS_LEAVE_FULLSCREEN') : $t('SYS_ENTER_FULLSCREEN')">
                 <i :class="metadata.fullscreen ? 'fas fa-compress' : 'fas fa-expand'"></i>
             </button>
 
