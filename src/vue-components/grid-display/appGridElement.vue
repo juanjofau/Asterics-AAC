@@ -190,7 +190,7 @@ export default {
             const innerOpacity = Math.max(0, Math.min(100, Number(config.shadowInnerOpacity) || 0)) / 100;
             const innerOffsetPx = fontUtil.pctToPx(innerOffset);
             const innerBlurPx = fontUtil.pctToPx(innerBlur);
-            const innerShadows = innerOpacity > 0 && (innerOffset > 0 || innerBlur > 0)
+            const innerShadows = config.shadowInnerEnabled && innerOpacity > 0 && (innerOffset > 0 || innerBlur > 0)
                 ? [
                     'inset 0 ' + innerOffsetPx + 'px ' + innerBlurPx + 'px 0 rgba(255, 255, 255, ' + innerOpacity + ')',
                     'inset 0 -' + innerOffsetPx + 'px ' + innerBlurPx + 'px 0 rgba(0, 0, 0, ' + innerOpacity + ')'
