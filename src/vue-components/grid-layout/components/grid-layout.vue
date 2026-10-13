@@ -219,7 +219,7 @@ export default {
                         event.target.style.width = '';
                         event.target.style.height = '';
                         // Keep shadow-enabled cells above their neighbors after resizing.
-                        event.target.style.zIndex = thiz.outerShadowEnabled ? 1 : 0;
+                        event.target.style.zIndex = thiz.outerShadowEnabled ? 1 : 'auto';
                         let resizedElement = event.target;
                         thiz.handleResize(resizedElement, {
                             width: Math.round(event.rect.width / thiz.getRasterX()),
