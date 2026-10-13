@@ -261,6 +261,8 @@ MainVue.init = function () {
                     );
                 });
                 inputEventHandler.global
+                    // .onSwipedDown(openSidebarIfFullscreen)
+                    // .onEscape(openSidebarIfFullscreen)
                     .onExitFullscreen(restoreSidebarAfterFullscreen);
                 inputEventHandler.global.startListening();
                 thiz.openSidebar();
