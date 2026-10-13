@@ -85,12 +85,14 @@ export default {
                 const match = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || '');
                 return match ? `rgba(${parseInt(match[1], 16)}, ${parseInt(match[2], 16)}, ${parseInt(match[3], 16)}, ${opacity})` : (hex || '#000000');
             };
+            const outerOpacity = Math.max(0, Math.min(100, Number(config.outerShadowOpacity === undefined ? 32 : config.outerShadowOpacity))) / 100;
+            const innerOpacity = Math.max(0, Math.min(100, Number(config.innerShadowOpacity === undefined ? 28 : config.innerShadowOpacity))) / 100;
             return {
                 outer: config.outerShadowEnabled
-                    ? `${toPx(config.outerShadowOffsetX)}px ${toPx(config.outerShadowOffsetY)}px ${toPx(config.outerShadowBlur)}px ${toPx(config.outerShadowSpread)}px ${toRgba(config.outerShadowColor, 0.32)}`
+                    ? `${toPx(config.outerShadowOffsetX)}px ${toPx(config.outerShadowOffsetY)}px ${toPx(config.outerShadowBlur)}px ${toPx(config.outerShadowSpread)}px ${toRgba(config.outerShadowColor, outerOpacity)}`
                     : 'none',
                 inner: config.innerShadowEnabled
-                    ? `inset ${toPx(config.innerShadowOffsetX)}px ${toPx(config.innerShadowOffsetY)}px ${toPx(config.innerShadowBlur)}px ${toPx(config.innerShadowSpread)}px ${toRgba(config.innerShadowColor, 0.28)}`
+                    ? `inset ${toPx(config.innerShadowOffsetX)}px ${toPx(config.innerShadowOffsetY)}px ${toPx(config.innerShadowBlur)}px ${toPx(config.innerShadowSpread)}px ${toRgba(config.innerShadowColor, innerOpacity)}`
                     : 'none'
             };
         },

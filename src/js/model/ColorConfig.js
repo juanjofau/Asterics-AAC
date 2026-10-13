@@ -20,12 +20,14 @@ class ColorConfig extends Model({
     outerShadowBlur: [Number],
     outerShadowSpread: [Number],
     outerShadowColor: [String],
+    outerShadowOpacity: [Number],
     innerShadowEnabled: [Boolean],
     innerShadowOffsetX: [Number],
     innerShadowOffsetY: [Number],
     innerShadowBlur: [Number],
     innerShadowSpread: [Number],
-    innerShadowColor: [String]
+    innerShadowColor: [String],
+    innerShadowOpacity: [Number]
 }) {
     constructor(properties) {
         super(properties);
@@ -62,12 +64,14 @@ ColorConfig.defaults({
     outerShadowBlur: 2.5,
     outerShadowSpread: 0,
     outerShadowColor: '#000000',
+    outerShadowOpacity: 32,
     innerShadowEnabled: false,
     innerShadowOffsetX: 0,
     innerShadowOffsetY: 0.6,
     innerShadowBlur: 2,
     innerShadowSpread: 0,
-    innerShadowColor: '#000000'
+    innerShadowColor: '#000000',
+    innerShadowOpacity: 28
 });
 
 export { ColorConfig };

@@ -127,6 +127,9 @@
                             <input id="outerShadowColor" class="five columns" type="color" v-model="metadata.colorConfig.outerShadowColor" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
+                            <slider-input label="outerShadowOpacity" unit="%" id="outerShadowOpacity" min="0" max="100" step="1" :decimals="0" v-model.number="metadata.colorConfig.outerShadowOpacity" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
                             <slider-input label="outerShadowHorizontalOffset" unit="%" id="outerShadowOffsetX" min="-5" max="5" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.outerShadowOffsetX" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
@@ -145,6 +148,9 @@
                         <div class="srow">
                             <label class="three columns" for="innerShadowColor">{{ $t('innerShadowColor') }}</label>
                             <input id="innerShadowColor" class="five columns" type="color" v-model="metadata.colorConfig.innerShadowColor" @change="saveMetadata(metadata)"/>
+                        </div>
+                        <div class="srow">
+                            <slider-input label="innerShadowOpacity" unit="%" id="innerShadowOpacity" min="0" max="100" step="1" :decimals="0" v-model.number="metadata.colorConfig.innerShadowOpacity" @change="saveMetadata(metadata)"/>
                         </div>
                         <div class="srow">
                             <slider-input label="innerShadowHorizontalOffset" unit="%" id="innerShadowOffsetX" min="-5" max="5" step="0.1" :decimals="1" v-model.number="metadata.colorConfig.innerShadowOffsetX" @change="saveMetadata(metadata)"/>
@@ -248,6 +254,8 @@
                     config.innerShadowBlur = 0;
                     config.innerShadowSpread = 0;
                 } else if (preset === 'soft') {
+                    config.outerShadowOpacity = 28;
+                    config.innerShadowOpacity = 28;
                     config.outerShadowEnabled = true;
                     config.outerShadowOffsetX = 0;
                     config.outerShadowOffsetY = 0.7;
@@ -259,6 +267,8 @@
                     config.innerShadowBlur = 0;
                     config.innerShadowSpread = 0;
                 } else if (preset === 'raised') {
+                    config.outerShadowOpacity = 40;
+                    config.innerShadowOpacity = 20;
                     config.outerShadowEnabled = true;
                     config.outerShadowOffsetX = 0;
                     config.outerShadowOffsetY = 1;
@@ -270,6 +280,8 @@
                     config.innerShadowBlur = 1.5;
                     config.innerShadowSpread = 0;
                 } else if (preset === 'pressed') {
+                    config.outerShadowOpacity = 32;
+                    config.innerShadowOpacity = 38;
                     config.outerShadowEnabled = false;
                     config.outerShadowOffsetX = 0;
                     config.outerShadowOffsetY = 0;
