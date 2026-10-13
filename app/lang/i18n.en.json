@@ -1381,7 +1381,11 @@
   "enableCellShadow": "Enable cell shadow",
   "enableEmptyCellEffect": "Show empty cell effect",
   "emptyCellEffectOpacity": "Empty cell effect intensity",
-  "cellShadowOffset": "Shadow vertical offset",
-  "cellShadowBlur": "Shadow blur",
-  "cellShadowOpacity": "Shadow opacity"
+  "cellShadowOffset": "Outer shadow vertical offset",
+  "cellShadowBlur": "Outer shadow blur",
+  "cellShadowOpacity": "Outer shadow opacity",
+  "cellInnerShadow": "Inner shadow",
+  "cellInnerShadowOffset": "Inner shadow offset",
+  "cellInnerShadowBlur": "Inner shadow blur",
+  "cellInnerShadowOpacity": "Inner shadow opacity"
 }
