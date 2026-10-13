@@ -238,7 +238,15 @@
                 const config = this.metadata.colorConfig;
                 if (preset === 'flat') {
                     config.outerShadowEnabled = false;
+                    config.outerShadowOffsetX = 0;
+                    config.outerShadowOffsetY = 0;
+                    config.outerShadowBlur = 0;
+                    config.outerShadowSpread = 0;
                     config.innerShadowEnabled = false;
+                    config.innerShadowOffsetX = 0;
+                    config.innerShadowOffsetY = 0;
+                    config.innerShadowBlur = 0;
+                    config.innerShadowSpread = 0;
                 } else if (preset === 'soft') {
                     config.outerShadowEnabled = true;
                     config.outerShadowOffsetX = 0;
@@ -246,6 +254,10 @@
                     config.outerShadowBlur = 2.5;
                     config.outerShadowSpread = 0;
                     config.innerShadowEnabled = false;
+                    config.innerShadowOffsetX = 0;
+                    config.innerShadowOffsetY = 0;
+                    config.innerShadowBlur = 0;
+                    config.innerShadowSpread = 0;
                 } else if (preset === 'raised') {
                     config.outerShadowEnabled = true;
                     config.outerShadowOffsetX = 0;
@@ -259,6 +271,10 @@
                     config.innerShadowSpread = 0;
                 } else if (preset === 'pressed') {
                     config.outerShadowEnabled = false;
+                    config.outerShadowOffsetX = 0;
+                    config.outerShadowOffsetY = 0;
+                    config.outerShadowBlur = 0;
+                    config.outerShadowSpread = 0;
                     config.innerShadowEnabled = true;
                     config.innerShadowOffsetX = 0;
                     config.innerShadowOffsetY = 0.8;
