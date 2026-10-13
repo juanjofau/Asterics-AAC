@@ -708,7 +708,8 @@
     border: 0;
     background: transparent;
     box-shadow: none;
-    border-radius: 999px;
+    border-radius: 2px;
+    -webkit-tap-highlight-color: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -729,6 +730,10 @@
 .floating-controls-trigger:focus-visible {
     outline: 2px solid lightblue;
     outline-offset: 2px;
+}
+
+.floating-controls-trigger:active {
+    background: rgba(128, 128, 128, 0.16);
 }
 
 @media (hover: hover) and (pointer: fine) {
