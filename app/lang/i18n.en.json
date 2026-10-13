@@ -1384,7 +1384,7 @@
   "cellShadowOffset": "Outer shadow vertical offset",
   "cellShadowBlur": "Outer shadow blur",
   "cellShadowOpacity": "Outer shadow opacity",
-  "cellInnerShadow": "Inner shadow",
+  "enableCellInnerShadow": "Enable inner shadow",
   "cellInnerShadowOffset": "Inner shadow offset",
   "cellInnerShadowBlur": "Inner shadow blur",
   "cellInnerShadowOpacity": "Inner shadow opacity"
