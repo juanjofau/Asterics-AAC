@@ -21,7 +21,7 @@
 
         </header>
         <div v-if="metadata && (metadata.locked || metadata.fullscreen)" class="floating-controls">
-            <button tabindex="31"
+            <button tabindex="30"
                     @click="metadata.fullscreen ? systemActionService.exitFullscreen() : systemActionService.enterFullscreen()"
                     class="floating-control-button"
                     :aria-label="$t('fullscreen')"
@@ -30,7 +30,7 @@
             </button>
 
             <button v-if="metadata.locked && !metadata.fullscreen"
-                    tabindex="30"
+                    tabindex="31"
                     @click="unlock()"
                     class="floating-control-button"
                     :aria-label="$t('unlock')"
