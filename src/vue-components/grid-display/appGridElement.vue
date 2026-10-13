@@ -1,7 +1,7 @@
 <template>
     <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
-         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; box-shadow: ${boxShadow}; z-index: ${metadata.colorConfig.outerShadowEnabled ? 1 : 'auto'}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
+         border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; box-shadow: ${shadowStyles.outer}; z-index: ${metadata.colorConfig.outerShadowEnabled ? 1 : 'auto'}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
         <grid-element-collect v-if="element.type === GridElement.ELEMENT_TYPE_COLLECT" :metadata="metadata" aria-hidden="true"/>
         <grid-element-youtube v-if="element.type === GridElement.ELEMENT_TYPE_YT_PLAYER" :grid-element="element" aria-hidden="true"/>
@@ -10,6 +10,7 @@
         <grid-element-matrix-conversation v-if="element.type === GridElement.ELEMENT_TYPE_MATRIX_CONVERSATION" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" aria-hidden="true"/>
         <grid-element-child-placeholder v-if="element.type === GridElement.ELEMENT_TYPE_DYNAMIC_GRID_PLACEHOLDER"/>
         <grid-element-hints :grid-element="element" :metadata="metadata" :background-color="backgroundColor"/>
+        <div v-if="metadata.colorConfig.innerShadowEnabled" class="inner-shadow-overlay" :style="`border-radius: ${borderRadiusPx}px; box-shadow: ${shadowStyles.inner}`" aria-hidden="true"></div>
         <div v-if="showResizeHandle" class="ui-resizable-handle ui-icon ui-icon-grip-diagonal-se" style="position: absolute; z-index: 2; bottom: 0; right: 0; cursor: se-resize;"></div>
     </div>
 </template>
@@ -70,10 +71,9 @@ export default {
         borderColor() {
             return colorUtil.getBorderColor(this.element, this.metadata);
         },
-        boxShadow() {
+        shadowStyles() {
             const config = this.metadata.colorConfig;
-            // Shadow percentages must be relative to the rendered cell, not the viewport.
-            // calculatedSize already accounts for the cell's margins and border.
+            // Shadow percentages are relative to the rendered cell height.
             const cellHeight = this.calculatedSize && this.calculatedSize.height > 0
                 ? this.calculatedSize.height
                 : (this.oneElementSize && this.oneElementSize.height
@@ -84,14 +84,14 @@ export default {
                 const match = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex || '');
                 return match ? `rgba(${parseInt(match[1], 16)}, ${parseInt(match[2], 16)}, ${parseInt(match[3], 16)}, ${opacity})` : (hex || '#000000');
             };
-            const shadows = [];
-            if (config.outerShadowEnabled) {
-                shadows.push(`${toPx(config.outerShadowOffsetX)}px ${toPx(config.outerShadowOffsetY)}px ${toPx(config.outerShadowBlur)}px ${toPx(config.outerShadowSpread)}px ${toRgba(config.outerShadowColor, 0.32)}`);
-            }
-            if (config.innerShadowEnabled) {
-                shadows.push(`inset ${toPx(config.innerShadowOffsetX)}px ${toPx(config.innerShadowOffsetY)}px ${toPx(config.innerShadowBlur)}px ${toPx(config.innerShadowSpread)}px ${toRgba(config.innerShadowColor, 0.28)}`);
-            }
-            return shadows.length ? shadows.join(', ') : 'none';
+            return {
+                outer: config.outerShadowEnabled
+                    ? `${toPx(config.outerShadowOffsetX)}px ${toPx(config.outerShadowOffsetY)}px ${toPx(config.outerShadowBlur)}px ${toPx(config.outerShadowSpread)}px ${toRgba(config.outerShadowColor, 0.32)}`
+                    : 'none',
+                inner: config.innerShadowEnabled
+                    ? `inset ${toPx(config.innerShadowOffsetX)}px ${toPx(config.innerShadowOffsetY)}px ${toPx(config.innerShadowBlur)}px ${toPx(config.innerShadowSpread)}px ${toRgba(config.innerShadowColor, 0.28)}`
+                    : 'none'
+            };
         },
         cursorType() {
             return gridUtil.getCursorType(this.metadata, "pointer");
@@ -210,5 +210,12 @@ export default {
     flex: 1 1 auto;
     overflow: hidden;
     position: relative;
+}
+
+.inner-shadow-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
 }
 </style>
