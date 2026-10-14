@@ -693,13 +693,6 @@
         z-index: 1000;
         display: inline-flex;
         gap: 0.15em;
-        opacity: 0.78;
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-        .floating-controls:hover {
-            opacity: 1;
-        }
     }
 
     .floating-controls-trigger {
@@ -751,6 +744,12 @@
         rgba(240, 240, 240, 1) 50%
     );
 }
+
+    @media (hover: hover) and (pointer: fine) {
+        .floating-controls-trigger:hover .floating-controls-indicator {
+            background: #DBF4FF;
+        }
+    }
 
     .floating-control-button {
         height: 1.6em;
