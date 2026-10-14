@@ -746,8 +746,12 @@
 }
 
     @media (hover: hover) and (pointer: fine) {
-        .floating-controls-trigger:hover .floating-controls-indicator {
-            background: #DBF4FF;
+        .floating-controls-trigger:hover:not(:active) .floating-controls-indicator {
+            background: linear-gradient(
+                to bottom,
+                rgba(115, 115, 115, 1) 50%,
+                rgba(200, 200, 200, 1) 50%
+            );
         }
     }
 
