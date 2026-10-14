@@ -19,6 +19,12 @@ import { stateService } from '../service/stateService';
 
 let MainVue = {};
 let app = null;
+
+const FULLSCREEN_EXIT_START_RATIO = 0.10;
+const FULLSCREEN_EXIT_DISTANCE_RATIO = 0.15;
+const FULLSCREEN_EXIT_MIN_DISTANCE = 100;
+
+let fullscreenExitStartY = null;
 let modalTypes = {
     MODAL_SEARCH: 'MODAL_SEARCH',
     MODAL_PROGRESSBAR: 'MODAL_PROGRESSBAR',
@@ -260,11 +266,12 @@ MainVue.init = function () {
                         constants.EVENT_GRID_RESIZE
                     );
                 });
+                document.addEventListener('touchstart', onFullscreenTouchStart, { capture: true, passive: true });
+                document.addEventListener('touchmove', onFullscreenTouchMove, { capture: true, passive: true });
+                document.addEventListener('touchend', resetFullscreenTouch, true);
+                document.addEventListener('touchcancel', resetFullscreenTouch, true);
+
                 inputEventHandler.global
-                    .onSwipedDown(exitFullscreenFromTop, {
-                        maxStartRatio: 0.10,
-                        minDistanceRatio: 0.15
-                    })
                     // .onEscape(openSidebarIfFullscreen)
                     .onExitFullscreen(restoreSidebarAfterFullscreen);
                 inputEventHandler.global.startListening();
@@ -286,10 +293,49 @@ MainVue.init = function () {
     });
 };
 
-function exitFullscreenFromTop() {
-    if (util.isFullscreen()) {
+function onFullscreenTouchStart(event) {
+    resetFullscreenTouch();
+
+    if (!util.isFullscreen() || event.touches.length !== 1) {
+        return;
+    }
+
+    let startY = event.touches[0].clientY;
+
+    if (startY <= window.innerHeight * FULLSCREEN_EXIT_START_RATIO) {
+        fullscreenExitStartY = startY;
+    }
+}
+
+function onFullscreenTouchMove(event) {
+    if (fullscreenExitStartY === null) {
+        return;
+    }
+
+    if (event.touches.length !== 1) {
+        resetFullscreenTouch();
+        return;
+    }
+
+    if (isFullscreenExitSwipe(event.touches[0].clientY)) {
+        resetFullscreenTouch();
         util.closeFullscreen();
     }
+}
+
+function isFullscreenExitSwipe(currentY) {
+    let minDistance = Math.max(
+        FULLSCREEN_EXIT_MIN_DISTANCE,
+        window.innerHeight * FULLSCREEN_EXIT_DISTANCE_RATIO
+    );
+
+    return util.isFullscreen() &&
+        fullscreenExitStartY !== null &&
+        currentY - fullscreenExitStartY > minDistance;
+}
+
+function resetFullscreenTouch() {
+    fullscreenExitStartY = null;
 }
 
 
