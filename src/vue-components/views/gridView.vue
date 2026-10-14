@@ -696,13 +696,14 @@
         opacity: 0.78;
     }
 
-    .floating-controls:hover,
-    .floating-controls:focus-within {
-        opacity: 1;
+    @media (hover: hover) and (pointer: fine) {
+        .floating-controls:hover {
+            opacity: 1;
+        }
     }
 
     .floating-controls-trigger {
-    width: 12em;
+    width: 8em;
     min-height: 1.5em;
     padding: 0.45em 0.35em;
     border: 0;
@@ -733,20 +734,20 @@
 }
 
 .floating-controls-trigger:active {
-    background: rgba(128, 128, 128, 0.16);
+    background: transparent;
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .floating-controls-trigger:hover {
+    .floating-controls-trigger:hover:not(:active) {
         background: rgba(128, 128, 128, 0.16);
     }
 }
 
     .floating-controls-indicator {
     display: block;
-    width: 6em;
-    height: 0.6em;
-    border-radius: 0.3em;
+    width: 4em;
+    height: 0.4em;
+    border-radius: 0.2em;
     background: linear-gradient(
         to bottom,
         rgba(80, 80, 80, 1) 50%,
