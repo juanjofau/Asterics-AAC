@@ -260,29 +260,11 @@ MainVue.init = function () {
                         constants.EVENT_GRID_RESIZE
                     );
                 });
-                let fullscreenSwipeStartY = null;
-
                 inputEventHandler.global
-                    .onTouchStart(event => {
-                        fullscreenSwipeStartY = util.isFullscreen() && event.touches.length === 1 &&
-                            event.touches[0].clientY <= window.innerHeight * 0.10
-                            ? event.touches[0].clientY : null;
+                    .onSwipedDown(exitFullscreenFromTop, {
+                        maxStartRatio: 0.10,
+                        minDistanceRatio: 0.15
                     })
-                    .onTouchMove(event => {
-                        if (fullscreenSwipeStartY === null) return;
-                        if (event.touches.length !== 1) {
-                            fullscreenSwipeStartY = null;
-                            return;
-                        }
-                        if (event.touches[0].clientY - fullscreenSwipeStartY >= window.innerHeight * 0.15) {
-                            fullscreenSwipeStartY = null;
-                            util.closeFullscreen();
-                        }
-                    })
-                    .onTouchEnd(() => {
-                        fullscreenSwipeStartY = null;
-                    })
-                    // .onSwipedDown(openSidebarIfFullscreen)
                     // .onEscape(openSidebarIfFullscreen)
                     .onExitFullscreen(restoreSidebarAfterFullscreen);
                 inputEventHandler.global.startListening();
@@ -303,6 +285,13 @@ MainVue.init = function () {
         return Promise.resolve();
     });
 };
+
+function exitFullscreenFromTop() {
+    if (util.isFullscreen()) {
+        util.closeFullscreen();
+    }
+}
+
 
 function setupContextMenu() {
     let CONTEXT_ADD_ONLINE = 'CONTEXT_ADD_ONLINE';

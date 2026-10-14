@@ -37,10 +37,12 @@ function Constructor() {
     // options
     let touchMoveLength = 100;
     let mouseBorderThreshold = 5;
+    let swipeDownOptions = null;
 
     // internal
     let _touchMoveBeginPosX = null;
     let _touchMoveBeginPosY = null;
+    let _touchStartPosY = null;
     let mouseBorderHandlers = [];
     let swipeUpHandlers = [];
     let swipeDownHandlers = [];
@@ -114,7 +116,8 @@ function Constructor() {
         return registerHandler(fn, mouseBorderHandlers);
     };
 
-    thiz.onSwipedDown = function (fn) {
+    thiz.onSwipedDown = function (fn, options = null) {
+        swipeDownOptions = options;
         return registerHandler(fn, swipeDownHandlers);
     };
 
@@ -296,7 +299,7 @@ function Constructor() {
         if (!_touchMoveBeginPosY || !_touchMoveBeginPosX) {
             _touchMoveBeginPosY = event.touches[0].clientY;
             _touchMoveBeginPosX = event.touches[0].clientX;
-        } else if (event.touches[0].clientY > _touchMoveBeginPosY + touchMoveLength) {
+        } else if (isSwipeDown(event)) {
             log.debug('swipe down.');
             _touchMoveBeginPosY = null;
             callHandlers(swipeDownHandlers);
@@ -315,6 +318,25 @@ function Constructor() {
         }
     }
 
+    function isSwipeDown(event) {
+        if (swipeDownOptions && event.touches.length !== 1) {
+            return false;
+        }
+
+        let startY = swipeDownOptions && _touchStartPosY !== null
+            ? _touchStartPosY
+            : _touchMoveBeginPosY;
+
+        let minDistance = swipeDownOptions
+            ? Math.max(touchMoveLength, window.innerHeight * swipeDownOptions.minDistanceRatio)
+            : touchMoveLength;
+
+        return event.touches[0].clientY > startY + minDistance &&
+            (!swipeDownOptions ||
+                startY <= window.innerHeight * swipeDownOptions.maxStartRatio);
+    }
+
+
     function touchEndListener(event) {
         keyUpListener({
             keyCode: InputEventKey.KEY_TAP,
@@ -323,9 +345,11 @@ function Constructor() {
         callHandlers(touchEndHandlers, [event], true);
         _touchMoveBeginPosX = null;
         _touchMoveBeginPosY = null;
+        _touchStartPosY = null;
     }
 
     function touchStartListener(event) {
+        _touchStartPosY = event.touches.length === 1 ? event.touches[0].clientY : null;
         keyDownListener({
             keyCode: InputEventKey.KEY_TAP,
             preventDefault: () => {}
