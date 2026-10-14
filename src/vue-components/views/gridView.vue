@@ -709,6 +709,7 @@
     border: 0;
     background: transparent;
     box-shadow: none;
+    transition: none;
     border-radius: 2px;
     -webkit-tap-highlight-color: transparent;
     display: flex;
@@ -737,11 +738,7 @@
     background: transparent;
 }
 
-@media (hover: hover) and (pointer: fine) {
-    .floating-controls-trigger:hover:not(:active) {
-        background: rgba(128, 128, 128, 0.16);
-    }
-}
+
 
     .floating-controls-indicator {
     display: block;
