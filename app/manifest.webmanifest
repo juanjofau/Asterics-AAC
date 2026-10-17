@@ -3,7 +3,6 @@
    "short_name":"Asterics",
    "start_url":"../",
    "id":"/",
-   //"display":"standalone",
    "display":"fullscreen",
 
    "background_color":"#fff",
