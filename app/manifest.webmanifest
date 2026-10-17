@@ -3,7 +3,9 @@
    "short_name":"Asterics",
    "start_url":"../",
    "id":"/",
-   "display":"standalone",
+   //"display":"standalone",
+   "display":"fullscreen",
+
    "background_color":"#fff",
    "description":"Free and simple to use app for augmentative and alternative communication (AAC) with offline support, flexible input methods and media access",
    "icons":[
