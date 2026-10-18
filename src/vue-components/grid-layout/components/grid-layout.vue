@@ -249,7 +249,11 @@ export default {
                 placedElements.push(candidate);
             }
 
-            updatedElements = placedElements;
+            // Preserve the original array order (which can affect rendering)
+            // while applying the final, collision-free coordinates.
+            updatedElements = updatedElements.map(element =>
+                placedElements.find(placed => String(placed.id) === String(element.id))
+            );
             this.$emit("changed", updatedElements);
             this.reinit();
         },
