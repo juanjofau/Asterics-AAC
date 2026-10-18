@@ -174,26 +174,26 @@ export default {
                 return;
             }
             const movingIds = elementIds.map(id => String(id));
-            const movingElements = this.elements.filter(element => movingIds.includes(String(element.id)));
+            const originalElements = this.elements.map(element => ({ ...element }));
+            const movingElements = originalElements.filter(element => movingIds.includes(String(element.id)));
             if (movingElements.length !== movingIds.length) {
                 return;
             }
-            const movingIdSet = new Set(movingIds);
-            const updatedElements = this.elements.map(element => ({ ...element }));
-            const moved = updatedElements.filter(element => movingIdSet.has(String(element.id)));
-            moved.forEach(element => {
-                element.x += diff.x;
-                element.y += diff.y;
-            });
-            if (moved.some(element => element.x < 0 || element.y < 0)) {
-                return;
-            }
-            const stationary = updatedElements.filter(element => !movingIdSet.has(String(element.id)));
-            const overlaps = (a, b) =>
-                a.x < b.x + b.width && a.x + a.width > b.x &&
-                a.y < b.y + b.height && a.y + a.height > b.y;
-            if (moved.some(element => stationary.some(other => overlaps(element, other)))) {
-                return;
+
+            // Give each selected cell its intended drop position, then reuse the
+            // same collision/repositioning logic as a single-cell move, one cell
+            // at a time. Always calculate targets from the original layout so a
+            // previous collision resolution cannot apply the group offset twice.
+            let updatedElements = originalElements.map(element => ({ ...element }));
+            for (const movingElement of movingElements) {
+                const target = updatedElements.find(element => String(element.id) === String(movingElement.id));
+                target.x = movingElement.x + diff.x;
+                target.y = movingElement.y + diff.y;
+                updatedElements = gridLayoutUtil.resolveCollisions(updatedElements, target, {
+                    diff: diff,
+                    gridWidth: this.columns,
+                    gridHeight: this.rows
+                });
             }
             this.$emit("changed", updatedElements);
             this.reinit();
