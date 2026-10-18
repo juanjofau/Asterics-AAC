@@ -428,18 +428,13 @@ export default {
     top: 0;
     left: 0;
     box-sizing: border-box;
-    border: 3px dashed #173b70;
+    background:
+        repeating-linear-gradient(90deg, #173b70 0 7px, #d4d9e2 7px 14px) top / 100% 3px repeat-x,
+        repeating-linear-gradient(90deg, #173b70 0 7px, #d4d9e2 7px 14px) bottom / 100% 3px repeat-x,
+        repeating-linear-gradient(0deg, #173b70 0 7px, #d4d9e2 7px 14px) left / 3px 100% repeat-y,
+        repeating-linear-gradient(0deg, #173b70 0 7px, #d4d9e2 7px 14px) right / 3px 100% repeat-y;
     pointer-events: none;
     z-index: 10;
-}
-
-.grid-minimum-bounds::after {
-    content: "";
-    position: absolute;
-    inset: -3px;
-    border: 3px dashed #d4d9e2;
-    pointer-events: none;
-    z-index: -1;
 }
 
 .grid-layout {
