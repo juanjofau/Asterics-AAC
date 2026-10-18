@@ -42,7 +42,11 @@ export default {
     },
     methods: {
         recalculate() {
-            let containerSize = this.$refs.mainContainer.getBoundingClientRect(); // don't use async util.getElementSize since it leads to problems in gridView initializing input methods too early
+            // Measure the actual grid area; edit-mode row/column labels take up space around it.
+            let gridContainer = this.$refs.gridLayout
+                ? this.$refs.gridLayout.$el.querySelector('.grid-content') || this.$refs.gridLayout.$el
+                : this.$refs.mainContainer;
+            let containerSize = gridContainer.getBoundingClientRect(); // don't use async util.getElementSize since it leads to problems in gridView initializing input methods too early
             let oneElementSize = gridUtil.getOneElementSize(containerSize, this.gridData);
             if (!this.oneElementSize || this.oneElementSize.width !== oneElementSize.width || this.oneElementSize.height !== oneElementSize.height) {
                 this.oneElementSize = oneElementSize;
