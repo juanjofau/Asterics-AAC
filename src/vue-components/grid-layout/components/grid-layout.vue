@@ -193,9 +193,13 @@ export default {
                 return updated;
             });
 
-            // Reuse the single-cell collision/repositioning logic for each cell.
-            // Targets are based on the original layout, so a previous collision
-            // resolution cannot apply the group offset twice.
+            // Resolve collisions sequentially, but do not use the single-cell
+            // "exact drop swaps the conflicting cell backwards" rule here.
+            // In a group move that can put an unselected cell onto another
+            // selected cell (e.g. moving A+B right over C would move C back
+            // onto A). Instead use the regular push/reflow path for each
+            // collision, while preserving the original movement direction.
+            const groupDiff = { ...diff, exact: false };
             for (const movingElement of movingElements) {
                 // Use the element's current position in the evolving layout.
                 // resolveCollisions may already have repositioned it while
@@ -203,7 +207,7 @@ export default {
                 // reintroduce an overlap that was just resolved.
                 const target = updatedElements.find(element => String(element.id) === String(movingElement.id));
                 updatedElements = gridLayoutUtil.resolveCollisions(updatedElements, target, {
-                    diff: diff,
+                    diff: groupDiff,
                     gridWidth: this.columns,
                     gridHeight: this.rows
                 });
