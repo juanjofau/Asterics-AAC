@@ -77,6 +77,60 @@
         <div class="srow content d-flex" v-if="showGrid && renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
             <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata" :elem-css-fn="(elem) => gridUtil.getElemBackgroundCss(elem, renderGridData, globalGridData, metadata.colorConfig.gridBackgroundColor)"/>
         </div>
+
+        <aside class="debug-panel" aria-label="Diagnóstico de la aplicación">
+            <div class="debug-panel-header">
+                <strong>DEBUG · Prueba funcional</strong>
+                <button type="button" class="debug-panel-collapse" @click="debugExpanded = !debugExpanded"
+                        :aria-expanded="String(debugExpanded)" :title="debugExpanded ? 'Contraer diagnóstico' : 'Expandir diagnóstico'">
+                    {{ debugExpanded ? '−' : '+' }}
+                </button>
+            </div>
+            <div v-show="debugExpanded">
+                <div class="debug-panel-tabs" role="tablist" aria-label="Tipo de diagnóstico">
+                    <button type="button" :class="{ active: debugTab === 'general' }" @click="debugTab = 'general'">General</button>
+                    <button type="button" :class="{ active: debugTab === 'grid' }" @click="debugTab = 'grid'">Tablero</button>
+                </div>
+                <div v-if="debugTab === 'general'" class="debug-panel-content">
+                    <div class="debug-section-title">Pantalla y navegador</div>
+                    <div class="debug-metric"><span>Pantalla informada</span><strong>{{ debugScreen.screenWidth }} × {{ debugScreen.screenHeight }} CSS px</strong></div>
+                    <div class="debug-metric"><span>Área disponible de pantalla</span><strong>{{ debugScreen.availWidth }} × {{ debugScreen.availHeight }} CSS px</strong></div>
+                    <div class="debug-metric"><span>Viewport</span><strong>{{ debugScreen.viewportWidth }} × {{ debugScreen.viewportHeight }} CSS px</strong></div>
+                    <div class="debug-metric"><span>Densidad (DPR)</span><strong>{{ debugScreen.devicePixelRatio }}×</strong></div>
+                    <div class="debug-metric"><span>Orientación</span><strong>{{ debugScreen.orientation }}</strong></div>
+                    <div class="debug-metric"><span>Conexión</span><strong>{{ debugScreen.online ? 'Conectado' : 'Sin conexión' }}</strong></div>
+                    <div class="debug-metric"><span>Pantalla completa</span><strong>{{ debugScreen.fullscreen ? 'Sí' : 'No' }}</strong></div>
+                    <div class="debug-section-title">Región actual del tablero</div>
+                    <div class="debug-metric"><span>Área renderizada</span><strong>{{ debugGridArea.width }} × {{ debugGridArea.height }} CSS px</strong></div>
+                    <div class="debug-metric"><span>Ruta de la aplicación</span><strong class="debug-wrap">{{ debugScreen.path }}</strong></div>
+                    <p class="debug-note">Las medidas de pantalla y viewport están expresadas en píxeles CSS, no necesariamente en píxeles físicos.</p>
+                </div>
+                <div v-else class="debug-panel-content">
+                    <div class="debug-section-title">Tablero actual</div>
+                    <div class="debug-metric"><span>ID</span><strong class="debug-wrap">{{ renderGridData ? renderGridData.id : 'Cargando…' }}</strong></div>
+                    <div class="debug-metric"><span>Filas × columnas</span><strong>{{ renderGridData ? renderGridData.rowCount + ' × ' + renderGridData.minColumnCount : '—' }}</strong></div>
+                    <div class="debug-metric"><span>Elementos renderizados</span><strong>{{ debugGridStats.elements }}</strong></div>
+                    <div class="debug-metric"><span>Elementos de relleno</span><strong>{{ debugGridStats.fillers }}</strong></div>
+                    <div class="debug-metric"><span>Elementos con imagen</span><strong>{{ debugGridStats.images }}</strong></div>
+                    <div class="debug-section-title">Imágenes en el DOM</div>
+                    <div class="debug-metric"><span>Cargadas</span><strong>{{ debugImageStats.loaded }}</strong></div>
+                    <div class="debug-metric"><span>Pendientes</span><strong>{{ debugImageStats.pending }}</strong></div>
+                    <div class="debug-metric"><span>Fallidas</span><strong>{{ debugImageStats.failed }}</strong></div>
+                    <div class="debug-metric"><span>Dimensiones naturales (muestra)</span><strong class="debug-wrap">{{ debugImageStats.dimensions.join(', ') || '—' }}</strong></div>
+                    <div class="debug-section-title">Última apertura / carga</div>
+                    <div class="debug-metric"><span>Inicio</span><strong>{{ debugLastLoad ? debugLastLoad.startedAt : '—' }}</strong></div>
+                    <div class="debug-metric"><span>Preparación de datos</span><strong>{{ formatDebugMs(debugLastLoad && debugLastLoad.preparationMs) }}</strong></div>
+                    <div class="debug-metric"><span>Hasta DOM actualizado</span><strong>{{ formatDebugMs(debugLastLoad && debugLastLoad.renderReadyMs) }}</strong></div>
+                    <div class="debug-metric"><span>Inicialización posterior</span><strong>{{ formatDebugMs(debugLastLoad && debugLastLoad.initializationMs) }}</strong></div>
+                    <div class="debug-metric"><span>Tiempo total medido</span><strong>{{ formatDebugMs(debugLastLoad && debugLastLoad.totalMs) }}</strong></div>
+                    <div class="debug-panel-actions">
+                        <button type="button" @click="refreshDebugMetrics()">Actualizar medidas</button>
+                        <button type="button" @click="copyDebugReport()">Copiar informe</button>
+                    </div>
+                    <p class="debug-note">La medición de DOM actualizado no garantiza que todas las imágenes hayan terminado de decodificarse. Los tiempos son diagnósticos orientativos.</p>
+                </div>
+            </div>
+        </aside>
     </div>
 </template>
 
@@ -162,7 +216,18 @@
                 highlightTimeoutHandler: null,
                 highlightedElementId: null,
                 systemActionService: systemActionService,
-                gridUtil: gridUtil
+                gridUtil: gridUtil,
+                debugExpanded: true,
+                debugTab: 'general',
+                debugScreen: {
+                    screenWidth: 0, screenHeight: 0, availWidth: 0, availHeight: 0,
+                    viewportWidth: 0, viewportHeight: 0, devicePixelRatio: 1,
+                    orientation: '—', online: true, fullscreen: false, path: ''
+                },
+                debugGridArea: { width: 0, height: 0 },
+                debugGridStats: { elements: 0, fillers: 0, images: 0 },
+                debugImageStats: { loaded: 0, pending: 0, failed: 0, dimensions: [] },
+                debugLastLoad: null
             }
         },
         components: {
@@ -175,6 +240,87 @@
             ScanningModal, HeaderIcon
         },
         methods: {
+            refreshDebugMetrics() {
+                if (typeof window === 'undefined') {
+                    return;
+                }
+                this.debugScreen = {
+                    screenWidth: window.screen ? window.screen.width : 0,
+                    screenHeight: window.screen ? window.screen.height : 0,
+                    availWidth: window.screen ? window.screen.availWidth : 0,
+                    availHeight: window.screen ? window.screen.availHeight : 0,
+                    viewportWidth: window.innerWidth,
+                    viewportHeight: window.innerHeight,
+                    devicePixelRatio: window.devicePixelRatio || 1,
+                    orientation: window.innerWidth >= window.innerHeight ? 'Horizontal' : 'Vertical',
+                    online: navigator.onLine,
+                    fullscreen: !!(document.fullscreenElement || document.webkitFullscreenElement),
+                    path: window.location ? window.location.hash || window.location.pathname : ''
+                };
+
+                const container = document.querySelector('#grid-container');
+                if (container) {
+                    const rect = container.getBoundingClientRect();
+                    this.debugGridArea = {
+                        width: Math.round(rect.width),
+                        height: Math.round(rect.height)
+                    };
+                    const images = Array.from(container.querySelectorAll('img'));
+                    const loaded = images.filter(img => img.complete && img.naturalWidth > 0);
+                    this.debugImageStats = {
+                        loaded: loaded.length,
+                        pending: images.filter(img => !img.complete).length,
+                        failed: images.filter(img => img.complete && img.naturalWidth === 0).length,
+                        dimensions: loaded.slice(0, 6).map(img => img.naturalWidth + '×' + img.naturalHeight)
+                    };
+                } else {
+                    this.debugGridArea = { width: 0, height: 0 };
+                    this.debugImageStats = { loaded: 0, pending: 0, failed: 0, dimensions: [] };
+                }
+
+                const elements = this.renderGridData && Array.isArray(this.renderGridData.gridElements)
+                    ? this.renderGridData.gridElements : [];
+                this.debugGridStats = {
+                    elements: elements.length,
+                    fillers: elements.filter(element => element.type === GridElement.ELEMENT_TYPE_UI_FILLER).length,
+                    images: elements.filter(element => element.image && (element.image.url || element.image.data)).length
+                };
+            },
+            formatDebugMs(value) {
+                return value == null || !Number.isFinite(value) ? '—' : (Math.round(value * 10) / 10) + ' ms';
+            },
+            async copyDebugReport() {
+                this.refreshDebugMetrics();
+                const report = {
+                    capturedAt: new Date().toISOString(),
+                    screen: this.debugScreen,
+                    gridArea: this.debugGridArea,
+                    grid: this.renderGridData ? {
+                        id: this.renderGridData.id,
+                        rows: this.renderGridData.rowCount,
+                        columns: this.renderGridData.minColumnCount,
+                        elements: this.debugGridStats,
+                        imagesInDOM: this.debugImageStats
+                    } : null,
+                    lastLoad: this.debugLastLoad
+                };
+                try {
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(JSON.stringify(report, null, 2));
+                    } else {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = JSON.stringify(report, null, 2);
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                    }
+                } catch (error) {
+                    log.warn('No se pudo copiar el informe de diagnóstico', error);
+                }
+            },
             showFloatingControls() {
                 this.floatingControlsVisible = true;
                 util.debounce(() => {
@@ -327,8 +473,18 @@
                 await this.loadGrid(gridData, { continueInputMethods: true });
             },
             async loadGrid(gridData, options = {}) {
+                const debugLoadStartedAt = performance.now();
+                let debugPreparationMs = null;
                 options.continueInputMethods = options.continueInputMethods || false;
                 options.forceReload = options.forceReload || false;
+                this.debugLastLoad = {
+                    gridId: gridData && gridData.id,
+                    startedAt: new Date().toLocaleTimeString(),
+                    preparationMs: null,
+                    renderReadyMs: null,
+                    initializationMs: null,
+                    totalMs: null
+                };
                 collectElementService.clearCollectElements();
                 if (gridData && (options.forceReload || !this.renderGridData || this.renderGridData.id !== gridData.id)) {
                     if (gridUtil.hasAREModel(gridData)) {
@@ -340,6 +496,8 @@
                     let updateThumbnail = gridUtil.hasOutdatedThumbnail(gridData) && !this.skipThumbnailCheck;
 
                     await this.recalculateRenderGrid(gridData);
+                    debugPreparationMs = performance.now() - debugLoadStartedAt;
+                    this.debugLastLoad.preparationMs = debugPreparationMs;
                     Router.addToGridHistory(this.renderGridData.id);
 
                     if (updateThumbnail) {
@@ -360,6 +518,8 @@
                 }
 
                 await this.$nextTick();
+                const debugAfterRenderAt = performance.now();
+                this.debugLastLoad.renderReadyMs = debugAfterRenderAt - debugLoadStartedAt;
                 initContextmenu();
                 this.initInputMethods(options);
                 this.highlightElements();
@@ -367,6 +527,9 @@
                 collectElementService.initWithGrid(this.renderGridData);
                 liveElementService.initWithElements(this.renderGridData.gridElements);
                 $(document).trigger(constants.EVENT_GRID_LOADED);
+                this.debugLastLoad.initializationMs = performance.now() - debugAfterRenderAt;
+                this.debugLastLoad.totalMs = performance.now() - debugLoadStartedAt;
+                this.refreshDebugMetrics();
             },
             highlightElements() {
                 clearTimeout(this.highlightTimeoutHandler);
@@ -502,6 +665,7 @@
                 $(document).trigger(constants.EVENT_GRID_RESIZE);
             },
             resizeListener() {
+                this.refreshDebugMetrics();
                 let thiz = this;
                 util.debounce(function () {
                     if (thiz.huffmanInput) {
@@ -551,6 +715,7 @@
         },
         mounted: async function () {
             vueApp = this;
+            this.refreshDebugMetrics();
 
             let savedMetadata = await dataService.getMetadata();
             let metadata = JSON.parse(JSON.stringify(savedMetadata || new MetaData()));
@@ -769,4 +934,118 @@
     .floating-control-button i {
         font-size: 1.1em;
     }
+
+    .debug-panel {
+        position: fixed;
+        right: 0.5em;
+        bottom: 0.5em;
+        z-index: 2000;
+        width: min(28rem, calc(100vw - 1em));
+        max-height: 58vh;
+        overflow: auto;
+        color: #f5f7fa;
+        background: rgba(22, 27, 34, 0.97);
+        border: 1px solid #59636e;
+        border-radius: 0.55em;
+        box-shadow: 0 3px 18px rgba(0, 0, 0, 0.35);
+        font: 12px/1.4 system-ui, sans-serif;
+        text-align: left;
+    }
+
+    .debug-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75em;
+        padding: 0.6em 0.75em;
+        background: #303943;
+        border-radius: 0.5em 0.5em 0 0;
+    }
+
+    .debug-panel button {
+        min-height: 2em;
+        padding: 0.25em 0.65em;
+        color: inherit;
+        background: #3a4652;
+        border: 1px solid #64717d;
+        border-radius: 0.3em;
+        font: inherit;
+        cursor: pointer;
+    }
+
+    .debug-panel .debug-panel-collapse {
+        min-width: 2em;
+        font-size: 1.25em;
+        line-height: 1;
+    }
+
+    .debug-panel-tabs {
+        display: flex;
+        gap: 0.35em;
+        padding: 0.5em 0.65em 0;
+    }
+
+    .debug-panel .debug-panel-tabs button.active {
+        background: #dbeafe;
+        border-color: #dbeafe;
+        color: #172033;
+        font-weight: 700;
+    }
+
+    .debug-panel-content {
+        padding: 0.5em 0.75em 0.75em;
+    }
+
+    .debug-section-title {
+        margin: 0.5em 0 0.3em;
+        padding-bottom: 0.2em;
+        color: #9ecbff;
+        border-bottom: 1px solid #46515c;
+        font-weight: 700;
+    }
+
+    .debug-metric {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1em;
+        padding: 0.18em 0;
+    }
+
+    .debug-metric span {
+        color: #c3ccd5;
+        flex: 1 1 48%;
+    }
+
+    .debug-metric strong {
+        flex: 1 1 52%;
+        text-align: right;
+        overflow-wrap: anywhere;
+        font-weight: 600;
+    }
+
+    .debug-panel .debug-wrap {
+        overflow-wrap: anywhere;
+    }
+
+    .debug-panel-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4em;
+        margin-top: 0.7em;
+    }
+
+    .debug-note {
+        margin: 0.7em 0 0;
+        color: #aeb9c4;
+        font-size: 0.9em;
+    }
+
+    @media (max-width: 600px) {
+        .debug-panel {
+            max-height: 48vh;
+            font-size: 11px;
+        }
+    }
+
 </style>
