@@ -193,25 +193,63 @@ export default {
                 return updated;
             });
 
-            // Resolve collisions sequentially, but do not use the single-cell
-            // "exact drop swaps the conflicting cell backwards" rule here.
-            // In a group move that can put an unselected cell onto another
-            // selected cell (e.g. moving A+B right over C would move C back
-            // onto A). Instead use the regular push/reflow path for each
-            // collision, while preserving the original movement direction.
-            const groupDiff = { ...diff, exact: false };
-            for (const movingElement of movingElements) {
-                // Use the element's current position in the evolving layout.
-                // resolveCollisions may already have repositioned it while
-                // resolving an earlier selected cell; resetting x/y here can
-                // reintroduce an overlap that was just resolved.
-                const target = updatedElements.find(element => String(element.id) === String(movingElement.id));
-                updatedElements = gridLayoutUtil.resolveCollisions(updatedElements, target, {
-                    diff: groupDiff,
-                    gridWidth: this.columns,
-                    gridHeight: this.rows
-                });
+            // Keep the selected cells fixed at their translated positions.
+            // The single-cell resolver is order-dependent and can move a
+            // previously processed cell back underneath another selected cell.
+            // Instead, reserve the whole group first, then place every
+            // unselected cell without ever allowing an overlap.
+            const selectedElements = updatedElements.filter(element =>
+                movingIds.includes(String(element.id))
+            );
+            const placedElements = selectedElements.map(element => ({ ...element }));
+            const unselectedElements = updatedElements.filter(element =>
+                !movingIds.includes(String(element.id))
+            );
+
+            for (const element of unselectedElements) {
+                const candidate = { ...element };
+                if (!gridLayoutUtil.isFreeSpace(
+                    placedElements,
+                    candidate.x,
+                    candidate.y,
+                    candidate.width,
+                    candidate.height,
+                    { outOfBounds: true, gridWidth: this.columns, gridHeight: this.rows }
+                )) {
+                    // Push the conflicting cell to the first free position
+                    // on its row, then continue on following rows if needed.
+                    const maxX = Math.max(
+                        this.columns,
+                        ...placedElements.map(item => item.x + item.width)
+                    ) + unselectedElements.length + candidate.width;
+                    let found = false;
+                    for (let y = Math.max(0, candidate.y); !found && y < this.rows + placedElements.length + unselectedElements.length + candidate.height + 1; y++) {
+                        for (let x = Math.max(0, candidate.x); x <= maxX; x++) {
+                            if (gridLayoutUtil.isFreeSpace(
+                                placedElements,
+                                x,
+                                y,
+                                candidate.width,
+                                candidate.height,
+                                { outOfBounds: true, gridWidth: this.columns, gridHeight: this.rows }
+                            )) {
+                                candidate.x = x;
+                                candidate.y = y;
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!found) {
+                        // Defensive fallback: extend the layout to the right.
+                        candidate.x = maxX + 1;
+                        candidate.y = Math.max(0, candidate.y);
+                    }
+                }
+                placedElements.push(candidate);
             }
+
+            updatedElements = placedElements;
             this.$emit("changed", updatedElements);
             this.reinit();
         },
