@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="srow content d-flex" v-if="metadata && gridData" style="min-height: 0">
-            <app-grid-display id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :editable="true" @interacted="onInteracted" @interactstart="onInteractStart" @interactend="onInteractEnd"/>
+            <app-grid-display id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :editable="true" @interacted="onInteracted" @interactstart="onInteractStart" @interactend="onInteractEnd" @select-column="selectGridColumn" @select-row="selectGridRow" @select-all="selectGridAll"/>
         </div>
     </div>
 </template>
@@ -404,6 +404,24 @@
                 $('.element-container').addClass('marked');
                 this.markedElementIds = this.gridData.gridElements.map(e => e.id);
             },
+            selectGridAll() {
+                this.unmarkAll();
+                this.markAll();
+            },
+            selectGridColumn(column) {
+                const matchingElements = this.gridData.gridElements.filter(element =>
+                    element.x <= column && element.x + element.width > column
+                );
+                this.unmarkAll();
+                matchingElements.forEach(element => this.addToMarkedInternal(element.id));
+            },
+            selectGridRow(row) {
+                const matchingElements = this.gridData.gridElements.filter(element =>
+                    element.y <= row && element.y + element.height > row
+                );
+                this.unmarkAll();
+                matchingElements.forEach(element => this.addToMarkedInternal(element.id));
+            },
             async markElement(id) {
                 if (!id) {
                     return;
@@ -521,6 +539,10 @@
             },
             onClick(event) {
                 if (vueApp && !this.isInteracting) {
+                    // Header clicks have their own selection behavior and must not clear it here.
+                    if ($(event.target).closest('.grid-column-labels, .grid-row-labels, .grid-index-corner').length) {
+                        return;
+                    }
                     let elementId = $(event.target).closest('.element-container').attr('id');
                     let containerElement = $(event.target).closest('#grid-container')[0];
                     if (elementId) {
