@@ -13,7 +13,7 @@
                 <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; margin-bottom: 1px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
             </div>
             <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="baseTag" class="grid-layout" :style="`grid-template-columns: repeat(${effectiveColumns}, minmax(0, 1fr)); grid-template-rows: repeat(${effectiveRows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
-                <grid-element v-for="elem in elements" :key="getKey(elem)" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" :tag="elementTag" :class="elem.id + '' === noMoveId ? 'nomove' : ''" :element="elem" :elem-css-fn="elemCssFn">
+                <grid-element v-for="elem in elements" :key="getKey(elem)" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" :tag="elementTag" :class="(Array.isArray(noMoveId) ? noMoveId.includes(elem.id + '') : elem.id + '' === noMoveId) ? 'nomove' : ''" :element="elem" :elem-css-fn="elemCssFn">
                     <component :id="elem.id" :is="renderComponent" :element="elem" :editable="editable" v-bind="$attrs"/>
                 </grid-element>
             </transition-group>
@@ -69,6 +69,10 @@ export default {
         elemCssFn: {
             type: Function,
             default: () => ''
+        },
+        selectedElementIds: {
+            type: Array,
+            default: () => []
         }
     },
     data() {
@@ -76,6 +80,7 @@ export default {
             interact: null,
             timeoutHandler: null,
             noMoveId: null,
+            activeMovePointerId: null,
             myId: "grid-parent-" + new Date().getTime(),
             elementClassSelector: '.grid-layout-element'
         }
@@ -153,7 +158,7 @@ export default {
             if (diff.x === 0 && diff.y === 0) {
                 return;
             }
-            let id = movedElement.children[0].id;
+            let id = movedElement.getAttribute("data-id") || movedElement.children[0].id;
             let element = this.getElement(id);
             let updatedElements = gridLayoutUtil.resolveCollisions(this.elements, element, {
                 diff: diff,
@@ -163,6 +168,70 @@ export default {
             });
             this.$emit("changed", updatedElements);
             this.reinit();
+        },
+        handleMoveGroup(elementIds, diff) {
+            if (!elementIds || elementIds.length < 2 || (diff.x === 0 && diff.y === 0)) {
+                return;
+            }
+            const movingIds = elementIds.map(id => String(id));
+            const movingElements = this.elements.filter(element => movingIds.includes(String(element.id)));
+            if (movingElements.length !== movingIds.length) {
+                return;
+            }
+            const movingIdSet = new Set(movingIds);
+            const updatedElements = this.elements.map(element => ({ ...element }));
+            const moved = updatedElements.filter(element => movingIdSet.has(String(element.id)));
+            moved.forEach(element => {
+                element.x += diff.x;
+                element.y += diff.y;
+            });
+            if (moved.some(element => element.x < 0 || element.y < 0)) {
+                return;
+            }
+            const stationary = updatedElements.filter(element => !movingIdSet.has(String(element.id)));
+            const overlaps = (a, b) =>
+                a.x < b.x + b.width && a.x + a.width > b.x &&
+                a.y < b.y + b.height && a.y + a.height > b.y;
+            if (moved.some(element => stationary.some(other => overlaps(element, other)))) {
+                return;
+            }
+            this.$emit("changed", updatedElements);
+            this.reinit();
+        },
+        isDraggableElementTarget(target) {
+            if (!target || !target.closest) {
+                return false;
+            }
+            const element = target.closest(this.elementClassSelector);
+            if (!element || !this.$el.contains(element)) {
+                return false;
+            }
+            return !(target.closest(this.resizeHandleSelector));
+        },
+        onMovePointerDown(event) {
+            if (!this.editable || !this.isDraggableElementTarget(event.target)) {
+                return;
+            }
+            if (this.activeMovePointerId !== null && event.pointerId !== this.activeMovePointerId) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                return;
+            }
+            if (this.activeMovePointerId === null) {
+                this.activeMovePointerId = event.pointerId;
+            }
+        },
+        onMovePointerEnd(event) {
+            if (this.activeMovePointerId === event.pointerId) {
+                this.activeMovePointerId = null;
+            }
+        },
+        onMoveTouchStart(event) {
+            if (this.editable && event.touches && event.touches.length > 1 &&
+                this.isDraggableElementTarget(event.target)) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            }
         },
         handleResize(resizedElement, newSize) {
             let id = resizedElement.children[0].id;
@@ -197,40 +266,84 @@ export default {
             this.interact = this.interact || (await import('interactjs')).default;
 
             let position = { x: 0, y: 0 };
+            let activeMove = null;
             this.interact(this.totalElementClassSelector).draggable({
+                max: 1,
+                maxPerElement: 1,
                 listeners: {
                     start(event) {
-                        thiz.$emit('movestart');
-                        thiz.$emit('interactstart');
+                        position = { x: 0, y: 0 };
+                        const draggedId = event.target.getAttribute("data-id");
+                        const selectedIds = thiz.selectedElementIds.map(id => String(id));
+                        const movingIds = selectedIds.includes(String(draggedId))
+                            ? thiz.elements.filter(element => selectedIds.includes(String(element.id))).map(element => String(element.id))
+                            : [String(draggedId)];
+                        activeMove = { ids: movingIds, target: event.target };
+                        thiz.$emit('movestart', { elementId: draggedId, movingElementIds: movingIds });
+                        thiz.$emit('interactstart', {
+                            type: 'move',
+                            elementId: draggedId,
+                            movingElementIds: movingIds
+                        });
                     },
                     move(event) {
+                        if (!activeMove) {
+                            return;
+                        }
                         position.x += event.dx;
                         position.y += event.dy;
-                        event.target.style.transform = `translate(${position.x}px, ${position.y}px)`;
-                        event.target.style.zIndex = 100;
+                        activeMove.ids.forEach(id => {
+                            const element = Array.from(thiz.$el.querySelectorAll(thiz.elementClassSelector))
+                                .find(node => node.getAttribute("data-id") === id);
+                            if (element) {
+                                element.style.transform = `translate(${position.x}px, ${position.y}px)`;
+                                element.style.zIndex = 100;
+                            }
+                        });
                     },
                     end(event) {
-                        let movedElement = event.target;
-                        let diffX = position.x / thiz.getRasterX();
-                        let diffY = position.y / thiz.getRasterY();
-                        let diffXRound = Math.round(diffX);
-                        let exact = Math.abs(diffXRound - diffX) < 0.25;
-                        let diff = {
+                        if (!activeMove) {
+                            return;
+                        }
+                        const movedElement = activeMove.target;
+                        const movingIds = activeMove.ids;
+                        const diffX = position.x / thiz.getRasterX();
+                        const diffY = position.y / thiz.getRasterY();
+                        const diffXRound = Math.round(diffX);
+                        const exact = Math.abs(diffXRound - diffX) < 0.25;
+                        const diff = {
                             x: diffXRound,
                             y: Math.round(diffY),
                             exact: exact,
                             xExact: diffX,
                             yExact: diffY
+                        };
+                        if (movingIds.length > 1) {
+                            thiz.handleMoveGroup(movingIds, diff);
+                        } else {
+                            thiz.handleMove(movedElement, diff);
                         }
-                        thiz.handleMove(movedElement, diff);
-                        event.target.style.transform = '';
-                        thiz.noMoveId = event.target.getAttribute("data-id");
+                        movingIds.forEach(id => {
+                            const element = Array.from(thiz.$el.querySelectorAll(thiz.elementClassSelector))
+                                .find(node => node.getAttribute("data-id") === id);
+                            if (element) {
+                                element.style.transform = '';
+                            }
+                        });
+                        thiz.noMoveId = movingIds;
                         thiz.$emit('moveend');
                         thiz.$emit('interactend');
                         setTimeout(() => {
-                            event.target.style.zIndex = 'unset';
+                            movingIds.forEach(id => {
+                                const element = Array.from(thiz.$el.querySelectorAll(thiz.elementClassSelector))
+                                    .find(node => node.getAttribute("data-id") === id);
+                                if (element) {
+                                    element.style.zIndex = 'unset';
+                                }
+                            });
                             thiz.noMoveId = null;
                         }, thiz.animationDurationMs + 100);
+                        activeMove = null;
                     }
                 }
             }).resizable({
@@ -238,7 +351,7 @@ export default {
                 listeners: {
                     start(event) {
                         thiz.$emit('resizestart');
-                        thiz.$emit('interactstart');
+                        thiz.$emit('interactstart', { type: 'resize' });
                     },
                     move(event) {
                         event.target.style.width = event.rect.width + 'px';
@@ -307,6 +420,10 @@ export default {
     },
     beforeDestroy() {
         this.destroyInteract();
+        this.$el.removeEventListener('pointerdown', this.onMovePointerDown, true);
+        document.removeEventListener('pointerup', this.onMovePointerEnd, true);
+        document.removeEventListener('pointercancel', this.onMovePointerEnd, true);
+        this.$el.removeEventListener('touchstart', this.onMoveTouchStart, true);
         window.removeEventListener("resize", this.onResize);
         document.removeEventListener('click', this.pointerEventListener);
         document.removeEventListener('touchend', this.pointerEventListener);
@@ -314,6 +431,10 @@ export default {
         document.removeEventListener('mousedown', this.pointerEventListener);
     },
     async mounted() {
+        this.$el.addEventListener('pointerdown', this.onMovePointerDown, true);
+        document.addEventListener('pointerup', this.onMovePointerEnd, true);
+        document.addEventListener('pointercancel', this.onMovePointerEnd, true);
+        this.$el.addEventListener('touchstart', this.onMoveTouchStart, { capture: true, passive: false });
         this.initInteract();
         this.$forceUpdate();
     },
