@@ -402,7 +402,7 @@ export default {
     top: 0;
     left: 0;
     box-sizing: border-box;
-    border: 2px dashed rgba(190, 125, 35, 0.62);
+    border: 3px dashed rgba(190, 105, 20, 0.9);
     pointer-events: none;
     z-index: 10;
 }
