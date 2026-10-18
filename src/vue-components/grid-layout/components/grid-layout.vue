@@ -1,10 +1,10 @@
 <template>
     <div :style="Object.assign({}, cssProps, { '--grid-columns': columns, '--grid-rows': rows })" :class="['grid-parent', myId, { 'grid-parent--indexed': editable }]">
         <div v-if="editable" class="grid-index-corner" aria-hidden="true"></div>
-        <div v-if="editable" class="grid-column-labels" aria-hidden="true">
+        <div v-if="editable" class="grid-column-labels" :style="{ gridTemplateColumns: getGridTemplateTracks('grid-template-columns') }" aria-hidden="true">
             <span v-for="column in columns" :key="'column-' + column">{{ column }}</span>
         </div>
-        <div v-if="editable" class="grid-row-labels" aria-hidden="true">
+        <div v-if="editable" class="grid-row-labels" :style="{ gridTemplateRows: getGridTemplateTracks('grid-template-rows') }" aria-hidden="true">
             <span v-for="row in rows" :key="'row-' + row">{{ row }}</span>
         </div>
         <div class="grid-content">
@@ -122,6 +122,14 @@ export default {
             let style = getComputedStyle(this.$refs.gridComponent.$el).getPropertyValue(property);
             let first = style.split(" ")[0];
             return parseFloat(first);
+        },
+        getGridTemplateTracks(property) {
+            if (!this.$refs.gridComponent) {
+                return '';
+            }
+            // Reuse the browser's resolved tracks so labels match the real grid,
+            // including fractional pixel widths and uneven rounding.
+            return getComputedStyle(this.$refs.gridComponent.$el).getPropertyValue(property);
         },
         handleMove(movedElement, diff) {
             if (diff.x === 0 && diff.y === 0) {
@@ -311,9 +319,9 @@ export default {
 .grid-index-corner {
     grid-column: 1;
     grid-row: 1;
-    background: rgba(128, 128, 128, 0.06);
-    border-right: 1px solid rgba(128, 128, 128, 0.18);
-    border-bottom: 1px solid rgba(128, 128, 128, 0.18);
+    background: transparent;
+    border-right: 1px solid rgba(128, 128, 128, 0.07);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.07);
 }
 
 .grid-column-labels,
@@ -321,8 +329,8 @@ export default {
     display: grid;
     min-width: 0;
     min-height: 0;
-    color: var(--grid-index-color, #777);
-    background: rgba(128, 128, 128, 0.045);
+    color: var(--grid-index-color, rgba(100, 100, 100, 0.72));
+    background: transparent;
     font-size: clamp(9px, 1.1vw, 12px);
     line-height: 1;
     user-select: none;
@@ -333,14 +341,14 @@ export default {
     grid-column: 2;
     grid-row: 1;
     grid-template-columns: repeat(var(--grid-columns, 1), minmax(0, 1fr));
-    border-bottom: 1px solid rgba(128, 128, 128, 0.18);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.07);
 }
 
 .grid-row-labels {
     grid-column: 1;
     grid-row: 2;
     grid-template-rows: repeat(var(--grid-rows, 1), minmax(0, 1fr));
-    border-right: 1px solid rgba(128, 128, 128, 0.18);
+    border-right: 1px solid rgba(128, 128, 128, 0.07);
 }
 
 .grid-column-labels span,
@@ -353,11 +361,11 @@ export default {
 }
 
 .grid-column-labels span:not(:last-child) {
-    border-right: 1px solid rgba(128, 128, 128, 0.08);
+    border-right: 1px solid rgba(128, 128, 128, 0.035);
 }
 
 .grid-row-labels span:not(:last-child) {
-    border-bottom: 1px solid rgba(128, 128, 128, 0.08);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.035);
 }
 
 .grid-content {
