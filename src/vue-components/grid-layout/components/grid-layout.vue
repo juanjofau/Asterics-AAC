@@ -402,7 +402,8 @@ export default {
     top: 0;
     left: 0;
     box-sizing: border-box;
-    border: 3px dashed rgba(190, 105, 20, 0.9);
+    border: 3px dashed #173b70;
+    box-shadow: inset 0 0 0 1px rgba(235, 239, 245, 0.9);
     pointer-events: none;
     z-index: 10;
 }
