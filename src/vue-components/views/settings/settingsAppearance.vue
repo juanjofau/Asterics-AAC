@@ -11,6 +11,15 @@
                     <button @click="toDarkMode"><span class="fas fa-moon"/> {{ $t('setToDarkMode') }}</button>
                     <button @click="toLightMode"><span class="fas fa-sun"/> {{ $t('setToLightMode') }}</button>
                 </div>
+                <h3 class="mt-2">{{ $t('experimentalLooks') }}</h3>
+                <p>{{ $t('experimentalLooksDescription') }}</p>
+                <div class="srow">
+                    <button type="button" @click="applyExperimentalStyle('classic')">{{ $t('lookClassic') }}</button>
+                    <button type="button" @click="applyExperimentalStyle('neon')">{{ $t('lookNeon') }}</button>
+                    <button type="button" @click="applyExperimentalStyle('candy')">{{ $t('lookCandy') }}</button>
+                    <button type="button" @click="applyExperimentalStyle('brutalist')">{{ $t('lookBrutalist') }}</button>
+                    <button type="button" @click="applyExperimentalStyle('glass')">{{ $t('lookGlass') }}</button>
+                </div>
                 <h3 class="mt-2">{{ $t('textHeading') }}</h3>
                 <div class="srow">
                     <label class="three columns" for="textPos">{{ $t('textPosition') }}</label>
@@ -240,6 +249,37 @@
             }
         },
         methods: {
+            applyExperimentalStyle(style) {
+                const config = this.metadata.colorConfig;
+                config.experimentalStyle = style;
+                if (style === 'classic') {
+                    config.borderRadius = 0.4; config.elementMargin = 0.15;
+                    config.borderWidth = ColorConfig.BORDER_WIDTH_BG_COLORED;
+                    config.outerShadowEnabled = false; config.innerShadowEnabled = false;
+                } else if (style === 'neon') {
+                    config.borderRadius = 0.15; config.elementMargin = 0.35; config.borderWidth = 0.35;
+                    config.outerShadowEnabled = true; config.outerShadowColor = '#00f5d4';
+                    config.outerShadowOpacity = 90; config.outerShadowOffsetX = 0; config.outerShadowOffsetY = 0;
+                    config.outerShadowBlur = 3; config.outerShadowSpread = 0.4; config.innerShadowEnabled = false;
+                } else if (style === 'candy') {
+                    config.borderRadius = 4; config.elementMargin = 0.5; config.borderWidth = 0.25;
+                    config.outerShadowEnabled = true; config.outerShadowColor = '#d44d99';
+                    config.outerShadowOpacity = 70; config.outerShadowOffsetX = 0; config.outerShadowOffsetY = 1.2;
+                    config.outerShadowBlur = 0.5; config.outerShadowSpread = 0; config.innerShadowEnabled = false;
+                } else if (style === 'brutalist') {
+                    config.borderRadius = 0; config.elementMargin = 0.6; config.borderWidth = 0.45;
+                    config.outerShadowEnabled = false; config.innerShadowEnabled = false;
+                } else if (style === 'glass') {
+                    config.borderRadius = 1.2; config.elementMargin = 0.4; config.borderWidth = 0.2;
+                    config.outerShadowEnabled = true; config.outerShadowColor = '#6c9fca';
+                    config.outerShadowOpacity = 35; config.outerShadowOffsetX = 0; config.outerShadowOffsetY = 0.8;
+                    config.outerShadowBlur = 3; config.outerShadowSpread = 0; config.innerShadowEnabled = true;
+                    config.innerShadowColor = '#ffffff'; config.innerShadowOpacity = 55;
+                    config.innerShadowOffsetX = 0; config.innerShadowOffsetY = 0;
+                    config.innerShadowBlur = 1.5; config.innerShadowSpread = 0;
+                }
+                this.saveMetadata(this.metadata);
+            },
             applyShadowPreset(preset) {
                 const config = this.metadata.colorConfig;
                 if (preset === 'flat') {

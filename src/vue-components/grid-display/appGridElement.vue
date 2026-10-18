@@ -1,5 +1,5 @@
 <template>
-    <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" class="element-container" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
+    <div v-if="element.type !== GridElement.ELEMENT_TYPE_UI_FILLER" role="button" :class="['element-container', 'experimental-skin-' + (metadata.colorConfig.experimentalStyle || 'classic')]" ref="container" tabindex="40" :aria-label="getAriaLabel(element)" :data-empty="isEmpty(element)"
          :style="`margin: ${elementMarginPx}px; border-radius: ${borderRadiusPx}px; cursor: ${cursorType};
          border: ${borderWidthPx}px solid ${borderColor}; background-color: ${backgroundColor}; box-shadow: ${shadowStyles.outer}; font-family: ${metadata.textConfig.fontFamily}; color: ${fontColor}`">
         <grid-element-normal v-if="element.type === GridElement.ELEMENT_TYPE_NORMAL" :grid-element="element" :metadata="metadata" :container-size="calculatedSize" v-bind="$props" aria-hidden="true"/>
@@ -221,4 +221,28 @@ export default {
     pointer-events: none;
     z-index: 1;
 }
+
+/* Bold experimental skins for rapid visual concept testing. */
+.element-container.experimental-skin-neon {
+    background: #17152b !important; color: #f8f4ff !important;
+    border: 2px solid #00f5d4 !important; border-radius: 0.25rem !important;
+    box-shadow: 0 0 0 2px #ff2bd6, 0 0 18px rgba(0,245,212,.75) !important;
+}
+.element-container.experimental-skin-candy {
+    background: linear-gradient(145deg,#ff8bd1,#ffc4e6) !important; color: #532044 !important;
+    border: 3px solid #fff3fa !important; border-radius: 999px !important;
+    box-shadow: 0 7px 0 #d44d99, 0 10px 14px rgba(120,20,75,.25) !important;
+}
+.element-container.experimental-skin-brutalist {
+    background: #fff39a !important; color: #171717 !important;
+    border: 3px solid #171717 !important; border-radius: 0 !important;
+    box-shadow: 7px 7px 0 #171717 !important;
+}
+.element-container.experimental-skin-glass {
+    background: rgba(226,242,255,.28) !important; color: #17324d !important;
+    border: 1px solid rgba(255,255,255,.9) !important; border-radius: 1rem !important;
+    box-shadow: 0 8px 24px rgba(31,74,110,.25), inset 0 1px 0 rgba(255,255,255,.8) !important;
+    backdrop-filter: blur(8px);
+}
+
 </style>

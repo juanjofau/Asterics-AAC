@@ -27,7 +27,8 @@ class ColorConfig extends Model({
     innerShadowBlur: [Number],
     innerShadowSpread: [Number],
     innerShadowColor: [String],
-    innerShadowOpacity: [Number]
+    innerShadowOpacity: [Number],
+    experimentalStyle: [String]
 }) {
     constructor(properties) {
         super(properties);
@@ -71,7 +72,8 @@ ColorConfig.defaults({
     innerShadowBlur: 2,
     innerShadowSpread: 0,
     innerShadowColor: '#000000',
-    innerShadowOpacity: 28
+    innerShadowOpacity: 28,
+    experimentalStyle: 'classic'
 });
 
 export { ColorConfig };
