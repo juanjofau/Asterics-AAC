@@ -1,18 +1,18 @@
 <template>
-    <div :style="Object.assign({}, cssProps, { '--grid-columns': columns, '--grid-rows': rows })" :class="['grid-parent', myId, { 'grid-parent--indexed': editable }]">
+    <div :style="Object.assign({}, cssProps, { '--grid-columns': effectiveColumns, '--grid-rows': effectiveRows })" :class="['grid-parent', myId, { 'grid-parent--indexed': editable }]">
         <div v-if="editable" class="grid-index-corner" aria-hidden="true"></div>
         <div v-if="editable" class="grid-column-labels" :style="{ gridTemplateColumns: getGridTemplateTracks('grid-template-columns') }" aria-hidden="true">
-            <span v-for="column in columns" :key="'column-' + column">{{ column }}</span>
+            <span v-for="column in effectiveColumns" :key="'column-' + column">{{ column }}</span>
         </div>
         <div v-if="editable" class="grid-row-labels" :style="{ gridTemplateRows: getGridTemplateTracks('grid-template-rows') }" aria-hidden="true">
-            <span v-for="row in rows" :key="'row-' + row">{{ row }}</span>
+            <span v-for="row in effectiveRows" :key="'row-' + row">{{ row }}</span>
         </div>
         <div class="grid-content">
             <div v-if="backgroundLines">
                 <div class="grid-bg-lines" :style="`margin-left: ${getRasterX()}px; margin-right: 1px; background-size: ${getRasterX()}px ${getRasterX()}px; background-image: linear-gradient(to right, grey 1px, transparent 1px)`"/>
                 <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; margin-bottom: 1px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
             </div>
-            <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="baseTag" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
+            <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="baseTag" class="grid-layout" :style="`grid-template-columns: repeat(${effectiveColumns}, minmax(0, 1fr)); grid-template-rows: repeat(${effectiveRows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
                 <grid-element v-for="elem in elements" :key="getKey(elem)" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" :tag="elementTag" :class="elem.id + '' === noMoveId ? 'nomove' : ''" :element="elem" :elem-css-fn="elemCssFn">
                     <component :id="elem.id" :is="renderComponent" :element="elem" :editable="editable" v-bind="$attrs"/>
                 </grid-element>
@@ -91,6 +91,14 @@ export default {
         }
     },
     computed: {
+        // The configured counts are minimums. Elements may extend the grid with implicit tracks.
+        // Count those tracks too, so the index labels cover the whole rendered grid.
+        effectiveColumns() {
+            return Math.max(this.columns || 1, ...(this.elements || []).map(elem => (elem.x || 0) + (elem.width || 1)));
+        },
+        effectiveRows() {
+            return Math.max(this.rows || 1, ...(this.elements || []).map(elem => (elem.y || 0) + (elem.height || 1)));
+        },
         cssProps() {
             return {
                 '--animation-duration': this.animationDurationMs + "ms"
