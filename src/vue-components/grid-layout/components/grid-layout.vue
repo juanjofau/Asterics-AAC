@@ -329,7 +329,7 @@ export default {
 
 .grid-parent--indexed {
     display: grid;
-    grid-template-columns: 22px minmax(0, 1fr);
+    grid-template-columns: 18px minmax(0, 1fr);
     grid-template-rows: 18px minmax(0, 1fr);
     gap: 0;
 }
