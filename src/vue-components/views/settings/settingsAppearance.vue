@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :class="['experimental-appearance', 'interface-skin-' + (metadata.colorConfig.experimentalStyle || 'classic')]">
         <div class="srow">
             <div class="nine columns settings-area">
                 <h3 class="mt-2">{{ $t('quickSettings') }}</h3>
@@ -13,15 +13,15 @@
                 </div>
                 <h3 class="mt-2">{{ $t('experimentalLooks') }}</h3>
                 <p>{{ $t('experimentalLooksDescription') }}</p>
-                <div class="srow">
-                    <button type="button" @click="applyExperimentalStyle('classic')">{{ $t('lookClassic') }}</button>
-                    <button type="button" @click="applyExperimentalStyle('neon')">{{ $t('lookNeon') }}</button>
-                    <button type="button" @click="applyExperimentalStyle('candy')">{{ $t('lookCandy') }}</button>
-                    <button type="button" @click="applyExperimentalStyle('brutalist')">{{ $t('lookBrutalist') }}</button>
-                    <button type="button" @click="applyExperimentalStyle('glass')">{{ $t('lookGlass') }}</button>
-                    <button type="button" @click="applyExperimentalStyle('aurora')">{{ $t('lookAurora') }}</button>
-                    <button type="button" @click="applyExperimentalStyle('soft3d')">{{ $t('lookSoft3d') }}</button>
-                    <button type="button" @click="applyExperimentalStyle('outline')">{{ $t('lookOutline') }}</button>
+                <div class="srow experimental-look-picker">
+                    <button type="button" :class="{ 'is-active': metadata.colorConfig.experimentalStyle === 'classic' }" @click="applyExperimentalStyle('classic')">{{ $t('lookClassic') }}</button>
+                    <button type="button" :class="{ 'is-active': metadata.colorConfig.experimentalStyle === 'neon' }" @click="applyExperimentalStyle('neon')">{{ $t('lookNeon') }}</button>
+                    <button type="button" :class="{ 'is-active': metadata.colorConfig.experimentalStyle === 'candy' }" @click="applyExperimentalStyle('candy')">{{ $t('lookCandy') }}</button>
+                    <button type="button" :class="{ 'is-active': metadata.colorConfig.experimentalStyle === 'brutalist' }" @click="applyExperimentalStyle('brutalist')">{{ $t('lookBrutalist') }}</button>
+                    <button type="button" :class="{ 'is-active': metadata.colorConfig.experimentalStyle === 'glass' }" @click="applyExperimentalStyle('glass')">{{ $t('lookGlass') }}</button>
+                    <button type="button" :class="{ 'is-active': metadata.colorConfig.experimentalStyle === 'aurora' }" @click="applyExperimentalStyle('aurora')">{{ $t('lookAurora') }}</button>
+                    <button type="button" :class="{ 'is-active': metadata.colorConfig.experimentalStyle === 'soft3d' }" @click="applyExperimentalStyle('soft3d')">{{ $t('lookSoft3d') }}</button>
+                    <button type="button" :class="{ 'is-active': metadata.colorConfig.experimentalStyle === 'outline' }" @click="applyExperimentalStyle('outline')">{{ $t('lookOutline') }}</button>
                 </div>
                 <h3 class="mt-2">{{ $t('textHeading') }}</h3>
                 <div class="srow">
@@ -467,4 +467,116 @@
             border-right: 0;
         }
     }
+
+    .experimental-appearance {
+        padding: clamp(.75rem, 2vw, 1.5rem);
+        border-radius: 1.25rem;
+        background: radial-gradient(ellipse at top left, rgba(110, 150, 210, .10), transparent 52%), #fff;
+        transition: background .2s ease, border-radius .2s ease;
+    }
+    .experimental-appearance h3 {
+        padding: .65rem .85rem;
+        border-left: 4px solid #7186a5;
+        border-radius: 0 .65rem .65rem 0;
+        background: rgba(115, 139, 174, .09);
+        letter-spacing: .01em;
+    }
+    .experimental-appearance h4 { margin-bottom: .8rem; }
+    .experimental-appearance .experimental-look-picker {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(125px, 1fr));
+        gap: .65rem;
+        margin: .9rem 0 1.6rem;
+    }
+    .experimental-appearance .experimental-look-picker button {
+        min-height: 3.15rem;
+        padding: .7rem .8rem;
+        border: 1px solid rgba(85, 105, 135, .24);
+        border-radius: .85rem;
+        background: linear-gradient(145deg, #fff, #f3f6fa);
+        box-shadow: 0 3px 8px rgba(30, 45, 65, .07);
+        font-weight: 600;
+        transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+    .experimental-appearance .experimental-look-picker button:hover,
+    .experimental-appearance .experimental-look-picker button:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(30, 45, 65, .13);
+    }
+    .experimental-appearance .experimental-look-picker button.is-active {
+        border: 2px solid #557fc2;
+        background: linear-gradient(135deg, #eaf3ff, #fff);
+        box-shadow: 0 0 0 3px rgba(85,127,194,.14), 0 6px 14px rgba(30,65,115,.12);
+    }
+    .experimental-appearance input:not([type="checkbox"]):not([type="color"]),
+    .experimental-appearance select {
+        min-height: 2.6rem;
+        border-radius: .55rem;
+    }
+    .experimental-appearance input[type="color"] {
+        min-height: 2.6rem;
+        padding: .2rem;
+        border-radius: .55rem;
+        cursor: pointer;
+    }
+    .experimental-appearance button {
+        transition: box-shadow .16s ease, transform .16s ease;
+    }
+    .experimental-appearance button:hover { box-shadow: 0 4px 10px rgba(25, 40, 60, .12); }
+    .experimental-appearance.interface-skin-glass {
+        background: radial-gradient(ellipse at 8% 0%, rgba(166, 215, 255, .34), transparent 42%), linear-gradient(135deg, #f7fbff, #eef5fb 55%, #f9fcff);
+        border: 1px solid rgba(255,255,255,.9);
+        box-shadow: inset 0 1px 0 #fff, 0 12px 32px rgba(60,100,140,.09);
+    }
+    .experimental-appearance.interface-skin-glass h3 {
+        border-left-color: #77a9d4;
+        background: linear-gradient(100deg, rgba(255,255,255,.88), rgba(220,239,255,.55));
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.9);
+    }
+    .experimental-appearance.interface-skin-aurora {
+        background: linear-gradient(130deg, #f3f7ff, #f8efff 48%, #edfffa);
+    }
+    .experimental-appearance.interface-skin-aurora h3 {
+        border-left-color: #8a70d5;
+        background: linear-gradient(100deg, rgba(215,204,255,.28), rgba(177,245,226,.25));
+    }
+    .experimental-appearance.interface-skin-neon { background: #111322; color: #f3f5ff; }
+    .experimental-appearance.interface-skin-neon h3 {
+        color: #fff;
+        border-left-color: #00f5d4;
+        background: #20243a;
+    }
+    .experimental-appearance.interface-skin-neon .experimental-look-picker button {
+        color: #f6ffff;
+        background: #20243a;
+        border-color: rgba(0,245,212,.4);
+        border-radius: .3rem;
+    }
+    .experimental-appearance.interface-skin-neon .experimental-look-picker button.is-active {
+        border-color: #ff2bd6;
+        box-shadow: 0 0 0 2px rgba(255,43,214,.25), 0 0 18px rgba(0,245,212,.2);
+    }
+    .experimental-appearance.interface-skin-candy {
+        background: linear-gradient(140deg, #fff6fb, #f3f1ff);
+        border-radius: 1.8rem;
+    }
+    .experimental-appearance.interface-skin-candy h3 { border-left-color: #d44d99; background: rgba(255,218,238,.48); border-radius: 0 1rem 1rem 0; }
+    .experimental-appearance.interface-skin-candy .experimental-look-picker button { border-radius: 1.25rem; border-color: #efc2dc; }
+    .experimental-appearance.interface-skin-brutalist { background: #f4f1e8; border: 3px solid #171717; border-radius: 0; box-shadow: 7px 7px 0 #171717; }
+    .experimental-appearance.interface-skin-brutalist h3 { color: #171717; border: 2px solid #171717; border-left-width: 8px; border-radius: 0; background: #fff; }
+    .experimental-appearance.interface-skin-brutalist .experimental-look-picker button { border: 2px solid #171717; border-radius: 0; box-shadow: 3px 3px 0 #171717; }
+    .experimental-appearance.interface-skin-soft3d { background: #e8edf4; box-shadow: inset 4px 4px 12px rgba(90,105,125,.09), inset -4px -4px 12px rgba(255,255,255,.8); }
+    .experimental-appearance.interface-skin-soft3d h3 { border: 0; border-radius: 1rem; background: #e8edf4; box-shadow: 5px 5px 10px rgba(90,105,125,.16), -4px -4px 10px rgba(255,255,255,.9); }
+    .experimental-appearance.interface-skin-outline { background: transparent; border: 2px solid currentColor; border-radius: .3rem; }
+    .experimental-appearance.interface-skin-outline h3 { border: 2px solid currentColor; border-left-width: 6px; border-radius: 0; background: transparent; }
+    @media (max-width: 640px) {
+        .experimental-appearance { padding: .65rem; border-radius: .8rem; }
+        .experimental-appearance .experimental-look-picker { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .experimental-appearance .experimental-look-picker button { min-height: 3rem; padding: .6rem .4rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .experimental-appearance, .experimental-appearance button { transition: none; }
+        .experimental-appearance button:hover, .experimental-appearance .experimental-look-picker button:hover { transform: none; }
+    }
+
 </style>
