@@ -17,6 +17,7 @@
                     <component :id="elem.id" :is="renderComponent" :element="elem" :editable="editable" v-bind="$attrs"/>
                 </grid-element>
             </transition-group>
+            <div v-if="editable" class="grid-minimum-bounds" :style="minimumGridBoundsStyle" aria-hidden="true"></div>
         </div>
     </div>
 </template>
@@ -98,6 +99,15 @@ export default {
         },
         effectiveRows() {
             return Math.max(this.rows || 1, ...(this.elements || []).map(elem => (elem.y || 0) + (elem.height || 1)));
+        },
+        // Outline the configured minimum area while allowing elements to extend beyond it.
+        minimumGridBoundsStyle() {
+            const minColumns = Math.min(this.columns || 1, this.effectiveColumns);
+            const minRows = Math.min(this.rows || 1, this.effectiveRows);
+            return {
+                width: (minColumns / this.effectiveColumns * 100) + '%',
+                height: (minRows / this.effectiveRows * 100) + '%'
+            };
         },
         cssProps() {
             return {
@@ -384,6 +394,16 @@ export default {
     height: 100%;
     min-width: 0;
     min-height: 0;
+}
+
+.grid-minimum-bounds {
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    border: 2px dashed rgba(190, 125, 35, 0.62);
+    pointer-events: none;
+    z-index: 10;
 }
 
 .grid-layout {
