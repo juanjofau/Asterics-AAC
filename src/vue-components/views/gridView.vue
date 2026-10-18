@@ -1,5 +1,5 @@
 <template>
-    <div class="box" id="gridView" v-cloak>
+    <div :class="['box', 'interface-skin-' + (metadata && metadata.colorConfig.experimentalStyle || 'classic')]" id="gridView" v-cloak>
         <header class="srow header" role="toolbar" v-if="metadata" v-show="!metadata.fullscreen">
             <header-icon class="left" v-show="!metadata.locked"></header-icon>
             <div class="btn-group left">
@@ -641,4 +641,108 @@
 </script>
 
 <style scoped>
+/* Experimental interface skins: the selected appearance also styles the toolbar. */
+#gridView > header.header {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .45rem;
+    margin: .35rem .5rem .65rem;
+    padding: .55rem .7rem;
+    border: 1px solid rgba(90, 105, 125, .18);
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, .88);
+    box-shadow: 0 5px 18px rgba(30, 45, 65, .10);
+    backdrop-filter: blur(14px);
+    transition: background .2s ease, border-radius .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+#gridView > header.header button {
+    min-height: 2.45rem;
+    padding: .45rem .8rem;
+    border: 1px solid rgba(90, 105, 125, .18);
+    border-radius: .75rem;
+    background: rgba(255, 255, 255, .82);
+    box-shadow: 0 2px 5px rgba(20, 30, 45, .07);
+    transition: transform .16s ease, box-shadow .16s ease, background .16s ease;
+}
+#gridView > header.header button:hover,
+#gridView > header.header button:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(20, 30, 45, .16);
+}
+#gridView.interface-skin-classic > header.header { border-radius: .45rem; box-shadow: none; }
+#gridView.interface-skin-glass > header.header {
+    border-color: rgba(255,255,255,.7);
+    background: linear-gradient(120deg, rgba(255,255,255,.82), rgba(220,239,255,.64));
+    box-shadow: 0 12px 34px rgba(44, 93, 135, .17), inset 0 1px 0 rgba(255,255,255,.9);
+    border-radius: 1.35rem;
+}
+#gridView.interface-skin-glass > header.header button {
+    border-color: rgba(255,255,255,.85);
+    background: rgba(255,255,255,.58);
+    border-radius: .95rem;
+}
+#gridView.interface-skin-aurora > header.header {
+    background: linear-gradient(110deg, rgba(232,244,255,.94), rgba(246,232,255,.91), rgba(225,255,248,.92));
+    border-color: rgba(133, 118, 205, .28);
+    box-shadow: 0 8px 26px rgba(94, 73, 160, .16);
+}
+#gridView.interface-skin-aurora > header.header button { border-radius: 1.1rem; background: rgba(255,255,255,.72); }
+#gridView.interface-skin-neon > header.header {
+    background: #111322;
+    border: 1px solid rgba(0,245,212,.72);
+    box-shadow: 0 0 0 1px rgba(255,43,214,.22), 0 0 24px rgba(0,245,212,.18);
+    border-radius: .35rem;
+}
+#gridView.interface-skin-neon > header.header button {
+    color: #f6ffff;
+    background: #20243a;
+    border-color: rgba(0,245,212,.55);
+    border-radius: .25rem;
+    box-shadow: 0 0 10px rgba(0,245,212,.1);
+}
+#gridView.interface-skin-candy > header.header {
+    background: linear-gradient(115deg, #fff1f8, #f1f2ff);
+    border: 2px solid rgba(212,77,153,.2);
+    border-radius: 1.5rem;
+    box-shadow: 0 8px 0 rgba(130,55,105,.12);
+}
+#gridView.interface-skin-candy > header.header button { border-radius: 1.25rem; border-color: #f0c4dc; background: #fffafd; }
+#gridView.interface-skin-brutalist > header.header {
+    background: #fff;
+    border: 3px solid #171717;
+    border-radius: 0;
+    box-shadow: 7px 7px 0 #171717;
+}
+#gridView.interface-skin-brutalist > header.header button {
+    border: 2px solid #171717;
+    border-radius: 0;
+    background: #fff;
+    color: #171717;
+    box-shadow: 3px 3px 0 #171717;
+}
+#gridView.interface-skin-soft3d > header.header {
+    background: #e8edf4;
+    border: 0;
+    border-radius: 1.4rem;
+    box-shadow: 8px 8px 18px rgba(90,105,125,.2), -6px -6px 16px rgba(255,255,255,.9);
+}
+#gridView.interface-skin-soft3d > header.header button {
+    border: 0;
+    background: #e8edf4;
+    border-radius: 1rem;
+    box-shadow: 4px 4px 9px rgba(90,105,125,.2), -3px -3px 8px rgba(255,255,255,.9);
+}
+#gridView.interface-skin-outline > header.header { background: transparent; border: 2px solid currentColor; border-radius: .35rem; box-shadow: none; }
+#gridView.interface-skin-outline > header.header button { background: transparent; border: 2px solid currentColor; border-radius: .25rem; box-shadow: none; }
+@media (max-width: 640px) {
+    #gridView > header.header { margin: .2rem; padding: .4rem; gap: .3rem; border-radius: .8rem; }
+    #gridView > header.header button { min-height: 2.6rem; padding: .45rem .6rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    #gridView > header.header, #gridView > header.header button { transition: none; }
+    #gridView > header.header button:hover, #gridView > header.header button:focus-visible { transform: none; }
+}
 </style>
