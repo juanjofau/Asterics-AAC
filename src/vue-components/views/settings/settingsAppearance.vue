@@ -19,6 +19,9 @@
                     <button type="button" @click="applyExperimentalStyle('candy')">{{ $t('lookCandy') }}</button>
                     <button type="button" @click="applyExperimentalStyle('brutalist')">{{ $t('lookBrutalist') }}</button>
                     <button type="button" @click="applyExperimentalStyle('glass')">{{ $t('lookGlass') }}</button>
+                    <button type="button" @click="applyExperimentalStyle('aurora')">{{ $t('lookAurora') }}</button>
+                    <button type="button" @click="applyExperimentalStyle('soft3d')">{{ $t('lookSoft3d') }}</button>
+                    <button type="button" @click="applyExperimentalStyle('outline')">{{ $t('lookOutline') }}</button>
                 </div>
                 <h3 class="mt-2">{{ $t('textHeading') }}</h3>
                 <div class="srow">
@@ -277,6 +280,15 @@
                     config.innerShadowColor = '#ffffff'; config.innerShadowOpacity = 55;
                     config.innerShadowOffsetX = 0; config.innerShadowOffsetY = 0;
                     config.innerShadowBlur = 1.5; config.innerShadowSpread = 0;
+                } else if (style === 'aurora') {
+                    config.borderRadius = 1; config.elementMargin = 0.4; config.borderWidth = 0.2;
+                    config.outerShadowEnabled = false; config.innerShadowEnabled = false;
+                } else if (style === 'soft3d') {
+                    config.borderRadius = 1.2; config.elementMargin = 0.5; config.borderWidth = 0.15;
+                    config.outerShadowEnabled = false; config.innerShadowEnabled = false;
+                } else if (style === 'outline') {
+                    config.borderRadius = 0.5; config.elementMargin = 0.35; config.borderWidth = 0.2;
+                    config.outerShadowEnabled = false; config.innerShadowEnabled = false;
                 }
                 this.saveMetadata(this.metadata);
             },

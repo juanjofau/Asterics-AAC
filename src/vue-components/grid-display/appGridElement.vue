@@ -222,27 +222,31 @@ export default {
     z-index: 1;
 }
 
-/* Bold experimental skins for rapid visual concept testing. */
+/* Experimental effects decorate the cell without replacing its configured background or text colour. */
 .element-container.experimental-skin-neon {
-    background: #17152b !important; color: #f8f4ff !important;
-    border: 2px solid #00f5d4 !important; border-radius: 0.25rem !important;
-    box-shadow: 0 0 0 2px #ff2bd6, 0 0 18px rgba(0,245,212,.75) !important;
+    box-shadow: 0 0 0 2px rgba(255,43,214,.9), 0 0 18px rgba(0,245,212,.75) !important;
 }
 .element-container.experimental-skin-candy {
-    background: linear-gradient(145deg,#ff8bd1,#ffc4e6) !important; color: #532044 !important;
-    border: 3px solid #fff3fa !important; border-radius: 999px !important;
-    box-shadow: 0 7px 0 #d44d99, 0 10px 14px rgba(120,20,75,.25) !important;
+    background-image: linear-gradient(145deg, rgba(255,255,255,.24), rgba(255,139,209,.10)) !important;
+    box-shadow: 0 7px 0 rgba(110,35,82,.42), 0 10px 14px rgba(120,20,75,.22) !important;
 }
 .element-container.experimental-skin-brutalist {
-    background: #fff39a !important; color: #171717 !important;
-    border: 3px solid #171717 !important; border-radius: 0 !important;
-    box-shadow: 7px 7px 0 #171717 !important;
+    box-shadow: 7px 7px 0 rgba(20,20,20,.95) !important;
 }
 .element-container.experimental-skin-glass {
-    background: rgba(226,242,255,.28) !important; color: #17324d !important;
-    border: 1px solid rgba(255,255,255,.9) !important; border-radius: 1rem !important;
-    box-shadow: 0 8px 24px rgba(31,74,110,.25), inset 0 1px 0 rgba(255,255,255,.8) !important;
-    backdrop-filter: blur(8px);
+    background-image: linear-gradient(135deg, rgba(255,255,255,.48), rgba(255,255,255,.08) 42%, rgba(120,180,220,.12)) !important;
+    box-shadow: 0 8px 24px rgba(31,74,110,.25), inset 0 1px 0 rgba(255,255,255,.72) !important;
+    backdrop-filter: blur(5px);
 }
-
+.element-container.experimental-skin-aurora {
+    background-image: linear-gradient(135deg, rgba(255,255,255,.28), transparent 40%, rgba(120,80,255,.16) 72%, rgba(0,230,200,.20)) !important;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.55), 0 8px 20px rgba(44,50,100,.22) !important;
+}
+.element-container.experimental-skin-soft3d {
+    background-image: linear-gradient(145deg, rgba(255,255,255,.34), rgba(0,0,0,.05)) !important;
+    box-shadow: 5px 5px 10px rgba(0,0,0,.22), -4px -4px 10px rgba(255,255,255,.38), inset 1px 1px 0 rgba(255,255,255,.32) !important;
+}
+.element-container.experimental-skin-outline {
+    box-shadow: inset 0 0 0 3px rgba(255,255,255,.8), inset 0 0 0 5px rgba(0,0,0,.18), 0 3px 8px rgba(0,0,0,.15) !important;
+}
 </style>
