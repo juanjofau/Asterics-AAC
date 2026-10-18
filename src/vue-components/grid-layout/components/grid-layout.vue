@@ -1,11 +1,11 @@
 <template>
     <div :style="Object.assign({}, cssProps, { '--grid-columns': effectiveColumns, '--grid-rows': effectiveRows })" :class="['grid-parent', myId, { 'grid-parent--indexed': editable }]">
-        <div v-if="editable" class="grid-index-corner" aria-hidden="true"></div>
-        <div v-if="editable" class="grid-column-labels" :style="{ gridTemplateColumns: getGridTemplateTracks('grid-template-columns') }" aria-hidden="true">
-            <span v-for="column in effectiveColumns" :key="'column-' + column">{{ column }}</span>
+        <div v-if="editable" class="grid-index-corner" role="button" tabindex="0" aria-label="Select all cells" @click.stop="$emit('select-all')" @keydown.enter.stop="$emit('select-all')" @keydown.space.prevent.stop="$emit('select-all')"></div>
+        <div v-if="editable" class="grid-column-labels" :style="{ gridTemplateColumns: getGridTemplateTracks('grid-template-columns') }">
+            <span v-for="column in effectiveColumns" :key="'column-' + column" role="button" tabindex="0" :aria-label="'Select column ' + column" @click.stop="$emit('select-column', column - 1)" @keydown.enter.stop="$emit('select-column', column - 1)" @keydown.space.prevent.stop="$emit('select-column', column - 1)">{{ column }}</span>
         </div>
-        <div v-if="editable" class="grid-row-labels" :style="{ gridTemplateRows: getGridTemplateTracks('grid-template-rows') }" aria-hidden="true">
-            <span v-for="row in effectiveRows" :key="'row-' + row">{{ row }}</span>
+        <div v-if="editable" class="grid-row-labels" :style="{ gridTemplateRows: getGridTemplateTracks('grid-template-rows') }">
+            <span v-for="row in effectiveRows" :key="'row-' + row" role="button" tabindex="0" :aria-label="'Select row ' + row" @click.stop="$emit('select-row', row - 1)" @keydown.enter.stop="$emit('select-row', row - 1)" @keydown.space.prevent.stop="$emit('select-row', row - 1)">{{ row }}</span>
         </div>
         <div class="grid-content">
             <div v-if="backgroundLines">
@@ -338,8 +338,9 @@ export default {
     grid-column: 1;
     grid-row: 1;
     background: transparent;
-    border-right: 1px solid rgba(128, 128, 128, 0.14);
-    border-bottom: 1px solid rgba(128, 128, 128, 0.13);
+    border-right: 1px solid rgba(90, 100, 115, 0.35);
+    border-bottom: 1px solid rgba(90, 100, 115, 0.35);
+    cursor: pointer;
 }
 
 .grid-column-labels,
@@ -352,21 +353,21 @@ export default {
     font-size: clamp(9px, 1.1vw, 12px);
     line-height: 1;
     user-select: none;
-    pointer-events: none;
+    pointer-events: auto;
 }
 
 .grid-column-labels {
     grid-column: 2;
     grid-row: 1;
     grid-template-columns: repeat(var(--grid-columns, 1), minmax(0, 1fr));
-    border-bottom: 1px solid rgba(128, 128, 128, 0.16);
+    border-bottom: 1px solid rgba(90, 100, 115, 0.35);
 }
 
 .grid-row-labels {
     grid-column: 1;
     grid-row: 2;
     grid-template-rows: repeat(var(--grid-rows, 1), minmax(0, 1fr));
-    border-right: 1px solid rgba(128, 128, 128, 0.07);
+    border-right: 1px solid rgba(90, 100, 115, 0.35);
 }
 
 .grid-column-labels span,
@@ -377,6 +378,8 @@ export default {
     overflow: hidden;
     font-variant-numeric: tabular-nums;
     font-weight: 600;
+    cursor: pointer;
+    pointer-events: auto;
 }
 
 .grid-column-labels span:not(:last-child) {
