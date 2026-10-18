@@ -169,12 +169,12 @@ export default {
             this.$emit("changed", updatedElements);
             this.reinit();
         },
-        handleMoveGroup(elementIds, diff) {
+        handleMoveGroup(elementIds, diff, sourceElements = this.elements) {
             if (!elementIds || elementIds.length < 2 || (diff.x === 0 && diff.y === 0)) {
                 return;
             }
             const movingIds = elementIds.map(id => String(id));
-            const originalElements = this.elements.map(element => ({ ...element }));
+            const originalElements = sourceElements.map(element => ({ ...element }));
             const movingElements = originalElements.filter(element => movingIds.includes(String(element.id)));
             if (movingElements.length !== movingIds.length) {
                 return;
@@ -340,7 +340,13 @@ export default {
                         const movingIds = selectedIds.includes(String(draggedId))
                             ? thiz.elements.filter(element => selectedIds.includes(String(element.id))).map(element => String(element.id))
                             : [String(draggedId)];
-                        activeMove = { ids: movingIds, target: event.target };
+                        activeMove = {
+                            ids: movingIds,
+                            target: event.target,
+                            // Freeze the grid coordinates at drag start. The drag itself only
+                            // changes DOM transforms; the grid data is committed on release.
+                            originalElements: thiz.elements.map(element => ({ ...element }))
+                        };
                         thiz.$emit('movestart', { elementId: draggedId, movingElementIds: movingIds });
                         thiz.$emit('interactstart', {
                             type: 'move',
@@ -381,7 +387,7 @@ export default {
                             yExact: diffY
                         };
                         if (movingIds.length > 1) {
-                            thiz.handleMoveGroup(movingIds, diff);
+                            thiz.handleMoveGroup(movingIds, diff, activeMove.originalElements);
                         } else {
                             thiz.handleMove(movedElement, diff);
                         }
