@@ -329,7 +329,7 @@ export default {
     grid-row: 1;
     background: transparent;
     border-right: 1px solid rgba(128, 128, 128, 0.07);
-    border-bottom: 1px solid rgba(128, 128, 128, 0.07);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.13);
 }
 
 .grid-column-labels,
@@ -373,7 +373,7 @@ export default {
 }
 
 .grid-row-labels span:not(:last-child) {
-    border-bottom: 1px solid rgba(128, 128, 128, 0.035);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.075);
 }
 
 .grid-content {
