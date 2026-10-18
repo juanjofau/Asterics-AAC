@@ -329,15 +329,14 @@ export default {
 
 .grid-parent--indexed {
     display: grid;
-    grid-template-columns: 18px minmax(0, 1fr);
-    grid-template-rows: 18px minmax(0, 1fr);
+    grid-template-columns: 20px minmax(0, 1fr);
+    grid-template-rows: 20px minmax(0, 1fr);
     gap: 0;
 }
 
 .grid-index-corner {
     grid-column: 1;
     grid-row: 1;
-    margin: 1px;
     border: 1px solid rgba(70, 85, 110, 0.42);
     border-radius: 3px;
     background: linear-gradient(145deg, rgba(100, 125, 165, 0.16), rgba(145, 155, 175, 0.08));
@@ -378,7 +377,6 @@ export default {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    margin: 1px;
     border: 1px solid rgba(70, 85, 110, 0.3);
     border-radius: 3px;
     background: linear-gradient(145deg, rgba(110, 130, 165, 0.15), rgba(145, 155, 175, 0.07));
