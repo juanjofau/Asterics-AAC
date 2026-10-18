@@ -229,9 +229,9 @@ export default {
             }
         },
         onMoveTouchStart(event) {
-            // Fallback for browsers without Pointer Events.
-            if (this.editable && event.touches && event.touches.length > 1 &&
-                this.activeMovePointerId === null) {
+            // Also stop the touch event itself: some browsers dispatch it after
+            // Pointer Events, and InteractJS may listen for either event family.
+            if (this.editable && event.touches && event.touches.length > 1) {
                 event.preventDefault();
                 event.stopImmediatePropagation();
             }
