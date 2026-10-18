@@ -338,7 +338,7 @@ export default {
     grid-column: 1;
     grid-row: 1;
     background: transparent;
-    border-right: 1px solid rgba(128, 128, 128, 0.07);
+    border-right: 1px solid rgba(128, 128, 128, 0.14);
     border-bottom: 1px solid rgba(128, 128, 128, 0.13);
 }
 
@@ -347,7 +347,7 @@ export default {
     display: grid;
     min-width: 0;
     min-height: 0;
-    color: var(--grid-index-color, rgba(100, 100, 100, 0.72));
+    color: var(--grid-index-color, rgba(115, 115, 115, 0.82));
     background: transparent;
     font-size: clamp(9px, 1.1vw, 12px);
     line-height: 1;
@@ -359,7 +359,7 @@ export default {
     grid-column: 2;
     grid-row: 1;
     grid-template-columns: repeat(var(--grid-columns, 1), minmax(0, 1fr));
-    border-bottom: 1px solid rgba(128, 128, 128, 0.07);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.16);
 }
 
 .grid-row-labels {
@@ -376,14 +376,15 @@ export default {
     justify-content: center;
     overflow: hidden;
     font-variant-numeric: tabular-nums;
+    font-weight: 600;
 }
 
 .grid-column-labels span:not(:last-child) {
-    border-right: 1px solid rgba(128, 128, 128, 0.035);
+    border-right: 1px solid rgba(128, 128, 128, 0.12);
 }
 
 .grid-row-labels span:not(:last-child) {
-    border-bottom: 1px solid rgba(128, 128, 128, 0.075);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.14);
 }
 
 .grid-content {
