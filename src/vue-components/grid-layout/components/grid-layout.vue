@@ -180,11 +180,22 @@ export default {
                 return;
             }
 
-            // Give each selected cell its intended drop position, then reuse the
-            // same collision/repositioning logic as a single-cell move, one cell
-            // at a time. Always calculate targets from the original layout so a
-            // previous collision resolution cannot apply the group offset twice.
-            let updatedElements = originalElements.map(element => ({ ...element }));
+            // Move the whole group to its intended drop positions first. This
+            // prevents a selected cell's old position from being treated as a
+            // collision while another selected cell is being processed.
+            let updatedElements = originalElements.map(element => {
+                const updated = { ...element };
+                if (movingIds.includes(String(updated.id))) {
+                    const original = movingElements.find(item => String(item.id) === String(updated.id));
+                    updated.x = original.x + diff.x;
+                    updated.y = original.y + diff.y;
+                }
+                return updated;
+            });
+
+            // Reuse the single-cell collision/repositioning logic for each cell.
+            // Targets are based on the original layout, so a previous collision
+            // resolution cannot apply the group offset twice.
             for (const movingElement of movingElements) {
                 const target = updatedElements.find(element => String(element.id) === String(movingElement.id));
                 target.x = movingElement.x + diff.x;
