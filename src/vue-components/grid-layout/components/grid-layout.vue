@@ -1,14 +1,23 @@
 <template>
-    <div :style="cssProps" :class="'grid-parent ' + myId">
-        <div v-if="backgroundLines">
-            <div class="grid-bg-lines" :style="`margin-left: ${getRasterX()}px; margin-right: 1px; background-size: ${getRasterX()}px ${getRasterX()}px; background-image: linear-gradient(to right, grey 1px, transparent 1px)`"/>
-            <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; margin-bottom: 1px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
+    <div :style="Object.assign({}, cssProps, { '--grid-columns': columns, '--grid-rows': rows })" :class="['grid-parent', myId, { 'grid-parent--indexed': editable }]">
+        <div v-if="editable" class="grid-index-corner" aria-hidden="true"></div>
+        <div v-if="editable" class="grid-column-labels" aria-hidden="true">
+            <span v-for="column in columns" :key="'column-' + column">{{ column }}</span>
         </div>
-        <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="baseTag" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
-            <grid-element v-for="elem in elements" :key="getKey(elem)" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" :tag="elementTag" :class="elem.id + '' === noMoveId ? 'nomove' : ''" :element="elem" :elem-css-fn="elemCssFn">
-                <component :id="elem.id" :is="renderComponent" :element="elem" :editable="editable" v-bind="$attrs"/>
-            </grid-element>
-        </transition-group>
+        <div v-if="editable" class="grid-row-labels" aria-hidden="true">
+            <span v-for="row in rows" :key="'row-' + row">{{ row }}</span>
+        </div>
+        <div class="grid-content">
+            <div v-if="backgroundLines">
+                <div class="grid-bg-lines" :style="`margin-left: ${getRasterX()}px; margin-right: 1px; background-size: ${getRasterX()}px ${getRasterX()}px; background-image: linear-gradient(to right, grey 1px, transparent 1px)`"/>
+                <div class="grid-bg-lines" :style="`margin-top: ${getRasterY()}px; margin-bottom: 1px; background-size: ${getRasterY()}px ${getRasterY()}px; background-image: linear-gradient(to bottom, grey 1px, transparent 1px);`"/>
+            </div>
+            <transition-group ref="gridComponent" :name="editable ? 'grid-transition' : ''" :tag="baseTag" class="grid-layout" :style="`grid-template-columns: repeat(${columns}, minmax(0, 1fr)); grid-template-rows: repeat(${rows}, minmax(0, 1fr)); background-color: ${backgroundColor}`">
+                <grid-element v-for="elem in elements" :key="getKey(elem)" :data-id="elem.id" :x="elem.x" :y="elem.y" :width="elem.width" :height="elem.height" :tag="elementTag" :class="elem.id + '' === noMoveId ? 'nomove' : ''" :element="elem" :elem-css-fn="elemCssFn">
+                    <component :id="elem.id" :is="renderComponent" :element="elem" :editable="editable" v-bind="$attrs"/>
+                </grid-element>
+            </transition-group>
+        </div>
     </div>
 </template>
 
@@ -290,6 +299,75 @@ export default {
     width: 100%;
     height: 100%;
     position: relative;
+}
+
+.grid-parent--indexed {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    grid-template-rows: 18px minmax(0, 1fr);
+    gap: 0;
+}
+
+.grid-index-corner {
+    grid-column: 1;
+    grid-row: 1;
+    background: rgba(128, 128, 128, 0.06);
+    border-right: 1px solid rgba(128, 128, 128, 0.18);
+    border-bottom: 1px solid rgba(128, 128, 128, 0.18);
+}
+
+.grid-column-labels,
+.grid-row-labels {
+    display: grid;
+    min-width: 0;
+    min-height: 0;
+    color: var(--grid-index-color, #777);
+    background: rgba(128, 128, 128, 0.045);
+    font-size: clamp(9px, 1.1vw, 12px);
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+}
+
+.grid-column-labels {
+    grid-column: 2;
+    grid-row: 1;
+    grid-template-columns: repeat(var(--grid-columns, 1), minmax(0, 1fr));
+    border-bottom: 1px solid rgba(128, 128, 128, 0.18);
+}
+
+.grid-row-labels {
+    grid-column: 1;
+    grid-row: 2;
+    grid-template-rows: repeat(var(--grid-rows, 1), minmax(0, 1fr));
+    border-right: 1px solid rgba(128, 128, 128, 0.18);
+}
+
+.grid-column-labels span,
+.grid-row-labels span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-variant-numeric: tabular-nums;
+}
+
+.grid-column-labels span:not(:last-child) {
+    border-right: 1px solid rgba(128, 128, 128, 0.08);
+}
+
+.grid-row-labels span:not(:last-child) {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.08);
+}
+
+.grid-content {
+    position: relative;
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
 }
 
 .grid-layout {
