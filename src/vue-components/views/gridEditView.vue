@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="srow content d-flex" v-if="metadata && gridData" style="min-height: 0">
-            <app-grid-display id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :editable="true" @interacted="onInteracted" @interactstart="onInteractStart" @interactend="onInteractEnd" @select-column="selectGridColumn" @select-row="selectGridRow" @select-all="selectGridAll"/>
+            <app-grid-display id="grid-container" @changed="handleChange" :grid-data="gridData" :metadata="metadata" :editable="true" :selected-element-ids="markedElementIds" @interacted="onInteracted" @interactstart="onInteractStart" @interactend="onInteractEnd" @select-column="selectGridColumn" @select-row="selectGridRow" @select-all="selectGridAll"/>
         </div>
     </div>
 </template>
@@ -593,11 +593,16 @@
             onTouchEnd() {
                 clearTimeout(this.touchstartTimeoutHandler);
             },
-            onInteractStart() {
+            onInteractStart(interaction) {
                 this.isInteracting = true;
-                this.unmarkTimeoutHandler = setTimeout(() => {
-                    this.unmarkAll();
-                }, 100);
+                clearTimeout(this.unmarkTimeoutHandler);
+                const movingSelectedElement = interaction && interaction.type === 'move' &&
+                    this.markedElementIds.some(id => String(id) === String(interaction.elementId));
+                if (!movingSelectedElement) {
+                    this.unmarkTimeoutHandler = setTimeout(() => {
+                        this.unmarkAll();
+                    }, 100);
+                }
             },
             onInteractEnd() {
                 setTimeout(() => {
