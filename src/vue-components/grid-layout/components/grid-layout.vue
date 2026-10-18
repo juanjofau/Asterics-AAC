@@ -209,15 +209,17 @@ export default {
             return !(target.closest(this.resizeHandleSelector));
         },
         onMovePointerDown(event) {
-            if (!this.editable || !this.isDraggableElementTarget(event.target)) {
+            if (!this.editable) {
                 return;
             }
+            // Once a contact starts on a movable cell, ignore any additional
+            // contact inside this grid until the first contact is released.
             if (this.activeMovePointerId !== null && event.pointerId !== this.activeMovePointerId) {
                 event.preventDefault();
                 event.stopImmediatePropagation();
                 return;
             }
-            if (this.activeMovePointerId === null) {
+            if (this.activeMovePointerId === null && this.isDraggableElementTarget(event.target)) {
                 this.activeMovePointerId = event.pointerId;
             }
         },
@@ -227,8 +229,9 @@ export default {
             }
         },
         onMoveTouchStart(event) {
+            // Fallback for browsers without Pointer Events.
             if (this.editable && event.touches && event.touches.length > 1 &&
-                this.isDraggableElementTarget(event.target)) {
+                this.activeMovePointerId === null) {
                 event.preventDefault();
                 event.stopImmediatePropagation();
             }
