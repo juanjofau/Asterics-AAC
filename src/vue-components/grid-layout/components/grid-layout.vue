@@ -337,9 +337,11 @@ export default {
 .grid-index-corner {
     grid-column: 1;
     grid-row: 1;
-    background: transparent;
-    border-right: 1px solid rgba(90, 100, 115, 0.35);
-    border-bottom: 1px solid rgba(90, 100, 115, 0.35);
+    margin: 1px;
+    border: 1px solid rgba(70, 85, 110, 0.42);
+    border-radius: 3px;
+    background: linear-gradient(145deg, rgba(100, 125, 165, 0.16), rgba(145, 155, 175, 0.08));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 1px 1px rgba(35, 50, 75, 0.12);
     cursor: pointer;
 }
 
@@ -348,7 +350,7 @@ export default {
     display: grid;
     min-width: 0;
     min-height: 0;
-    color: var(--grid-index-color, rgba(115, 115, 115, 0.82));
+    color: var(--grid-index-color, rgba(85, 95, 115, 0.95));
     background: transparent;
     font-size: clamp(9px, 1.1vw, 12px);
     line-height: 1;
@@ -376,10 +378,31 @@ export default {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    margin: 1px;
+    border: 1px solid rgba(70, 85, 110, 0.3);
+    border-radius: 3px;
+    background: linear-gradient(145deg, rgba(110, 130, 165, 0.15), rgba(145, 155, 175, 0.07));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 1px rgba(35, 50, 75, 0.1);
     font-variant-numeric: tabular-nums;
     font-weight: 600;
     cursor: pointer;
     pointer-events: auto;
+    transition: background-color 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.grid-column-labels span:hover,
+.grid-row-labels span:hover,
+.grid-index-corner:hover {
+    border-color: rgba(45, 70, 110, 0.65);
+    background: linear-gradient(145deg, rgba(100, 130, 180, 0.28), rgba(145, 160, 190, 0.16));
+}
+
+.grid-column-labels span:focus-visible,
+.grid-row-labels span:focus-visible,
+.grid-index-corner:focus-visible {
+    outline: 2px solid rgba(35, 75, 135, 0.85);
+    outline-offset: 0;
+    z-index: 1;
 }
 
 .grid-column-labels span:not(:last-child) {
@@ -406,9 +429,17 @@ export default {
     left: 0;
     box-sizing: border-box;
     border: 3px dashed #173b70;
-    box-shadow: inset 0 0 0 1px rgba(235, 239, 245, 0.9);
     pointer-events: none;
     z-index: 10;
+}
+
+.grid-minimum-bounds::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border: 3px dashed #d4d9e2;
+    pointer-events: none;
+    z-index: -1;
 }
 
 .grid-layout {
