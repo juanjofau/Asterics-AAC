@@ -197,9 +197,11 @@ export default {
             // Targets are based on the original layout, so a previous collision
             // resolution cannot apply the group offset twice.
             for (const movingElement of movingElements) {
+                // Use the element's current position in the evolving layout.
+                // resolveCollisions may already have repositioned it while
+                // resolving an earlier selected cell; resetting x/y here can
+                // reintroduce an overlap that was just resolved.
                 const target = updatedElements.find(element => String(element.id) === String(movingElement.id));
-                target.x = movingElement.x + diff.x;
-                target.y = movingElement.y + diff.y;
                 updatedElements = gridLayoutUtil.resolveCollisions(updatedElements, target, {
                     diff: diff,
                     gridWidth: this.columns,
