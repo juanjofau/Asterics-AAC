@@ -173,88 +173,75 @@ export default {
             if (!elementIds || elementIds.length < 2 || (diff.x === 0 && diff.y === 0)) {
                 return;
             }
-            const movingIds = elementIds.map(id => String(id));
+
+            const movingIds = [...new Set(elementIds.map(id => String(id)))];
+            const movingIdSet = new Set(movingIds);
             const originalElements = sourceElements.map(element => ({ ...element }));
-            const movingElements = originalElements.filter(element => movingIds.includes(String(element.id)));
+            const movingElements = originalElements.filter(element => movingIdSet.has(String(element.id)));
             if (movingElements.length !== movingIds.length) {
                 return;
             }
 
-            // Move the whole group to its intended drop positions first. This
-            // prevents a selected cell's old position from being treated as a
-            // collision while another selected cell is being processed.
-            let updatedElements = originalElements.map(element => {
+            // Move the group as one rigid block. Match individual movement by
+            // preventing cells from crossing the top or left edge (negative grid
+            // coordinates), while still allowing the grid to grow right/down.
+            const minX = Math.min(...movingElements.map(element => element.x));
+            const minY = Math.min(...movingElements.map(element => element.y));
+            const groupDiff = {
+                x: Math.max(diff.x, -minX),
+                y: Math.max(diff.y, -minY)
+            };
+
+            const updatedElements = originalElements.map(element => {
                 const updated = { ...element };
-                if (movingIds.includes(String(updated.id))) {
-                    const original = movingElements.find(item => String(item.id) === String(updated.id));
-                    updated.x = original.x + diff.x;
-                    updated.y = original.y + diff.y;
+                if (movingIdSet.has(String(updated.id))) {
+                    updated.x += groupDiff.x;
+                    updated.y += groupDiff.y;
                 }
                 return updated;
             });
 
-            // Keep the selected cells fixed at their translated positions.
-            // The single-cell resolver is order-dependent and can move a
-            // previously processed cell back underneath another selected cell.
-            // Instead, reserve the whole group first, then place every
-            // unselected cell without ever allowing an overlap.
-            const selectedElements = updatedElements.filter(element =>
-                movingIds.includes(String(element.id))
+            // Reserve every selected cell at its final position before resolving
+            // collisions. Resolving selected cells one by one can push a cell
+            // that has already been processed back into another selected cell.
+            const placedElements = updatedElements.filter(element =>
+                movingIdSet.has(String(element.id))
             );
-            const placedElements = selectedElements.map(element => ({ ...element }));
             const unselectedElements = updatedElements.filter(element =>
-                !movingIds.includes(String(element.id))
+                !movingIdSet.has(String(element.id))
             );
+
+            const overlaps = (a, b) =>
+                a.x < b.x + b.width && a.x + a.width > b.x &&
+                a.y < b.y + b.height && a.y + a.height > b.y;
+            const hasOverlap = candidate =>
+                placedElements.some(element => overlaps(candidate, element));
 
             for (const element of unselectedElements) {
                 const candidate = { ...element };
-                if (!gridLayoutUtil.isFreeSpace(
-                    placedElements,
-                    candidate.x,
-                    candidate.y,
-                    candidate.width,
-                    candidate.height,
-                    { outOfBounds: true, gridWidth: this.columns, gridHeight: this.rows }
-                )) {
-                    // Push the conflicting cell to the first free position
-                    // on its row, then continue on following rows if needed.
-                    const maxX = Math.max(
-                        this.columns,
-                        ...placedElements.map(item => item.x + item.width)
-                    ) + unselectedElements.length + candidate.width;
-                    let found = false;
-                    for (let y = Math.max(0, candidate.y); !found && y < this.rows + placedElements.length + unselectedElements.length + candidate.height + 1; y++) {
-                        for (let x = Math.max(0, candidate.x); x <= maxX; x++) {
-                            if (gridLayoutUtil.isFreeSpace(
-                                placedElements,
-                                x,
-                                y,
-                                candidate.width,
-                                candidate.height,
-                                { outOfBounds: true, gridWidth: this.columns, gridHeight: this.rows }
-                            )) {
-                                candidate.x = x;
-                                candidate.y = y;
-                                found = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!found) {
-                        // Defensive fallback: extend the layout to the right.
-                        candidate.x = maxX + 1;
-                        candidate.y = Math.max(0, candidate.y);
+                candidate.x = Math.max(0, candidate.x);
+                candidate.y = Math.max(0, candidate.y);
+
+                if (hasOverlap(candidate)) {
+                    // Keep the row when possible and move right until the cell
+                    // is free. This loop is guaranteed to terminate: beyond the
+                    // right edge of every already-placed cell, space is free.
+                    while (hasOverlap(candidate)) {
+                        candidate.x++;
                     }
                 }
                 placedElements.push(candidate);
             }
 
-            // Preserve the original array order (which can affect rendering)
-            // while applying the final, collision-free coordinates.
-            updatedElements = updatedElements.map(element =>
-                placedElements.find(placed => String(placed.id) === String(element.id))
+            // Preserve the original array order, which can affect rendering.
+            const placedById = new Map(
+                placedElements.map(element => [String(element.id), element])
             );
-            this.$emit("changed", updatedElements);
+            const finalElements = originalElements.map(element =>
+                placedById.get(String(element.id))
+            );
+
+            this.$emit("changed", finalElements);
             this.reinit();
         },
         isDraggableElementTarget(target) {
