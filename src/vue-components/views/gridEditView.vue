@@ -7,7 +7,7 @@
                 <span class="hide-mobile">{{ $t('editingOff') }}</span>
             </button>
             <select tabindex="31" class="small spaced edit-target-select" :aria-label="$t('selectGrid')" :title="$t('selectGrid')" :value="isEditingGlobalGrid ? 'global' : 'current'" @change="changeEditTarget($event.target.value)">
-                <option value="current">{{ $t('grid') }}</option>
+                <option value="current">{{ $t('currentGrid') }}</option>
                 <option value="global">{{ $t('globalGrid') }}</option>
             </select>
 
