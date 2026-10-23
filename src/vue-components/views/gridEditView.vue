@@ -7,10 +7,10 @@
                 <span class="hide-mobile">{{ $t('editingOff') }}</span>
             </button>
             <div class="spaced edit-target-control" role="group" :aria-label="$t('selectGrid')">
-                <button tabindex="31" type="button" role="switch" class="edit-target-switch" :class="{ 'is-global': isEditingGlobalGrid }" :aria-checked="isEditingGlobalGrid" :aria-label="$t('selectGrid')" @click="changeEditTarget(isEditingGlobalGrid ? 'current' : 'global')">
-                    <span class="edit-target-switch__thumb" aria-hidden="true"></span>
+                <button tabindex="31" type="button" role="switch" class="edit-target-switch" :class="{ 'is-global': isEditingGlobalGrid }" :aria-checked="isEditingGlobalGrid" :aria-label="$t('selectGrid')" :title="$t('selectGrid')" @click="changeEditTarget(isEditingGlobalGrid ? 'current' : 'global')">
+                    <i class="fas fa-globe" aria-hidden="true"></i>
                 </button>
-                <span class="edit-target-control__label">{{ isEditingGlobalGrid ? $t('globalGrid') : $t('currentGrid') }}</span>
+                <span class="edit-target-control__label">{{ $t('globalGrid') }}</span>
             </div>
 
             <div class="spaced right edit-toolbar__actions">
@@ -1218,35 +1218,31 @@ header {
     position: relative;
     display: inline-flex;
     align-items: center;
-    flex: 0 0 5rem;
-    width: 5rem;
-    min-width: 5rem;
-    height: 2.8rem;
-    min-height: 2.8rem;
+    justify-content: center;
+    flex: 0 0 3.6rem;
+    width: 3.6rem;
+    min-width: 3.6rem;
+    height: 3.6rem;
+    min-height: 3.6rem;
     padding: 0;
     margin: 0;
     border: 1px solid #aeb4ba;
-    border-radius: 1.4rem;
-    background: #d8dce0;
+    border-radius: 0.45rem;
+    color: #343a40;
+    background: #f8f8f8;
     box-shadow: none;
-    transition: background-color 0.15s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 .edit-target-switch.is-global {
-    background: #8aabbf;
+    color: #fff;
+    border-color: #527f98;
+    background: #527f98;
 }
-.edit-target-switch__thumb {
+.edit-target-switch > i {
     display: block;
-    width: 2.2rem;
-    height: 2.2rem;
-    margin-left: 0.2rem;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
-    transform: translateX(0);
-    transition: transform 0.15s ease;
-}
-.edit-target-switch.is-global .edit-target-switch__thumb {
-    transform: translateX(2.2rem);
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1;
 }
 .edit-target-control__label {
     white-space: nowrap;
