@@ -1188,6 +1188,7 @@
   "testElement": "Test Element",
   "gridElement": "Grid element",
   "grid": "Grid",
+  "currentGrid": "Current grid",
   "quickSettings": "Quick settings",
   "setToDefaultSettings": "Set to default settings",
   "setToDefaultSettingsBgColored": "Set to background colored",
