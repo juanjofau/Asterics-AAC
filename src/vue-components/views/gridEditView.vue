@@ -1212,7 +1212,7 @@ header {
     gap: 0.65rem;
     vertical-align: middle;
     min-height: 3.6rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
 }
 .edit-target-switch {
     position: relative;
@@ -1288,7 +1288,7 @@ header {
     line-height: 1;
     text-align: center;
     background-color: #f8f8f8;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
 }
 .edit-toolbar__icon-button:disabled {
     background-color: #f8f8f8;
