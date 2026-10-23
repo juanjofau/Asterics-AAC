@@ -957,11 +957,27 @@
             }
         };
 
+        let visibleFn = () => vueApp && vueApp.markedElementIds.length > 0;
         var itemsMoreMenuButton = {
+            "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementsContextMenu'), icon: "far fa-square", visible: visibleFn, items: itemsElemNormal},
+            separator: { "type": "cm_separator", visible: visibleFn},
+            CONTEXT_NEW_GROUP: contextMenuNewGroup,
+            SEP0: "---------",
             'CONTEXT_COPY_ALL': {name: i18nService.t('copyAllElements'), icon: "fas fa-copy"},
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
-            'CONTEXT_GRID_TRANSLATION': { name: i18nService.t('translateGrid'), icon: "fas fa-language" },
             SEP1: "---------",
+            CONTEXT_GROUP_LAYOUT: itemsLayout,
+            'CONTEXT_GRID_SETTINGS': {
+                name: i18nService.t('gridSettings'),
+                icon: "fas fa-expand-arrows-alt"
+            },
+            'CONTEXT_GRID_TRANSLATION': {
+                name: i18nService.t('translateGrid'),
+                icon: "fas fa-language"
+            },
+            'CONTEXT_EDIT_GLOBAL_GRID': {name: i18nService.t('editGlobalGrid'), icon: "fas fa-globe", visible: !vueApp.isEditingGlobalGrid},
+            'CONTEXT_END_EDIT_GLOBAL_GRID': {name: i18nService.t('endEditGlobalGrid'), icon: "fas fa-globe", visible: vueApp.isEditingGlobalGrid},
+            SEP2: "---------",
             'CONTEXT_SEARCH': {name: i18nService.t('searchBtnTitle'), icon: "fas fa-search"},
         };
 
