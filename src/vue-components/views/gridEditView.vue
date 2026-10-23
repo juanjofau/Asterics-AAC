@@ -16,7 +16,7 @@
                 <button tabindex="31" @click="undo" :aria-label="$t('undo')" :title="$t('undo')" :disabled="doingUndoRedo || !undoService.canUndo()" class="small edit-toolbar__icon-button"><i class="fas fa-undo"></i></button>
                 <button tabindex="32" @click="redo" :aria-label="$t('redo')" :title="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small edit-toolbar__icon-button"><i class="fas fa-redo"></i></button>
 
-                <button tabindex="35" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" v-show="!toolbarCompact" class="small edit-toolbar__icon-button">
+                <button tabindex="35" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" v-show="!toolbarCompact" class="small edit-toolbar__icon-button">
                     <i class="far fa-square"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
                 <div id="selectedElementsButtonMenu"></div>
@@ -980,13 +980,13 @@
         let visibleFn = () => vueApp.markedElementIds.length >= 1;
         let compactToolbarFn = () => !!(vueApp && vueApp.toolbarCompact);
         var itemsMoreMenuButton = {
-            "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementsContextMenu'), icon: "far fa-square", visible: compactToolbarFn, items: itemsElemNormal},
+            "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementsContextMenu'), icon: "far fa-square", visible: () => compactToolbarFn() && visibleFn(), items: itemsElemNormal},
             separator: { "type": "cm_separator", visible: () => compactToolbarFn() && visibleFn()},
             CONTEXT_NEW_GROUP: Object.assign({}, contextMenuNewGroup, { visible: compactToolbarFn }),
-            SEP0: "---------",
+            SEP0: { type: "cm_separator", visible: compactToolbarFn },
             CONTEXT_GROUP_LAYOUT: Object.assign({}, itemsLayout, { visible: compactToolbarFn }),
             'CONTEXT_GRID_SETTINGS': { name: i18nService.t('gridSettings'), icon: "fas fa-cog", visible: compactToolbarFn },
-            SEP1: "---------",
+            SEP1: { type: "cm_separator", visible: compactToolbarFn },
             'CONTEXT_COPY_ALL': {name: i18nService.t('copyAllElements'), icon: "fas fa-copy"},
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
             'CONTEXT_GRID_TRANSLATION': { name: i18nService.t('translateGrid'), icon: "fas fa-language" },
