@@ -14,26 +14,25 @@
             </div>
 
             <div class="spaced right edit-toolbar__actions">
-                <button tabindex="33" @click="systemActionService.enterFullscreen()" :aria-label="$t('fullscreen')" :title="$t('fullscreen')" class="small edit-toolbar__icon-button"><i class="fas fa-expand"></i></button>
-                <button tabindex="34" @click="undo" :aria-label="$t('undo')" :title="$t('undo')" :disabled="doingUndoRedo || !undoService.canUndo()" class="small edit-toolbar__icon-button"><i class="fas fa-undo"></i></button>
-                <button tabindex="35" @click="redo" :aria-label="$t('redo')" :title="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small edit-toolbar__icon-button"><i class="fas fa-redo"></i></button>
+                <button tabindex="33" @click="undo" :aria-label="$t('undo')" :title="$t('undo')" :disabled="doingUndoRedo || !undoService.canUndo()" class="small edit-toolbar__icon-button"><i class="fas fa-undo"></i></button>
+                <button tabindex="34" @click="redo" :aria-label="$t('redo')" :title="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small edit-toolbar__icon-button"><i class="fas fa-redo"></i></button>
 
                 <span class="edit-toolbar__separator" aria-hidden="true"></span>
 
-                <button tabindex="36" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" class="small edit-toolbar__icon-button edit-toolbar__menu-button edit-toolbar__responsive-button edit-toolbar__selected-button">
+                <button tabindex="35" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" class="small edit-toolbar__icon-button edit-toolbar__menu-button edit-toolbar__responsive-button edit-toolbar__selected-button">
                     <i class="far fa-square"></i>
                 </button>
-                <button tabindex="37" id="newButton" :aria-label="$t('new')" :title="$t('new')" class="small edit-toolbar__icon-button edit-toolbar__menu-button edit-toolbar__responsive-button edit-toolbar__new-button">
+                <button tabindex="36" id="newButton" :aria-label="$t('new')" :title="$t('new')" class="small edit-toolbar__icon-button edit-toolbar__menu-button edit-toolbar__responsive-button edit-toolbar__new-button">
                     <i class="fas fa-plus-circle"></i>
                 </button>
-                <button tabindex="38" id="designButton" :aria-label="$t('layout')" :title="$t('layout')" class="small edit-toolbar__icon-button edit-toolbar__menu-button edit-toolbar__responsive-button edit-toolbar__design-button">
+                <button tabindex="37" id="designButton" :aria-label="$t('layout')" :title="$t('layout')" class="small edit-toolbar__icon-button edit-toolbar__menu-button edit-toolbar__responsive-button edit-toolbar__design-button">
                     <i class="fas fa-th-large"></i>
                 </button>
-                <button tabindex="39" @click="showGridSettingsModal = true" :aria-label="$t('gridSettings')" :title="$t('gridSettings')" class="small edit-toolbar__icon-button edit-toolbar__responsive-button edit-toolbar__settings-button"><i class="fas fa-cog"></i></button>
+                <button tabindex="38" @click="showGridSettingsModal = true" :aria-label="$t('gridSettings')" :title="$t('gridSettings')" class="small edit-toolbar__icon-button edit-toolbar__responsive-button edit-toolbar__settings-button"><i class="fas fa-cog"></i></button>
 
                 <span class="edit-toolbar__separator" aria-hidden="true"></span>
 
-                <button tabindex="40" id="moreButton" :aria-label="$t('more')" :title="$t('more')" class="small edit-toolbar__icon-button"><i class="fas fa-ellipsis-v"></i></button>
+                <button tabindex="39" id="moreButton" :aria-label="$t('more')" :title="$t('more')" class="small edit-toolbar__icon-button"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             <div id="selectedElementsButtonMenu"></div>
             <div id="newButtonMenu"></div>
@@ -1211,38 +1210,47 @@ header {
     align-items: center;
     gap: 0.65rem;
     vertical-align: middle;
-    min-height: 3.6rem;
+    min-height: 0;
     margin-bottom: 0;
 }
 .edit-target-switch {
     position: relative;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    flex: 0 0 3.6rem;
-    width: 3.6rem;
-    min-width: 3.6rem;
-    height: 3.6rem;
-    min-height: 3.6rem;
+    flex: 0 0 5rem;
+    width: 5rem;
+    min-width: 5rem;
+    height: 2.8rem;
+    min-height: 2.8rem;
     padding: 0;
     margin: 0;
     border: 1px solid #aeb4ba;
-    border-radius: 0.45rem;
-    color: #343a40;
-    background: #f8f8f8;
+    border-radius: 1.4rem;
+    background: #d8dce0;
     box-shadow: none;
-    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    transition: background-color 0.15s ease;
 }
 .edit-target-switch.is-global {
-    color: #fff;
-    border-color: #527f98;
-    background: #527f98;
+    background: #8aabbf;
 }
 .edit-target-switch > i {
+    display: none;
+}
+.edit-target-switch::before {
+    content: "";
     display: block;
-    margin: 0;
-    font-size: 1.5rem;
-    line-height: 1;
+    width: 2.2rem;
+    height: 2.2rem;
+    margin-left: 0.2rem;
+    flex: 0 0 2.2rem;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transform: translateX(0);
+    transition: transform 0.15s ease;
+}
+.edit-target-switch.is-global::before {
+    transform: translateX(2.2rem);
 }
 .edit-target-control__label {
     white-space: nowrap;
@@ -1273,7 +1281,7 @@ header .edit-toolbar__actions {
     display: inline-flex;
     align-items: center;
     vertical-align: middle;
-    gap: 0.5rem;
+    gap: 0.8rem;
 }
 header .edit-toolbar__separator {
     display: block;
@@ -1283,7 +1291,7 @@ header .edit-toolbar__separator {
     min-height: 3.6rem;
     align-self: center;
     margin: 0;
-    background-color: #8a8a8a;
+    background-color: #b8b8b8;
 }
 header button.edit-toolbar__icon-button {
     position: relative;
@@ -1294,9 +1302,9 @@ header button.edit-toolbar__icon-button {
     box-sizing: border-box;
     width: 5rem;
     min-width: 5rem;
-    height: 3.6rem;
-    min-height: 3.6rem;
-    padding: 0;
+    height: auto;
+    min-height: 0;
+    padding: 0.25rem 0;
     margin-bottom: 0;
     line-height: 1;
     text-align: center;
