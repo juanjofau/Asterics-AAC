@@ -1208,20 +1208,26 @@ header {
     display: inline-flex;
     align-items: stretch;
     vertical-align: middle;
+    box-sizing: border-box;
+    height: 3.6rem;
     border: 1px solid #adb5bd;
     border-radius: 0.35rem;
     overflow: hidden;
-    background: transparent;
+    background: #f8f8f8;
+    margin-bottom: 1rem;
 }
 .edit-target-toggle__option {
+    box-sizing: border-box;
+    height: 100%;
     min-width: 7.25rem;
-    padding: 0.4rem 0.65rem;
+    padding: 0 0.65rem;
     border: 0;
     border-radius: 0;
-    background: transparent;
+    background: #f8f8f8;
     color: inherit;
     white-space: nowrap;
-    line-height: 1.2;
+    line-height: 3rem;
+    box-shadow: none;
 }
 .edit-target-toggle__option + .edit-target-toggle__option {
     border-left: 1px solid #adb5bd;
@@ -1274,10 +1280,15 @@ header {
     box-sizing: border-box;
     width: 5rem;
     min-width: 5rem;
-    height: 2.5rem;
+    height: 3.6rem;
+    min-height: 3.6rem;
     padding: 0;
     line-height: 1;
     text-align: center;
+    background-color: #f8f8f8;
+}
+.edit-toolbar__icon-button:disabled {
+    background-color: #f8f8f8;
 }
 .edit-toolbar__icon-button > i:first-child {
     display: block;
