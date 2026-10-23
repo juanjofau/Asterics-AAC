@@ -6,27 +6,27 @@
                 <i class="fas fa-eye"></i>
                 <span class="hide-mobile">{{ $t('editingOff') }}</span>
             </button>
-            <select tabindex="34" class="small spaced edit-target-select" :aria-label="$t('selectGrid')" :title="$t('selectGrid')" :value="isEditingGlobalGrid ? 'global' : 'current'" @change="changeEditTarget($event.target.value)">
+            <select tabindex="31" class="small spaced edit-target-select" :aria-label="$t('selectGrid')" :title="$t('selectGrid')" :value="isEditingGlobalGrid ? 'global' : 'current'" @change="changeEditTarget($event.target.value)">
                 <option value="current">{{ $t('grid') }}</option>
                 <option value="global">{{ $t('globalGrid') }}</option>
             </select>
 
             <div class="spaced right edit-toolbar__actions">
-                <button tabindex="31" @click="undo" :aria-label="$t('undo')" :title="$t('undo')" :disabled="doingUndoRedo || !undoService.canUndo()" class="small edit-toolbar__icon-button"><i class="fas fa-undo"></i></button>
-                <button tabindex="32" @click="redo" :aria-label="$t('redo')" :title="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small edit-toolbar__icon-button"><i class="fas fa-redo"></i></button>
+                <button tabindex="32" @click="undo" :aria-label="$t('undo')" :title="$t('undo')" :disabled="doingUndoRedo || !undoService.canUndo()" class="small edit-toolbar__icon-button"><i class="fas fa-undo"></i></button>
+                <button tabindex="33" @click="redo" :aria-label="$t('redo')" :title="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small edit-toolbar__icon-button"><i class="fas fa-redo"></i></button>
 
-                <button tabindex="35" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
+                <button tabindex="34" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="far fa-square"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
-                <button tabindex="36" id="newButton" :aria-label="$t('new')" :title="$t('new')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
+                <button tabindex="35" id="newButton" :aria-label="$t('new')" :title="$t('new')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="fas fa-plus-circle"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
-                <button tabindex="37" id="designButton" :aria-label="$t('layout')" :title="$t('layout')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
+                <button tabindex="36" id="designButton" :aria-label="$t('layout')" :title="$t('layout')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="fas fa-th-large"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
-                <button tabindex="38" @click="showGridSettingsModal = true" :aria-label="$t('gridSettings')" :title="$t('gridSettings')" class="small edit-toolbar__icon-button"><i class="fas fa-cog"></i></button>
+                <button tabindex="37" @click="showGridSettingsModal = true" :aria-label="$t('gridSettings')" :title="$t('gridSettings')" class="small edit-toolbar__icon-button"><i class="fas fa-cog"></i></button>
 
-                <button tabindex="33" id="moreButton" :aria-label="$t('more')" :title="$t('more')" class="small edit-toolbar__icon-button"><i class="fas fa-ellipsis-v"></i></button>
+                <button tabindex="38" id="moreButton" :aria-label="$t('more')" :title="$t('more')" class="small edit-toolbar__icon-button"><i class="fas fa-ellipsis-v"></i></button>
                 <button tabindex="39" @click="systemActionService.enterFullscreen()" :aria-label="$t('fullscreen')" :title="$t('fullscreen')" class="small edit-toolbar__icon-button"><i class="fas fa-expand"></i></button>
             </div>
             <div id="selectedElementsButtonMenu"></div>
@@ -141,8 +141,8 @@
                 ctrlKeyHold: false,
                 usingTouchscreen: false,
                 propTransferObject: null,
-                systemActionService: systemActionService,
-                        }
+                systemActionService: systemActionService
+            }
         },
         components: {
             TransferPropsModal,
@@ -957,7 +957,6 @@
             }
         };
 
-        let visibleFn = () => vueApp.markedElementIds.length >= 1;
         var itemsMoreMenuButton = {
             'CONTEXT_COPY_ALL': {name: i18nService.t('copyAllElements'), icon: "fas fa-copy"},
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
