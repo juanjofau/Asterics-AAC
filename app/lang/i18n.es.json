@@ -1188,6 +1188,7 @@
   "testElement": "Texto Prueba",
   "gridElement": "Celda",
   "grid": "Tablero",
+  "currentGrid": "Tablero actual",
   "quickSettings": "Ajustes rápidos",
   "setToDefaultSettings": "Ajustes por defecto",
   "setToDefaultSettingsBgColored": "Celda coloreada",
