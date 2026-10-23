@@ -1218,15 +1218,15 @@ header {
     position: relative;
     display: inline-flex;
     align-items: center;
-    flex: 0 0 4.2rem;
-    width: 4.2rem;
-    min-width: 4.2rem;
-    height: 2.4rem;
-    min-height: 2.4rem;
+    flex: 0 0 4.6rem;
+    width: 4.6rem;
+    min-width: 4.6rem;
+    height: 2.6rem;
+    min-height: 2.6rem;
     padding: 0;
     margin: 0;
     border: 1px solid #aeb4ba;
-    border-radius: 1.2rem;
+    border-radius: 1.3rem;
     background: #d8dce0;
     box-shadow: none;
     transition: background-color 0.15s ease;
@@ -1236,8 +1236,8 @@ header {
 }
 .edit-target-switch__thumb {
     display: block;
-    width: 1.8rem;
-    height: 1.8rem;
+    width: 2rem;
+    height: 2rem;
     margin-left: 0.2rem;
     border-radius: 50%;
     background: #fff;
@@ -1246,7 +1246,7 @@ header {
     transition: transform 0.15s ease;
 }
 .edit-target-switch.is-global .edit-target-switch__thumb {
-    transform: translateX(1.8rem);
+    transform: translateX(2rem);
 }
 .edit-target-control__label {
     white-space: nowrap;
@@ -1273,6 +1273,21 @@ header {
         display: none;
     }
 }
+.edit-toolbar__actions {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    gap: 0.5rem;
+}
+.edit-toolbar__separator {
+    display: block;
+    flex: 0 0 1px;
+    width: 1px;
+    align-self: stretch;
+    min-height: 0;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
 .edit-toolbar__icon-button {
     position: relative;
     display: inline-flex;
@@ -1282,13 +1297,10 @@ header {
     box-sizing: border-box;
     width: 5rem;
     min-width: 5rem;
-    height: 3.6rem;
-    min-height: 3.6rem;
-    padding: 0;
-    line-height: 1;
+    padding-left: 0;
+    padding-right: 0;
     text-align: center;
     background-color: #f8f8f8;
-    margin-bottom: 0;
 }
 .edit-toolbar__icon-button:disabled {
     background-color: #f8f8f8;
