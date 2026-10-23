@@ -1236,9 +1236,6 @@ header {
     margin: 0;
     line-height: 1;
 }
-.edit-toolbar__menu-button {
-    padding-right: 1.1rem;
-}
 .edit-toolbar__menu-button::after {
     content: "";
     position: absolute;
