@@ -6,28 +6,29 @@
                 <i class="fas fa-eye"></i>
                 <span class="hide-mobile">{{ $t('editingOff') }}</span>
             </button>
-            <select tabindex="31" class="small spaced edit-target-select" :aria-label="$t('selectGrid')" :title="$t('selectGrid')" :value="isEditingGlobalGrid ? 'global' : 'current'" @change="changeEditTarget($event.target.value)">
-                <option value="current">{{ $t('currentGrid') }}</option>
-                <option value="global">{{ $t('globalGrid') }}</option>
-            </select>
+            <div class="spaced edit-target-toggle" role="group" :aria-label="$t('selectGrid')">
+                <span class="edit-target-toggle__indicator" :class="{ 'is-global': isEditingGlobalGrid }" aria-hidden="true"></span>
+                <button tabindex="31" type="button" class="edit-target-toggle__option" :class="{ 'is-active': !isEditingGlobalGrid }" :aria-pressed="!isEditingGlobalGrid" @click="changeEditTarget('current')">{{ $t('currentGrid') }}</button>
+                <button tabindex="32" type="button" class="edit-target-toggle__option" :class="{ 'is-active': isEditingGlobalGrid }" :aria-pressed="isEditingGlobalGrid" @click="changeEditTarget('global')">{{ $t('globalGrid') }}</button>
+            </div>
 
             <div class="spaced right edit-toolbar__actions">
-                <button tabindex="32" @click="undo" :aria-label="$t('undo')" :title="$t('undo')" :disabled="doingUndoRedo || !undoService.canUndo()" class="small edit-toolbar__icon-button"><i class="fas fa-undo"></i></button>
-                <button tabindex="33" @click="redo" :aria-label="$t('redo')" :title="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small edit-toolbar__icon-button"><i class="fas fa-redo"></i></button>
+                <button tabindex="33" @click="undo" :aria-label="$t('undo')" :title="$t('undo')" :disabled="doingUndoRedo || !undoService.canUndo()" class="small edit-toolbar__icon-button"><i class="fas fa-undo"></i></button>
+                <button tabindex="34" @click="redo" :aria-label="$t('redo')" :title="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small edit-toolbar__icon-button"><i class="fas fa-redo"></i></button>
 
-                <button tabindex="34" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
+                <button tabindex="35" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="far fa-square"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
-                <button tabindex="35" id="newButton" :aria-label="$t('new')" :title="$t('new')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
+                <button tabindex="36" id="newButton" :aria-label="$t('new')" :title="$t('new')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="fas fa-plus-circle"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
-                <button tabindex="36" id="designButton" :aria-label="$t('layout')" :title="$t('layout')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
+                <button tabindex="37" id="designButton" :aria-label="$t('layout')" :title="$t('layout')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="fas fa-th-large"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
-                <button tabindex="37" @click="showGridSettingsModal = true" :aria-label="$t('gridSettings')" :title="$t('gridSettings')" class="small edit-toolbar__icon-button"><i class="fas fa-cog"></i></button>
+                <button tabindex="38" @click="showGridSettingsModal = true" :aria-label="$t('gridSettings')" :title="$t('gridSettings')" class="small edit-toolbar__icon-button"><i class="fas fa-cog"></i></button>
 
-                <button tabindex="38" id="moreButton" :aria-label="$t('more')" :title="$t('more')" class="small edit-toolbar__icon-button"><i class="fas fa-ellipsis-v"></i></button>
-                <button tabindex="39" @click="systemActionService.enterFullscreen()" :aria-label="$t('fullscreen')" :title="$t('fullscreen')" class="small edit-toolbar__icon-button"><i class="fas fa-expand"></i></button>
+                <button tabindex="39" id="moreButton" :aria-label="$t('more')" :title="$t('more')" class="small edit-toolbar__icon-button"><i class="fas fa-ellipsis-v"></i></button>
+                <button tabindex="40" @click="systemActionService.enterFullscreen()" :aria-label="$t('fullscreen')" :title="$t('fullscreen')" class="small edit-toolbar__icon-button"><i class="fas fa-expand"></i></button>
             </div>
             <div id="selectedElementsButtonMenu"></div>
             <div id="newButtonMenu"></div>
@@ -1184,9 +1185,44 @@ header {
 .content {
     outline: 2px solid lightgray;
 }
-.edit-target-select {
-    max-width: 12rem;
+.edit-target-toggle {
+    position: relative;
+    display: inline-flex;
+    align-items: stretch;
     vertical-align: middle;
+    padding: 0.2rem;
+    border-radius: 0.45rem;
+    background: #e9ecef;
+    isolation: isolate;
+}
+.edit-target-toggle__indicator {
+    position: absolute;
+    z-index: -1;
+    top: 0.2rem;
+    bottom: 0.2rem;
+    left: 0.2rem;
+    width: calc(50% - 0.2rem);
+    border-radius: 0.3rem;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+    transition: transform 160ms ease;
+}
+.edit-target-toggle__indicator.is-global {
+    transform: translateX(100%);
+}
+.edit-target-toggle__option {
+    position: relative;
+    z-index: 1;
+    min-width: 7.5rem;
+    padding: 0.35rem 0.65rem;
+    border: 0;
+    border-radius: 0.3rem;
+    background: transparent;
+    color: inherit;
+    white-space: nowrap;
+}
+.edit-target-toggle__option.is-active {
+    font-weight: 600;
 }
 .edit-toolbar__actions {
     display: inline-flex;
@@ -1196,8 +1232,8 @@ header {
 }
 .edit-toolbar__icon-button {
     box-sizing: border-box;
-    width: 2.5rem;
-    min-width: 2.5rem;
+    width: 5rem;
+    min-width: 5rem;
     padding-left: 0;
     padding-right: 0;
     text-align: center;
