@@ -18,21 +18,21 @@
                 <button tabindex="35" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="far fa-square"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
-                <div id="selectedElementsButtonMenu"></div>
                 <button tabindex="36" id="newButton" :aria-label="$t('new')" :title="$t('new')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="fas fa-plus-circle"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
-                <div id="newButtonMenu"></div>
                 <button tabindex="37" id="designButton" :aria-label="$t('layout')" :title="$t('layout')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="fas fa-th-large"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
-                <div id="designButtonMenu"></div>
                 <button tabindex="38" @click="showGridSettingsModal = true" :aria-label="$t('gridSettings')" :title="$t('gridSettings')" class="small edit-toolbar__icon-button"><i class="fas fa-cog"></i></button>
 
                 <button tabindex="33" id="moreButton" :aria-label="$t('more')" :title="$t('more')" class="small edit-toolbar__icon-button"><i class="fas fa-ellipsis-v"></i></button>
-                <div id="moreButtonMenu"></div>
                 <button tabindex="39" @click="systemActionService.enterFullscreen()" :aria-label="$t('fullscreen')" :title="$t('fullscreen')" class="small edit-toolbar__icon-button"><i class="fas fa-expand"></i></button>
             </div>
+            <div id="selectedElementsButtonMenu"></div>
+            <div id="newButtonMenu"></div>
+            <div id="designButtonMenu"></div>
+            <div id="moreButtonMenu"></div>
         </header>
         <header class="d-flex align-items-center transfer-props-header" role="toolbar" v-if="propTransferObject">
             <div class="me-5">
