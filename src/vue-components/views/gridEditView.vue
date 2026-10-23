@@ -7,7 +7,6 @@
                 <span class="hide-mobile">{{ $t('editingOff') }}</span>
             </button>
             <div class="spaced edit-target-toggle" role="group" :aria-label="$t('selectGrid')">
-                <span class="edit-target-toggle__indicator" :class="{ 'is-global': isEditingGlobalGrid }" aria-hidden="true"></span>
                 <button tabindex="31" type="button" class="edit-target-toggle__option" :class="{ 'is-active': !isEditingGlobalGrid }" :aria-pressed="!isEditingGlobalGrid" @click="changeEditTarget('current')">{{ $t('currentGrid') }}</button>
                 <button tabindex="32" type="button" class="edit-target-toggle__option" :class="{ 'is-active': isEditingGlobalGrid }" :aria-pressed="isEditingGlobalGrid" @click="changeEditTarget('global')">{{ $t('globalGrid') }}</button>
             </div>
@@ -1186,42 +1185,30 @@ header {
     outline: 2px solid lightgray;
 }
 .edit-target-toggle {
-    position: relative;
     display: inline-flex;
     align-items: stretch;
     vertical-align: middle;
-    padding: 0.2rem;
-    border-radius: 0.45rem;
-    background: #e9ecef;
-    isolation: isolate;
-}
-.edit-target-toggle__indicator {
-    position: absolute;
-    z-index: 0;
-    top: 0.2rem;
-    bottom: 0.2rem;
-    left: 0.2rem;
-    width: calc(50% - 0.2rem);
-    border-radius: 0.3rem;
-    background: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
-    transition: transform 160ms ease;
-}
-.edit-target-toggle__indicator.is-global {
-    transform: translateX(100%);
+    border: 1px solid #adb5bd;
+    border-radius: 0.35rem;
+    overflow: hidden;
+    background: transparent;
 }
 .edit-target-toggle__option {
-    position: relative;
-    z-index: 1;
-    min-width: 7.5rem;
-    padding: 0.35rem 0.65rem;
+    min-width: 7.25rem;
+    padding: 0.4rem 0.65rem;
     border: 0;
-    border-radius: 0.3rem;
+    border-radius: 0;
     background: transparent;
     color: inherit;
     white-space: nowrap;
+    line-height: 1.2;
+}
+.edit-target-toggle__option + .edit-target-toggle__option {
+    border-left: 1px solid #adb5bd;
 }
 .edit-target-toggle__option.is-active {
+    background: #dee2e6;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
     font-weight: 600;
 }
 .edit-toolbar__actions {
@@ -1231,21 +1218,42 @@ header {
     gap: 0.25rem;
 }
 .edit-toolbar__icon-button {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 5rem;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
     width: 5rem;
     min-width: 5rem;
-    padding-left: 0;
-    padding-right: 0;
+    height: 2.5rem;
+    padding: 0;
+    line-height: 1;
     text-align: center;
 }
+.edit-toolbar__icon-button > i:first-child {
+    display: block;
+    margin: 0;
+    line-height: 1;
+}
 .edit-toolbar__menu-button {
-    position: relative;
+    padding-right: 1.1rem;
+}
+.edit-toolbar__menu-button::after {
+    content: "";
+    position: absolute;
+    top: 20%;
+    right: 1.15rem;
+    bottom: 20%;
+    width: 1px;
+    background: rgba(0, 0, 0, 0.18);
 }
 .edit-toolbar__menu-indicator {
     position: absolute;
-    right: 3px;
-    bottom: 3px;
-    font-size: 0.55rem;
+    top: 50%;
+    right: 0.45rem;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
     line-height: 1;
 }
 </style>
