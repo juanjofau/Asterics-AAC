@@ -1197,7 +1197,7 @@ header {
 }
 .edit-target-toggle__indicator {
     position: absolute;
-    z-index: -1;
+    z-index: 0;
     top: 0.2rem;
     bottom: 0.2rem;
     left: 0.2rem;
