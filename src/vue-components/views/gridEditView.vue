@@ -6,9 +6,11 @@
                 <i class="fas fa-eye"></i>
                 <span class="hide-mobile">{{ $t('editingOff') }}</span>
             </button>
-            <div class="spaced edit-target-toggle" role="group" :aria-label="$t('selectGrid')">
-                <button tabindex="31" type="button" class="edit-target-toggle__option" :class="{ 'is-active': !isEditingGlobalGrid }" :aria-pressed="!isEditingGlobalGrid" @click="changeEditTarget('current')">{{ $t('currentGrid') }}</button>
-                <button tabindex="32" type="button" class="edit-target-toggle__option" :class="{ 'is-active': isEditingGlobalGrid }" :aria-pressed="isEditingGlobalGrid" @click="changeEditTarget('global')">{{ $t('globalGrid') }}</button>
+            <div class="spaced edit-target-control" role="group" :aria-label="$t('selectGrid')">
+                <button tabindex="31" type="button" role="switch" class="edit-target-switch" :class="{ 'is-global': isEditingGlobalGrid }" :aria-checked="isEditingGlobalGrid" :aria-label="$t('selectGrid')" @click="changeEditTarget(isEditingGlobalGrid ? 'current' : 'global')">
+                    <span class="edit-target-switch__thumb" aria-hidden="true"></span>
+                </button>
+                <span class="edit-target-control__label">{{ isEditingGlobalGrid ? $t('globalGrid') : $t('currentGrid') }}</span>
             </div>
 
             <div class="spaced right edit-toolbar__actions">
@@ -19,13 +21,13 @@
                 <span class="edit-toolbar__separator" aria-hidden="true"></span>
 
                 <button tabindex="36" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" class="small edit-toolbar__icon-button edit-toolbar__menu-button edit-toolbar__responsive-button edit-toolbar__selected-button">
-                    <i class="far fa-square"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
+                    <i class="far fa-square"></i>
                 </button>
                 <button tabindex="37" id="newButton" :aria-label="$t('new')" :title="$t('new')" class="small edit-toolbar__icon-button edit-toolbar__menu-button edit-toolbar__responsive-button edit-toolbar__new-button">
-                    <i class="fas fa-plus-circle"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
+                    <i class="fas fa-plus-circle"></i>
                 </button>
                 <button tabindex="38" id="designButton" :aria-label="$t('layout')" :title="$t('layout')" class="small edit-toolbar__icon-button edit-toolbar__menu-button edit-toolbar__responsive-button edit-toolbar__design-button">
-                    <i class="fas fa-th-large"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
+                    <i class="fas fa-th-large"></i>
                 </button>
                 <button tabindex="39" @click="showGridSettingsModal = true" :aria-label="$t('gridSettings')" :title="$t('gridSettings')" class="small edit-toolbar__icon-button edit-toolbar__responsive-button edit-toolbar__settings-button"><i class="fas fa-cog"></i></button>
 
@@ -1204,52 +1206,52 @@ header {
 .content {
     outline: 2px solid lightgray;
 }
-.edit-target-toggle {
-    display: inline-flex;
-    align-items: stretch;
-    vertical-align: middle;
-    box-sizing: border-box;
-    height: 3.6rem;
-    border: 1px solid #adb5bd;
-    border-radius: 0.35rem;
-    overflow: hidden;
-    background: #f8f8f8;
-    margin-bottom: 1rem;
-}
-.edit-target-toggle__option {
-    box-sizing: border-box;
-    height: 100%;
-    min-width: 7.25rem;
-    padding: 0 0.65rem;
-    border: 0;
-    border-radius: 0;
-    background: #f8f8f8;
-    color: inherit;
-    white-space: nowrap;
-    line-height: 3rem;
-    box-shadow: none;
-}
-.edit-target-toggle__option + .edit-target-toggle__option {
-    border-left: 1px solid #adb5bd;
-}
-.edit-target-toggle__option.is-active {
-    background: #dee2e6;
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
-    font-weight: 600;
-}
-.edit-toolbar__actions {
+.edit-target-control {
     display: inline-flex;
     align-items: center;
+    gap: 0.65rem;
     vertical-align: middle;
-    gap: 0.5rem;
+    min-height: 3.6rem;
+    margin-bottom: 1rem;
 }
-.edit-toolbar__separator {
+.edit-target-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 4.2rem;
+    width: 4.2rem;
+    min-width: 4.2rem;
+    height: 2.4rem;
+    min-height: 2.4rem;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #aeb4ba;
+    border-radius: 1.2rem;
+    background: #d8dce0;
+    box-shadow: none;
+    transition: background-color 0.15s ease;
+}
+.edit-target-switch.is-global {
+    background: #8aabbf;
+}
+.edit-target-switch__thumb {
     display: block;
-    flex: 0 0 1px;
-    align-self: stretch;
-    height: 1.5rem;
-    margin: auto 0.25rem;
-    background: rgba(0, 0, 0, 0.2);
+    width: 1.8rem;
+    height: 1.8rem;
+    margin-left: 0.2rem;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+    transform: translateX(0);
+    transition: transform 0.15s ease;
+}
+.edit-target-switch.is-global .edit-target-switch__thumb {
+    transform: translateX(1.8rem);
+}
+.edit-target-control__label {
+    white-space: nowrap;
+    font-size: 1.35rem;
+    line-height: 1.2;
 }
 @media (max-width: 1200px) {
     .edit-toolbar__selected-button {
@@ -1286,6 +1288,7 @@ header {
     line-height: 1;
     text-align: center;
     background-color: #f8f8f8;
+    margin-bottom: 1rem;
 }
 .edit-toolbar__icon-button:disabled {
     background-color: #f8f8f8;
@@ -1293,23 +1296,6 @@ header {
 .edit-toolbar__icon-button > i:first-child {
     display: block;
     margin: 0;
-    line-height: 1;
-}
-.edit-toolbar__menu-button::after {
-    content: "";
-    position: absolute;
-    top: 20%;
-    right: 1.15rem;
-    bottom: 20%;
-    width: 1px;
-    background: rgba(0, 0, 0, 0.18);
-}
-.edit-toolbar__menu-indicator {
-    position: absolute;
-    top: 50%;
-    right: 0.45rem;
-    transform: translateY(-50%);
-    font-size: 0.8rem;
     line-height: 1;
 }
 </style>
