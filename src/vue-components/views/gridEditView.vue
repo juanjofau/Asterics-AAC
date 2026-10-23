@@ -1,34 +1,33 @@
 <template>
     <div class="box">
-        <header class="srow header edit-toolbar" role="toolbar" v-show="!propTransferObject" ref="editToolbar">
-            <div class="edit-toolbar__left">
-                <header-icon></header-icon>
-                <button tabindex="30" @click="back" :aria-label="$t('editingOff')" :title="$t('editingOff')" class="small edit-toolbar__label-button">
-                    <i class="fas fa-eye"></i>
-                    <span class="hide-mobile">{{ $t('editingOff') }}</span>
-                </button>
-                <button tabindex="34" @click="isEditingGlobalGrid ? toEditChild() : toEditGlobal()" :aria-label="isEditingGlobalGrid ? $t('endEditGlobalGrid') : $t('editGlobalGrid')" :title="isEditingGlobalGrid ? $t('endEditGlobalGrid') : $t('editGlobalGrid')" class="small edit-toolbar__label-button">
-                    <i class="fas fa-globe"></i>
-                    <span class="hide-mobile">{{ isEditingGlobalGrid ? $t('endEditGlobalGrid') : $t('editGlobalGrid') }}</span>
-                </button>
-            </div>
-            <div class="edit-toolbar__actions">
+        <header class="srow header" role="toolbar" v-show="!propTransferObject">
+            <header-icon class="left"></header-icon>
+            <button tabindex="30" @click="back" :aria-label="$t('editingOff')" :title="$t('editingOff')" class="spaced small left">
+                <i class="fas fa-eye"></i>
+                <span class="hide-mobile">{{ $t('editingOff') }}</span>
+            </button>
+            <select tabindex="34" class="small spaced edit-target-select" :aria-label="$t('selectGrid')" :title="$t('selectGrid')" :value="isEditingGlobalGrid ? 'global' : 'current'" @change="changeEditTarget($event.target.value)">
+                <option value="current">{{ $t('grid') }}</option>
+                <option value="global">{{ $t('globalGrid') }}</option>
+            </select>
+
+            <div class="spaced btn-group right edit-toolbar__actions">
                 <button tabindex="31" @click="undo" :aria-label="$t('undo')" :title="$t('undo')" :disabled="doingUndoRedo || !undoService.canUndo()" class="small edit-toolbar__icon-button"><i class="fas fa-undo"></i></button>
                 <button tabindex="32" @click="redo" :aria-label="$t('redo')" :title="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small edit-toolbar__icon-button"><i class="fas fa-redo"></i></button>
 
-                <button tabindex="35" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" v-show="!toolbarCompact" class="small edit-toolbar__icon-button">
+                <button tabindex="35" id="selectedElementsButton" :aria-label="$t('selectedElementsContextMenu')" :title="$t('selectedElementsContextMenu')" :disabled="markedElementIds.length === 0" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="far fa-square"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
                 <div id="selectedElementsButtonMenu"></div>
-                <button tabindex="36" id="newButton" :aria-label="$t('new')" :title="$t('new')" v-show="!toolbarCompact" class="small edit-toolbar__icon-button">
+                <button tabindex="36" id="newButton" :aria-label="$t('new')" :title="$t('new')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="fas fa-plus-circle"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
                 <div id="newButtonMenu"></div>
-                <button tabindex="37" id="designButton" :aria-label="$t('layout')" :title="$t('layout')" v-show="!toolbarCompact" class="small edit-toolbar__icon-button">
+                <button tabindex="37" id="designButton" :aria-label="$t('layout')" :title="$t('layout')" class="small edit-toolbar__icon-button edit-toolbar__menu-button">
                     <i class="fas fa-th-large"></i><i class="fas fa-caret-down edit-toolbar__menu-indicator"></i>
                 </button>
                 <div id="designButtonMenu"></div>
-                <button tabindex="38" @click="showGridSettingsModal = true" :aria-label="$t('gridSettings')" :title="$t('gridSettings')" v-show="!toolbarCompact" class="small edit-toolbar__icon-button"><i class="fas fa-cog"></i></button>
+                <button tabindex="38" @click="showGridSettingsModal = true" :aria-label="$t('gridSettings')" :title="$t('gridSettings')" class="small edit-toolbar__icon-button"><i class="fas fa-cog"></i></button>
 
                 <button tabindex="33" id="moreButton" :aria-label="$t('more')" :title="$t('more')" class="small edit-toolbar__icon-button"><i class="fas fa-ellipsis-v"></i></button>
                 <div id="moreButtonMenu"></div>
@@ -143,9 +142,7 @@
                 usingTouchscreen: false,
                 propTransferObject: null,
                 systemActionService: systemActionService,
-                toolbarCompact: false,
-                toolbarExpandedActionsWidth: null
-            }
+                        }
         },
         components: {
             TransferPropsModal,
@@ -257,25 +254,11 @@
                 this.gridData = gridData;
                 liveElementService.updateOnce({ elements: this.gridData.gridElements, forceUpdate: true });
             },
-            measureToolbarOverflow() {
-                const toolbar = this.$refs.editToolbar;
-                if (!toolbar) {
-                    return;
-                }
-                const left = toolbar.querySelector('.edit-toolbar__left');
-                const actions = toolbar.querySelector('.edit-toolbar__actions');
-                if (!left || !actions) {
-                    return;
-                }
-
-                if (!this.toolbarCompact) {
-                    this.toolbarExpandedActionsWidth = actions.scrollWidth;
-                }
-                const actionsWidth = this.toolbarExpandedActionsWidth || actions.scrollWidth;
-                const requiredWidth = left.scrollWidth + actionsWidth + 20;
-                const shouldCompact = toolbar.clientWidth < requiredWidth;
-                if (this.toolbarCompact !== shouldCompact) {
-                    this.toolbarCompact = shouldCompact;
+            changeEditTarget(target) {
+                if (target === 'global') {
+                    this.toEditGlobal();
+                } else if (target === 'current' && this.isEditingGlobalGrid) {
+                    this.toEditChild();
                 }
             },
             back() {
@@ -793,7 +776,6 @@
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             document.addEventListener("keydown", this.onKeyDown);
             document.addEventListener("keyup", this.onKeyUp);
-            window.addEventListener('resize', this.measureToolbarOverflow);
         },
         mounted: async function () {
             pouchDbService.pauseSync();
@@ -829,7 +811,6 @@
                 collectElementService.initWithGrid(this.gridData);
                 liveElementService.updateOnce({ elements: this.gridData.gridElements });
                 initContextmenu();
-                this.$nextTick(() => this.measureToolbarOverflow());
             });
         },
         beforeDestroy() {
@@ -837,7 +818,6 @@
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.reloadFn);
             document.removeEventListener("keydown", this.onKeyDown);
             document.removeEventListener("keyup", this.onKeyUp);
-            window.removeEventListener('resize', this.measureToolbarOverflow);
             let container = document.getElementById('grid-container');
             if (container) {
                 container.removeEventListener('click', this.onClick);
@@ -978,19 +958,11 @@
         };
 
         let visibleFn = () => vueApp.markedElementIds.length >= 1;
-        let compactToolbarFn = () => !!(vueApp && vueApp.toolbarCompact);
         var itemsMoreMenuButton = {
-            "SELECTED_ELEM_ACTIONS": {name: i18nService.t('selectedElementsContextMenu'), icon: "far fa-square", visible: () => compactToolbarFn() && visibleFn(), items: itemsElemNormal},
-            separator: { "type": "cm_separator", visible: () => compactToolbarFn() && visibleFn()},
-            CONTEXT_NEW_GROUP: Object.assign({}, contextMenuNewGroup, { visible: compactToolbarFn }),
-            SEP0: { type: "cm_separator", visible: compactToolbarFn },
-            CONTEXT_GROUP_LAYOUT: Object.assign({}, itemsLayout, { visible: compactToolbarFn }),
-            'CONTEXT_GRID_SETTINGS': { name: i18nService.t('gridSettings'), icon: "fas fa-cog", visible: compactToolbarFn },
-            SEP1: { type: "cm_separator", visible: compactToolbarFn },
             'CONTEXT_COPY_ALL': {name: i18nService.t('copyAllElements'), icon: "fas fa-copy"},
             CONTEXT_ACTION_PASTE: {name: i18nService.t('paste'), icon: "far fa-clipboard"},
             'CONTEXT_GRID_TRANSLATION': { name: i18nService.t('translateGrid'), icon: "fas fa-language" },
-            SEP2: "---------",
+            SEP1: "---------",
             'CONTEXT_SEARCH': {name: i18nService.t('searchBtnTitle'), icon: "fas fa-search"},
         };
 
@@ -1213,39 +1185,31 @@ header {
 .content {
     outline: 2px solid lightgray;
 }
-.edit-toolbar {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    width: 100%;
-    gap: 0.25rem;
-    overflow: hidden;
-}
-.edit-toolbar__left,
-.edit-toolbar__actions {
-    display: flex;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 0.25rem;
-    min-width: 0;
-}
-.edit-toolbar__left {
-    flex: 0 0 auto;
+.edit-target-select {
+    max-width: 12rem;
+    vertical-align: middle;
 }
 .edit-toolbar__actions {
-    flex: 0 0 auto;
-    margin-left: auto;
-}
-.edit-toolbar__label-button {
-    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
 }
 .edit-toolbar__icon-button {
+    box-sizing: border-box;
+    width: 2.5rem;
     min-width: 2.5rem;
-    padding-left: 0.55rem;
-    padding-right: 0.55rem;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+}
+.edit-toolbar__menu-button {
+    position: relative;
 }
 .edit-toolbar__menu-indicator {
-    font-size: 0.65em;
-    margin-left: 0.15rem;
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    font-size: 0.55rem;
+    line-height: 1;
 }
 </style>
