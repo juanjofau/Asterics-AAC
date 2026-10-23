@@ -11,7 +11,7 @@
                 <option value="global">{{ $t('globalGrid') }}</option>
             </select>
 
-            <div class="spaced btn-group right edit-toolbar__actions">
+            <div class="spaced right edit-toolbar__actions">
                 <button tabindex="31" @click="undo" :aria-label="$t('undo')" :title="$t('undo')" :disabled="doingUndoRedo || !undoService.canUndo()" class="small edit-toolbar__icon-button"><i class="fas fa-undo"></i></button>
                 <button tabindex="32" @click="redo" :aria-label="$t('redo')" :title="$t('redo')" :disabled="doingUndoRedo || !undoService.canRedo()" class="small edit-toolbar__icon-button"><i class="fas fa-redo"></i></button>
 
@@ -1193,6 +1193,7 @@ header {
     display: inline-flex;
     align-items: center;
     vertical-align: middle;
+    gap: 0.25rem;
 }
 .edit-toolbar__icon-button {
     box-sizing: border-box;
