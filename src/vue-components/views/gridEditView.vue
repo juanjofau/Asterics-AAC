@@ -1205,22 +1205,12 @@ header {
 .content {
     outline: 2px solid lightgray;
 }
-.header {
-    display: flex;
-    align-items: center;
-    gap: 0;
-}
-.header > .edit-toolbar__actions {
-    margin-left: auto;
-}
 .edit-target-control {
     display: inline-flex;
     align-items: center;
     gap: 0.65rem;
     vertical-align: middle;
-    min-height: 40px;
     margin-bottom: 0;
-    align-self: center;
 }
 .edit-target-switch {
     position: relative;
@@ -1229,12 +1219,12 @@ header {
     flex: 0 0 5rem;
     width: 5rem;
     min-width: 5rem;
-    height: 40px;
-    min-height: 40px;
+    height: 2.8rem;
+    min-height: 2.8rem;
     padding: 0;
     margin: 0;
     border: 1px solid #aeb4ba;
-    border-radius: 20px;
+    border-radius: 1.4rem;
     background: #d8dce0;
     box-shadow: none;
     transition: background-color 0.15s ease;
@@ -1248,10 +1238,10 @@ header {
 .edit-target-switch::before {
     content: "";
     display: block;
-    width: 32px;
-    height: 32px;
-    margin-left: 3px;
-    flex: 0 0 32px;
+    width: 2.2rem;
+    height: 2.2rem;
+    margin-left: 0.2rem;
+    flex: 0 0 2.2rem;
     border-radius: 50%;
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
@@ -1259,7 +1249,7 @@ header {
     transition: transform 0.15s ease;
 }
 .edit-target-switch.is-global::before {
-    transform: translateX(2.5rem);
+    transform: translateX(2.2rem);
 }
 .edit-target-control__label {
     white-space: nowrap;
@@ -1287,47 +1277,28 @@ header {
     }
 }
 header .edit-toolbar__actions {
-    display: inline-flex;
-    align-items: center;
-    align-self: center;
-    vertical-align: middle;
     gap: 0.8rem;
-    height: 40px;
 }
 header .edit-toolbar__separator {
-    display: block;
+    display: inline-block;
     flex: 0 0 2px;
     width: 2px;
-    height: 40px;
-    min-height: 40px;
-    align-self: center;
+    height: 3.6rem;
+    min-height: 3.6rem;
+    vertical-align: middle;
     margin: 0;
     background-color: #b8b8b8;
 }
 header button.edit-toolbar__icon-button {
-    position: relative;
-    display: inline-flex;
     flex: 0 0 5rem;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
     width: 5rem;
     min-width: 5rem;
-    height: 40px;
-    min-height: 40px;
-    padding: 0 1vw;
-    margin: 0;
-    align-self: center;
-    line-height: 1;
     text-align: center;
-    background-color: #f8f8f8;
 }
 .edit-toolbar__icon-button:disabled {
     background-color: #f8f8f8;
 }
 .edit-toolbar__icon-button > i:first-child {
-    display: block;
     margin: 0;
-    line-height: 1;
 }
 </style>
