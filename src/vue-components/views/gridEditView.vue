@@ -32,7 +32,7 @@
 
                 <span class="edit-toolbar__separator" aria-hidden="true"></span>
 
-                <button tabindex="39" id="moreButton" :aria-label="$t('more')" :title="$t('more')" class="small edit-toolbar__icon-button"><i class="fas fa-ellipsis-v"></i></button>
+                <button tabindex="39" id="moreButton" :aria-label="$t('more')" :title="$t('more')" class="small edit-toolbar__icon-button edit-toolbar__menu-button"><i class="fas fa-ellipsis-v"></i></button>
             </div>
             <div id="selectedElementsButtonMenu"></div>
             <div id="newButtonMenu"></div>
@@ -1290,15 +1290,42 @@ header .edit-toolbar__separator {
     background-color: #b8b8b8;
 }
 header button.edit-toolbar__icon-button {
+    position: relative;
     flex: 0 0 5rem;
     width: 5rem;
     min-width: 5rem;
     text-align: center;
 }
-.edit-toolbar__icon-button:disabled {
-    background-color: #f8f8f8;
-}
-.edit-toolbar__icon-button > i:first-child {
+header button.edit-toolbar__icon-button > i:first-child {
     margin: 0;
+}
+
+/* Acciones directas: icono centrado y fondo blanco. */
+header button.edit-toolbar__icon-button:not(.edit-toolbar__menu-button) {
+    background-color: #fff;
+}
+
+/* Botones que despliegan un menú: gris, algo más anchos y con indicador. */
+header button.edit-toolbar__icon-button.edit-toolbar__menu-button {
+    flex-basis: 5.8rem;
+    width: 5.8rem;
+    min-width: 5.8rem;
+    padding-right: 1.5rem;
+    background-color: #e6e6e6;
+}
+header button.edit-toolbar__icon-button.edit-toolbar__menu-button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0.8rem;
+    width: 0;
+    height: 0;
+    border-left: 0.35rem solid transparent;
+    border-right: 0.35rem solid transparent;
+    border-top: 0.4rem solid #555;
+    transform: translateY(-25%);
+}
+header button.edit-toolbar__icon-button:disabled {
+    background-color: #f8f8f8;
 }
 </style>
