@@ -1259,7 +1259,7 @@ header {
     transition: transform 0.15s ease;
 }
 .edit-target-switch.is-global::before {
-    transform: translateX(2rem);
+    transform: translateX(2.5rem);
 }
 .edit-target-control__label {
     white-space: nowrap;
