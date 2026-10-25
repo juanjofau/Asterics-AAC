@@ -47,6 +47,7 @@ jobs:
         run: |
           sed -i "s/#ASTERICS_GRID_VERSION#/pages-${GITHUB_RUN_NUMBER}/g" src/js/util/constants.js src/vue-components/views/aboutView.vue serviceWorker.js
           sed -i 's/#ASTERICS_GRID_ENV#/BETA/g' src/js/util/constants.js
+          sed -i 's/constants.FORCE_USE_SW = false;/constants.FORCE_USE_SW = true;/' src/js/util/constants.js
 
       # Ejecutar pruebas Jest y compilar con Webpack.
       - name: Compilar aplicacion
