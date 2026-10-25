@@ -17,7 +17,7 @@ import { notificationService } from './service/notificationService.js';
 import { dataService } from './service/data/dataService';
 import { consoleReService } from './service/consoleReService';
 
-let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = 1000 * 60 * 15; // 15 Minutes
+let SERVICE_WORKER_UPDATE_CHECK_INTERVAL = constants.IS_ENVIRONMENT_BETA ? 1000 * 15 : 1000 * 60 * 15;
 
 async function init() {
     let promises = [];
@@ -116,6 +116,16 @@ function initServiceWorker() {
                 log.debug('Check for serviceworker update...');
                 reg.update();
             }, SERVICE_WORKER_UPDATE_CHECK_INTERVAL);
+
+            if (constants.IS_ENVIRONMENT_BETA) {
+                document.addEventListener('visibilitychange', () => {
+                    if (document.visibilityState === 'visible') {
+                        reg.update().catch(error => {
+                            log.warn('Service worker update check failed:', error);
+                        });
+                    }
+                });
+            }
 
             if (reg.waiting) showUpdateNotification();
 
