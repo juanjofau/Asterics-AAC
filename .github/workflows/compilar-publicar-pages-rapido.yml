@@ -36,11 +36,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-          cache: "npm"
-          cache-dependency-path: "yarn.lock"
+
+      # Reutilizar las dependencias instaladas entre ejecuciones.
+      - name: Restaurar dependencias
+        id: dependencies-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-node22-${{ hashFiles('package.json', 'yarn.lock') }}
 
       - name: Instalar dependencias
+        if: steps.dependencies-cache.outputs.cache-hit != 'true'
         run: npm install --no-audit --no-fund --prefer-offline --package-lock=false
+
+      # Reutilizar trabajo de compilacion de Webpack.
+      - name: Restaurar cache Webpack
+        uses: actions/cache@v4
+        with:
+          path: .webpack-cache
+          key: webpack-${{ runner.os }}-node22-${{ hashFiles('package.json', 'yarn.lock', 'webpack.config.js') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            webpack-${{ runner.os }}-node22-${{ hashFiles('package.json', 'yarn.lock', 'webpack.config.js') }}-
 
       # Preparar constantes como en la compilacion Beta.
       - name: Configurar version de prueba
@@ -52,7 +68,7 @@ jobs:
       # Compilar sin ejecutar Jest.
       - name: Compilar aplicacion
         run: |
-          ./node_modules/.bin/webpack --config webpack.config.js --env production
+          ./node_modules/.bin/webpack --config webpack.config.js --env production --cache-type filesystem --cache-cache-directory .webpack-cache
           node scripts/getServiceWorkerCachePaths.js
 
       # Preparar solo los archivos necesarios para la web.
