@@ -5,6 +5,7 @@
    "id":"/",
    "display":"standalone",
    "background_color":"#fff",
+   "theme_color":"#000000",
    "description":"Free and simple to use app for augmentative and alternative communication (AAC) with offline support, flexible input methods and media access",
    "icons":[
       {
