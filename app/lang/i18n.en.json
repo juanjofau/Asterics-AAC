@@ -1337,5 +1337,13 @@
   "showAllElements": "show all elements",
   "firstRowHeightFactor": "Height factor for first row",
   "downloadingImagesWithPercent": "Downloading images ... {0}%",
-  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
+  "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser.",
+  "debugGrid": "Board",
+  "debugBoardOpen": "Board opening",
+  "debugImageLoad": "Image loading",
+  "debugTotalLoad": "Total loading",
+  "debugCells": "Cells",
+  "debugImages": "Images",
+  "debugImageErrors": "Image errors",
+  "debugBoardSize": "Board data size"
 }
