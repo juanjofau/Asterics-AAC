@@ -22,7 +22,7 @@
                         <th><button @click="sortGrids('count')">{{ $t('openings') }}</button></th>
                     </tr></thead>
                     <tbody>
-                        <tr v-for="grid in visibleGrids" :key="grid.id" :class="{selected: selectedGridId === grid.id}" @click="showGridCells(grid.id)">
+                        <tr v-for="grid in visibleGrids" :key="grid.id" :class="{selected: selectedGridId === grid.id}" @click="showGridCells(grid.id)" @keydown.enter="showGridCells(grid.id)" @keydown.space.prevent="showGridCells(grid.id)" tabindex="0" role="button">
                             <td>{{ getGridLabel(grid) }}</td>
                             <td>{{ gridOpens[grid.id] || 0 }}</td>
                         </tr>
@@ -46,7 +46,7 @@
                         <th><button @click="sortCells('count')">{{ $t('presses') }}</button></th>
                     </tr></thead>
                     <tbody>
-                        <tr v-for="cell in visibleCells" :key="cell.key" @click="$emit('open-grid', cell.grid.id)">
+                        <tr v-for="cell in visibleCells" :key="cell.key" @click="$emit('open-grid', cell.grid.id)" @keydown.enter="$emit('open-grid', cell.grid.id)" @keydown.space.prevent="$emit('open-grid', cell.grid.id)" tabindex="0" role="button">
                             <td>{{ cell.label }}</td>
                             <td>{{ getGridLabel(cell.grid) }}</td>
                             <td>{{ cell.count }}</td>
