@@ -2,7 +2,7 @@ import { areService } from './areService';
 import { openHABService } from './openHABService';
 import { httpService } from './httpService.js';
 import { dataService } from './data/dataService';
-import { statisticsService } from './data/statisticsService';
+import { statisticsService } from './statisticsService';
 import { speechService } from './speechService';
 import { collectElementService } from './collectElementService';
 import { predictionService } from './predictionService';
