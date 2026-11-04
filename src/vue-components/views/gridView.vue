@@ -376,7 +376,13 @@
                             resolve(success);
                         };
                         let onLoad = () => finish(true);
-                        let onError = () => finish(false);
+                        let onError = () => {
+                            setTimeout(() => {
+                                if (image.complete) {
+                                    finish(image.naturalWidth > 0);
+                                }
+                            }, 1000);
+                        };
                         image.addEventListener('load', onLoad);
                         image.addEventListener('error', onError);
                     });
