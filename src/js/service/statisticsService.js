@@ -50,7 +50,7 @@ function updateDocument(updateFn) {
 statisticsService.init = async function () {
     let databaseName = getDatabaseName();
     if (_db && _dbName === databaseName) {
-        return;
+        return _initPromise;
     }
     if (_db) {
         await _db.close();
@@ -81,21 +81,19 @@ statisticsService.setEnabled = async function (enabled) {
 statisticsService.recordGridOpen = async function (gridId) {
     if (!gridId) return;
     await statisticsService.init();
+    if (!(await getDocument()).enabled) return;
     return updateDocument(document => {
-        if (document.enabled) {
-            document.gridOpens[gridId] = (document.gridOpens[gridId] || 0) + 1;
-        }
+        document.gridOpens[gridId] = (document.gridOpens[gridId] || 0) + 1;
     });
 };
 
 statisticsService.recordCellPress = async function (gridId, cellId) {
     if (!gridId || !cellId) return;
     await statisticsService.init();
+    if (!(await getDocument()).enabled) return;
     return updateDocument(document => {
-        if (document.enabled) {
-            let key = gridId + ':' + cellId;
-            document.cellPresses[key] = (document.cellPresses[key] || 0) + 1;
-        }
+        let key = gridId + ':' + cellId;
+        document.cellPresses[key] = (document.cellPresses[key] || 0) + 1;
     });
 };
 
