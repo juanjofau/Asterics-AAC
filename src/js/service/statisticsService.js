@@ -1,27 +1,32 @@
-import PouchDB from 'PouchDB';
-import { dataService } from './data/dataService';
+import { localStorageService } from './data/localStorageService';
 
 let statisticsService = {};
-let _db = null;
-let _dbName = null;
-let _initPromise = null;
-let _writeQueue = Promise.resolve();
+let STORAGE_KEY_PREFIX = 'AG_USAGE_STATISTICS_';
 
-function getDatabaseName() {
-    let username = dataService.getCurrentUser() || 'local';
-    username = username.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    return 'asterics-aac-statistics-' + username;
+function getStorageKey() {
+    let username = localStorageService.getAutologinOrActiveUser() || 'local';
+    return STORAGE_KEY_PREFIX + encodeURIComponent(username);
 }
 
-async function getDocument() {
-    try {
-        return await _db.get('usage-statistics');
-    } catch (error) {
-        if (error.status !== 404) {
-            throw error;
-        }
+function getStoredStats() {
+    let storedStats = localStorageService.get(getStorageKey());
+    if (!storedStats) {
         return {
-            _id: 'usage-statistics',
+            enabled: false,
+            gridOpens: {},
+            cellPresses: {}
+        };
+    }
+    try {
+        let stats = JSON.parse(storedStats);
+        return {
+            enabled: !!stats.enabled,
+            gridOpens: stats.gridOpens || {},
+            cellPresses: stats.cellPresses || {}
+        };
+    } catch (error) {
+        log.warn('could not read usage statistics from local storage', error);
+        return {
             enabled: false,
             gridOpens: {},
             cellPresses: {}
@@ -29,88 +34,50 @@ async function getDocument() {
     }
 }
 
-function updateDocument(updateFn) {
-    _writeQueue = _writeQueue.then(async () => {
-        let document = await getDocument();
-        updateFn(document);
-        try {
-            await _db.put(document);
-        } catch (error) {
-            if (error.status !== 409) {
-                throw error;
-            }
-            document = await getDocument();
-            updateFn(document);
-            await _db.put(document);
-        }
-    });
-    return _writeQueue;
+function saveStats(stats) {
+    localStorageService.saveJSON(getStorageKey(), stats);
 }
 
-statisticsService.init = async function () {
-    let databaseName = getDatabaseName();
-    if (_db && _dbName === databaseName) {
-        return _initPromise;
-    }
-    if (_db) {
-        await _db.close();
-    }
-    _db = new PouchDB(databaseName, { auto_compaction: true });
-    _dbName = databaseName;
-    _initPromise = _db.info();
-    await _initPromise;
+statisticsService.init = function () {
+    return Promise.resolve();
 };
 
-statisticsService.getStats = async function () {
-    await statisticsService.init();
-    let document = await getDocument();
-    return {
-        enabled: !!document.enabled,
-        gridOpens: document.gridOpens || {},
-        cellPresses: document.cellPresses || {}
-    };
+statisticsService.getStats = function () {
+    return getStoredStats();
 };
 
-statisticsService.setEnabled = async function (enabled) {
-    await statisticsService.init();
-    return updateDocument(document => {
-        document.enabled = !!enabled;
-    });
+statisticsService.setEnabled = function (enabled) {
+    let stats = getStoredStats();
+    stats.enabled = !!enabled;
+    saveStats(stats);
 };
 
-statisticsService.recordGridOpen = async function (gridId) {
+statisticsService.recordGridOpen = function (gridId) {
     if (!gridId) return;
-    await statisticsService.init();
-    if (!(await getDocument()).enabled) return;
-    return updateDocument(document => {
-        if (document.enabled) {
-            document.gridOpens[gridId] = (document.gridOpens[gridId] || 0) + 1;
-        }
-    });
+    let stats = getStoredStats();
+    if (!stats.enabled) return;
+    stats.gridOpens[gridId] = (stats.gridOpens[gridId] || 0) + 1;
+    saveStats(stats);
 };
 
-statisticsService.recordCellPress = async function (gridId, cellId) {
+statisticsService.recordCellPress = function (gridId, cellId) {
     if (!gridId || !cellId) return;
-    await statisticsService.init();
-    if (!(await getDocument()).enabled) return;
-    return updateDocument(document => {
-        if (document.enabled) {
-            let key = gridId + ':' + cellId;
-            document.cellPresses[key] = (document.cellPresses[key] || 0) + 1;
-        }
-    });
+    let stats = getStoredStats();
+    if (!stats.enabled) return;
+    let key = gridId + ':' + cellId;
+    stats.cellPresses[key] = (stats.cellPresses[key] || 0) + 1;
+    saveStats(stats);
 };
 
-statisticsService.reset = async function (type) {
-    await statisticsService.init();
-    return updateDocument(document => {
-        if (type === 'grids' || type === 'all') {
-            document.gridOpens = {};
-        }
-        if (type === 'cells' || type === 'all') {
-            document.cellPresses = {};
-        }
-    });
+statisticsService.reset = function (type) {
+    let stats = getStoredStats();
+    if (type === 'grids' || type === 'all') {
+        stats.gridOpens = {};
+    }
+    if (type === 'cells' || type === 'all') {
+        stats.cellPresses = {};
+    }
+    saveStats(stats);
 };
 
 export { statisticsService };
