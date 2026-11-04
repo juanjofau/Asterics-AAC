@@ -1,10 +1,11 @@
 import { localStorageService } from './data/localStorageService';
+import { dataService } from './data/dataService';
 
 let statisticsService = {};
 let STORAGE_KEY_PREFIX = 'AG_USAGE_STATISTICS_';
 
 function getStorageKey() {
-    let username = localStorageService.getAutologinOrActiveUser() || 'local';
+    let username = dataService.getCurrentUser() || 'local';
     return STORAGE_KEY_PREFIX + encodeURIComponent(username);
 }
 
