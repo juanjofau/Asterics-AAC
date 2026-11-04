@@ -90,8 +90,8 @@
             visibleGrids() {
                 let grids = this.grids.filter(grid => this.getGridLabel(grid).toLowerCase().includes(this.gridSearch.toLowerCase()));
                 return grids.sort((a, b) => {
-                    let diff = this.gridSortBy === 'label' ? this.getGridLabel(a).localeCompare(this.getGridLabel(b)) : (this.gridOpens[b.id] || 0) - (this.gridOpens[a.id] || 0);
-                    return this.gridDescending ? diff : -diff;
+                    let diff = this.gridSortBy === 'label' ? this.getGridLabel(a).localeCompare(this.getGridLabel(b)) : (this.gridOpens[a.id] || 0) - (this.gridOpens[b.id] || 0);
+                    return this.gridDescending ? -diff : diff;
                 });
             },
             visibleCells() {
@@ -111,8 +111,8 @@
                     let diff = 0;
                     if (this.cellSortBy === 'label') diff = a.label.localeCompare(b.label);
                     else if (this.cellSortBy === 'grid') diff = this.getGridLabel(a.grid).localeCompare(this.getGridLabel(b.grid));
-                    else diff = b.count - a.count;
-                    return this.cellDescending ? diff : -diff;
+                    else diff = a.count - b.count;
+                    return this.cellDescending ? -diff : diff;
                 });
             }
         },
