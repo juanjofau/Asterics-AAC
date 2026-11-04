@@ -338,3 +338,25 @@ nav #helpButton:focus {
     }
     @page { size: landscape; }
 }
+
+
+.grid-debug-bar {
+    flex: 0 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.35em 0.7em;
+    border-top: 1px solid #b8b8b8;
+    background: #f1f1f1;
+    color: #222;
+    font-family: monospace;
+    font-size: 0.78em;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.grid-debug-line {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1.4em;
+    row-gap: 0.1em;
+}
