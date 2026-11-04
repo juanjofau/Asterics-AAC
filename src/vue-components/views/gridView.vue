@@ -54,8 +54,12 @@
             </div>
             <div class="grid-debug-line">
                 <span>{{ $t('debugCells') }}: {{ debugMetrics.cellCount }}</span>
-                <span>{{ $t('debugImages') }}: {{ debugMetrics.imageCount }} ({{ debugMetrics.imageSizeApproximate ? '~' : '' }}{{ formatDebugBytes(debugMetrics.imageSize) }})</span>
-                <span>{{ $t('debugImageErrors') }}: {{ debugMetrics.imageErrors === null ? '…' : debugMetrics.imageErrors }}</span>
+                <span>
+                    {{ $t('debugImages') }}: {{ debugMetrics.imageCount }} ({{ debugMetrics.imageSizeApproximate ? '~' : '' }}{{ formatDebugBytes(debugMetrics.imageSize) }})
+                </span>
+                <span>
+                    {{ $t('debugImageErrors') }}: {{ debugMetrics.imageErrors === null ? '…' : debugMetrics.imageErrors }}
+                </span>
             </div>
             <div class="grid-debug-line">
                 <span>{{ $t('debugBoardSize') }}: {{ formatDebugBytes(debugMetrics.boardSize) }}</span>
@@ -387,10 +391,16 @@
                         image.addEventListener('error', onError);
                     });
                 }));
-                if (!this.renderGridData || this.renderGridData.id !== gridId || this.debugLoadStartedAt !== startedAt) {
+                if (
+                    !this.renderGridData ||
+                    this.renderGridData.id !== gridId ||
+                    this.debugLoadStartedAt !== startedAt
+                ) {
                     return;
                 }
-                let externalUrls = Array.from(new Set(images.map(image => image.currentSrc || image.src).filter(url => url && !url.startsWith('data:'))));
+                let externalUrls = Array.from(
+                    new Set(images.map(image => image.currentSrc || image.src).filter(url => url && !url.startsWith('data:')))
+                );
                 let externalSize = 0;
                 let externalSizeUnknown = false;
                 externalUrls.forEach(url => {
