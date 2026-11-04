@@ -43,30 +43,33 @@ statisticsService.init = function () {
 };
 
 statisticsService.getStats = function () {
-    return getStoredStats();
+    return Promise.resolve(getStoredStats());
 };
 
 statisticsService.setEnabled = function (enabled) {
     let stats = getStoredStats();
     stats.enabled = !!enabled;
     saveStats(stats);
+    return Promise.resolve();
 };
 
 statisticsService.recordGridOpen = function (gridId) {
-    if (!gridId) return;
+    if (!gridId) return Promise.resolve();
     let stats = getStoredStats();
-    if (!stats.enabled) return;
+    if (!stats.enabled) return Promise.resolve();
     stats.gridOpens[gridId] = (stats.gridOpens[gridId] || 0) + 1;
     saveStats(stats);
+    return Promise.resolve();
 };
 
 statisticsService.recordCellPress = function (gridId, cellId) {
-    if (!gridId || !cellId) return;
+    if (!gridId || !cellId) return Promise.resolve();
     let stats = getStoredStats();
-    if (!stats.enabled) return;
+    if (!stats.enabled) return Promise.resolve();
     let key = gridId + ':' + cellId;
     stats.cellPresses[key] = (stats.cellPresses[key] || 0) + 1;
     saveStats(stats);
+    return Promise.resolve();
 };
 
 statisticsService.reset = function (type) {
@@ -78,6 +81,7 @@ statisticsService.reset = function (type) {
         stats.cellPresses = {};
     }
     saveStats(stats);
+    return Promise.resolve();
 };
 
 export { statisticsService };
