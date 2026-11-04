@@ -45,6 +45,22 @@
         <div class="srow content d-flex" v-if="showGrid && renderGridData && renderGridData.gridElements.length > 0" style="min-height: 0">
             <app-grid-display id="grid-container" :grid-data="renderGridData" :metadata="metadata" :elem-css-fn="(elem) => gridUtil.getElemBackgroundCss(elem, renderGridData, globalGridData, metadata.colorConfig.gridBackgroundColor)"/>
         </div>
+        <div v-if="debugMetrics" class="grid-debug-bar" role="status" aria-live="polite">
+            <div class="grid-debug-line"><strong>{{ $t('debugGrid') }}:</strong> {{ debugMetrics.gridName }}</div>
+            <div class="grid-debug-line">
+                <span>{{ $t('debugBoardOpen') }}: {{ formatDebugTime(debugMetrics.boardOpenTime) }}</span>
+                <span>{{ $t('debugImageLoad') }}: {{ formatDebugTime(debugMetrics.imageLoadTime) }}</span>
+                <span>{{ $t('debugTotalLoad') }}: {{ formatDebugTime(debugMetrics.totalTime) }}</span>
+            </div>
+            <div class="grid-debug-line">
+                <span>{{ $t('debugCells') }}: {{ debugMetrics.cellCount }}</span>
+                <span>{{ $t('debugImages') }}: {{ debugMetrics.imageCount }} ({{ formatDebugBytes(debugMetrics.imageSize) }})</span>
+                <span>{{ $t('debugImageErrors') }}: {{ debugMetrics.imageErrors === null ? '…' : debugMetrics.imageErrors }}</span>
+            </div>
+            <div class="grid-debug-line">
+                <span>{{ $t('debugBoardSize') }}: {{ formatDebugBytes(debugMetrics.boardSize) }}</span>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -127,7 +143,9 @@
                 highlightTimeoutHandler: null,
                 highlightedElementId: null,
                 systemActionService: systemActionService,
-                gridUtil: gridUtil
+                gridUtil: gridUtil,
+                debugMetrics: null,
+                debugLoadStartedAt: null
             }
         },
         components: {
@@ -280,6 +298,92 @@
                 }
                 this.inputMethodsInitialized = true;
             },
+            formatDebugTime(value) {
+                if (value === null || value === undefined) {
+                    return '…';
+                }
+                return value < 1000 ? value + ' ms' : (value / 1000).toFixed(2) + ' s';
+            },
+            formatDebugBytes(value) {
+                if (value === null || value === undefined) {
+                    return '—';
+                }
+                if (value < 1024) {
+                    return value + ' B';
+                }
+                if (value < 1024 * 1024) {
+                    return (value / 1024).toFixed(1) + ' KB';
+                }
+                return (value / (1024 * 1024)).toFixed(2) + ' MB';
+            },
+            getDebugDataSize(value) {
+                let serialized = JSON.stringify(value);
+                if (typeof TextEncoder !== 'undefined') {
+                    return new TextEncoder().encode(serialized).length;
+                }
+                return unescape(encodeURIComponent(serialized)).length;
+            },
+            getDebugImageSize(data) {
+                if (!data) {
+                    return 0;
+                }
+                let base64 = data.substring(data.indexOf(',') + 1);
+                if (data.indexOf(';base64,') !== -1) {
+                    let padding = (base64.match(/=*$/) || [''])[0].length;
+                    return Math.max(0, Math.floor(base64.length * 3 / 4) - padding);
+                }
+                return new TextEncoder().encode(data).length;
+            },
+            updateDebugContentMetrics(gridData) {
+                let elements = gridData.gridElements || [];
+                let imageElements = elements.filter(element => element.image && (element.image.data || element.image.url));
+                let imageSize = imageElements.reduce((total, element) => total + this.getDebugImageSize(element.image.data), 0);
+                let label = gridData.label;
+                if (label && typeof label === 'object') {
+                    let language = document.documentElement.lang;
+                    label = label[language] || label.en || Object.values(label)[0];
+                }
+                this.debugMetrics = {
+                    gridName: label || gridData.id,
+                    cellCount: elements.filter(element => element.type !== 'ELEMENT_TYPE_UI_FILLER').length,
+                    imageCount: imageElements.length,
+                    imageSize: imageSize,
+                    boardSize: this.getDebugDataSize(gridData),
+                    imageErrors: null,
+                    boardOpenTime: null,
+                    imageLoadTime: null,
+                    totalTime: null
+                };
+            },
+            async measureDebugImageLoad(gridId, startedAt) {
+                let imageLoadStartedAt = Date.now();
+                let images = Array.from(document.querySelectorAll('#grid-container img'));
+                let results = await Promise.all(images.map(image => {
+                    return new Promise(resolve => {
+                        if (image.complete) {
+                            resolve(image.naturalWidth > 0);
+                            return;
+                        }
+                        let timeout = setTimeout(() => finish(false), 10000);
+                        let finish = success => {
+                            clearTimeout(timeout);
+                            image.removeEventListener('load', onLoad);
+                            image.removeEventListener('error', onError);
+                            resolve(success);
+                        };
+                        let onLoad = () => finish(true);
+                        let onError = () => finish(false);
+                        image.addEventListener('load', onLoad);
+                        image.addEventListener('error', onError);
+                    });
+                }));
+                if (!this.renderGridData || this.renderGridData.id !== gridId || this.debugLoadStartedAt !== startedAt) {
+                    return;
+                }
+                this.debugMetrics.imageErrors = results.filter(success => !success).length;
+                this.debugMetrics.imageLoadTime = Date.now() - imageLoadStartedAt;
+                this.debugMetrics.totalTime = Date.now() - startedAt;
+            },
             async onNavigateEvent(event, gridData, params) {
                 await this.loadGrid(gridData, { continueInputMethods: true });
             },
@@ -288,6 +392,7 @@
                 options.forceReload = options.forceReload || false;
                 collectElementService.clearCollectElements();
                 if (gridData && (options.forceReload || !this.renderGridData || this.renderGridData.id !== gridData.id)) {
+                    this.debugLoadStartedAt = Date.now();
                     if (gridUtil.hasAREModel(gridData)) {
                         let areModel = gridUtil.getAREModel(gridData);
                         areService.uploadAndStartModel(areModel.dataBase64, gridUtil.getAREURL(gridData), areModel.fileName);
@@ -317,6 +422,10 @@
                 }
 
                 await this.$nextTick();
+                if (this.debugLoadStartedAt && this.renderGridData) {
+                    this.debugMetrics.boardOpenTime = Date.now() - this.debugLoadStartedAt;
+                    this.measureDebugImageLoad(this.renderGridData.id, this.debugLoadStartedAt);
+                }
                 initContextmenu();
                 this.initInputMethods(options);
                 this.highlightElements();
@@ -426,6 +535,7 @@
                 this.renderGridData.minColumnCount = gridUtil.getWidthWithBounds(this.renderGridData);
                 this.renderGridData.rowCount = gridUtil.getHeightWithBounds(this.renderGridData);
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
+                this.updateDebugContentMetrics(this.renderGridData);
 
                 // Check for local toggle level first, otherwise use synchronized metadata level
                 let isToggled = localStorageService.get(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
