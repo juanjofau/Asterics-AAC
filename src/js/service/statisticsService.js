@@ -83,7 +83,9 @@ statisticsService.recordGridOpen = async function (gridId) {
     await statisticsService.init();
     if (!(await getDocument()).enabled) return;
     return updateDocument(document => {
-        document.gridOpens[gridId] = (document.gridOpens[gridId] || 0) + 1;
+        if (document.enabled) {
+            document.gridOpens[gridId] = (document.gridOpens[gridId] || 0) + 1;
+        }
     });
 };
 
@@ -92,8 +94,10 @@ statisticsService.recordCellPress = async function (gridId, cellId) {
     await statisticsService.init();
     if (!(await getDocument()).enabled) return;
     return updateDocument(document => {
-        let key = gridId + ':' + cellId;
-        document.cellPresses[key] = (document.cellPresses[key] || 0) + 1;
+        if (document.enabled) {
+            let key = gridId + ':' + cellId;
+            document.cellPresses[key] = (document.cellPresses[key] || 0) + 1;
+        }
     });
 };
 
