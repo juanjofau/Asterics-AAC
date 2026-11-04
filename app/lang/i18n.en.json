@@ -1338,4 +1338,21 @@
   "firstRowHeightFactor": "Height factor for first row",
   "downloadingImagesWithPercent": "Downloading images ... {0}%",
   "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser."
+  ,
+  "statistics": "Statistics",
+  "enableUsageStatistics": "Enable usage statistics",
+  "gridStatistics": "Grids",
+  "cellStatistics": "Cells",
+  "searchGrids": "Search grids",
+  "searchCells": "Search cells",
+  "grid": "Grid",
+  "cell": "Cell",
+  "openings": "Openings",
+  "presses": "Presses",
+  "resetGridStatistics": "Reset grid statistics",
+  "resetCellStatistics": "Reset cell statistics",
+  "resetAllStatistics": "Reset all statistics",
+  "confirmResetGridStatistics": "Do you really want to reset grid opening statistics?",
+  "confirmResetCellStatistics": "Do you really want to reset cell press statistics?",
+  "confirmResetAllStatistics": "Do you really want to reset all usage statistics?"
 }
