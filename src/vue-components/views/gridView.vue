@@ -54,7 +54,7 @@
             </div>
             <div class="grid-debug-line">
                 <span>{{ $t('debugCells') }}: {{ debugMetrics.cellCount }}</span>
-                <span>{{ $t('debugImages') }}: {{ debugMetrics.imageCount }} ({{ formatDebugBytes(debugMetrics.imageSize) }})</span>
+                <span>{{ $t('debugImages') }}: {{ debugMetrics.imageCount }} ({{ debugMetrics.imageSizeApproximate ? '~' : '' }}{{ formatDebugBytes(debugMetrics.imageSize) }})</span>
                 <span>{{ $t('debugImageErrors') }}: {{ debugMetrics.imageErrors === null ? '…' : debugMetrics.imageErrors }}</span>
             </div>
             <div class="grid-debug-line">
@@ -334,7 +334,7 @@
                 }
                 return new TextEncoder().encode(data).length;
             },
-            updateDebugContentMetrics(gridData) {
+            updateDebugContentMetrics(gridData, sourceGridData) {
                 let elements = gridData.gridElements || [];
                 let imageElements = elements.filter(element => element.image && (element.image.data || element.image.url));
                 let imageSize = imageElements.reduce((total, element) => total + this.getDebugImageSize(element.image.data), 0);
@@ -348,7 +348,8 @@
                     cellCount: elements.filter(element => element.type !== 'ELEMENT_TYPE_UI_FILLER').length,
                     imageCount: imageElements.length,
                     imageSize: imageSize,
-                    boardSize: this.getDebugDataSize(gridData),
+                    imageSizeApproximate: (imageElements.some(element => !!element.image.url)),
+                    boardSize: this.getDebugDataSize(sourceGridData),
                     imageErrors: null,
                     boardOpenTime: null,
                     imageLoadTime: null,
@@ -380,6 +381,21 @@
                 if (!this.renderGridData || this.renderGridData.id !== gridId || this.debugLoadStartedAt !== startedAt) {
                     return;
                 }
+                let externalUrls = Array.from(new Set(images.map(image => image.currentSrc || image.src).filter(url => url && !url.startsWith('data:'))));
+                let externalSize = 0;
+                let externalSizeUnknown = false;
+                externalUrls.forEach(url => {
+                    let entries = performance.getEntriesByName(url, 'resource');
+                    let entry = entries.length ? entries[entries.length - 1] : null;
+                    let size = entry ? (entry.encodedBodySize || entry.transferSize || 0) : 0;
+                    if (size > 0) {
+                        externalSize += size;
+                    } else {
+                        externalSizeUnknown = true;
+                    }
+                });
+                this.debugMetrics.imageSize += externalSize;
+                this.debugMetrics.imageSizeApproximate = this.debugMetrics.imageSizeApproximate || externalSizeUnknown;
                 this.debugMetrics.imageErrors = results.filter(success => !success).length;
                 this.debugMetrics.imageLoadTime = Date.now() - imageLoadStartedAt;
                 this.debugMetrics.totalTime = Date.now() - startedAt;
@@ -535,7 +551,7 @@
                 this.renderGridData.minColumnCount = gridUtil.getWidthWithBounds(this.renderGridData);
                 this.renderGridData.rowCount = gridUtil.getHeightWithBounds(this.renderGridData);
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
-                this.updateDebugContentMetrics(this.renderGridData);
+                this.updateDebugContentMetrics(this.renderGridData, gridData);
 
                 // Check for local toggle level first, otherwise use synchronized metadata level
                 let isToggled = localStorageService.get(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
