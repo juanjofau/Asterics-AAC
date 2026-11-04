@@ -332,7 +332,10 @@
                     let padding = (base64.match(/=*$/) || [''])[0].length;
                     return Math.max(0, Math.floor(base64.length * 3 / 4) - padding);
                 }
-                return new TextEncoder().encode(data).length;
+                if (typeof TextEncoder !== 'undefined') {
+                    return new TextEncoder().encode(data).length;
+                }
+                return unescape(encodeURIComponent(data)).length;
             },
             updateDebugContentMetrics(gridData, sourceGridData) {
                 let elements = gridData.gridElements || [];
@@ -527,6 +530,7 @@
                 this.metadata = this.updatedMetadataDoc || this.metadata;
             },
             async recalculateRenderGrid(gridData) {
+                let sourceGridData = JSON.parse(JSON.stringify(gridData));
                 // attention: gridData also changes because of "noDeepCopy: true"
                 // just using this.renderGridData for clarity
                 this.showGrid = false;
@@ -551,7 +555,7 @@
                 this.renderGridData.minColumnCount = gridUtil.getWidthWithBounds(this.renderGridData);
                 this.renderGridData.rowCount = gridUtil.getHeightWithBounds(this.renderGridData);
                 this.renderGridData.gridElements = this.renderGridData.gridElements.filter(e => !e.hidden);
-                this.updateDebugContentMetrics(this.renderGridData, gridData);
+                this.updateDebugContentMetrics(this.renderGridData, sourceGridData);
 
                 // Check for local toggle level first, otherwise use synchronized metadata level
                 let isToggled = localStorageService.get(localStorageService.KEY_CURRENT_TOGGLE_LEVEL);
