@@ -81,7 +81,6 @@
                 cellSearch: '',
                 gridDescending: true,
                 cellDescending: true,
-                cellCountDescending: true,
                 gridSortBy: 'count',
                 cellSortBy: 'count'
             };
