@@ -52,6 +52,7 @@
     import $ from '../../js/externals/jquery.js';
     import {L} from "../../js/util/lquery.js";
     import {actionService} from "../../js/service/actionService";
+    import {statisticsService} from "../../js/service/statisticsService";
     import {dataService} from "../../js/service/data/dataService";
     import {areService} from "../../js/service/areService";
     import {Router} from "./../../js/router.js";
@@ -288,6 +289,7 @@
                 options.forceReload = options.forceReload || false;
                 collectElementService.clearCollectElements();
                 if (gridData && (options.forceReload || !this.renderGridData || this.renderGridData.id !== gridData.id)) {
+                    let isNewGrid = !this.renderGridData || this.renderGridData.id !== gridData.id;
                     if (gridUtil.hasAREModel(gridData)) {
                         let areModel = gridUtil.getAREModel(gridData);
                         areService.uploadAndStartModel(areModel.dataBase64, gridUtil.getAREURL(gridData), areModel.fileName);
@@ -297,6 +299,9 @@
                     let updateThumbnail = gridUtil.hasOutdatedThumbnail(gridData) && !this.skipThumbnailCheck;
 
                     await this.recalculateRenderGrid(gridData);
+                    if (isNewGrid) {
+                        statisticsService.recordGridOpen(gridData.id).catch(error => log.warn('could not record grid opening', error));
+                    }
                     Router.addToGridHistory(this.renderGridData.id);
 
                     if (updateThumbnail) {
