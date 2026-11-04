@@ -18,11 +18,11 @@
                 </div>
                 <table>
                     <thead><tr>
-                        <th><button @click="sortGrids">{{ $t('grid') }}</button></th>
-                        <th><button @click="gridDescending = !gridDescending">{{ $t('openings') }}</button></th>
+                        <th><button @click="sortGrids('label')">{{ $t('grid') }}</button></th>
+                        <th><button @click="sortGrids('count')">{{ $t('openings') }}</button></th>
                     </tr></thead>
                     <tbody>
-                        <tr v-for="grid in visibleGrids" :key="grid.id" :class="{selected: selectedGridId === grid.id}" @click="selectedGridId = grid.id">
+                        <tr v-for="grid in visibleGrids" :key="grid.id" :class="{selected: selectedGridId === grid.id}" @click="showGridCells(grid.id)">
                             <td>{{ getGridLabel(grid) }}</td>
                             <td>{{ gridOpens[grid.id] || 0 }}</td>
                         </tr>
@@ -41,9 +41,9 @@
                 </div>
                 <table>
                     <thead><tr>
-                        <th><button @click="cellDescending = !cellDescending">{{ $t('cell') }}</button></th>
-                        <th>{{ $t('grid') }}</th>
-                        <th><button @click="cellCountDescending = !cellCountDescending">{{ $t('presses') }}</button></th>
+                        <th><button @click="sortCells('label')">{{ $t('cell') }}</button></th>
+                        <th><button @click="sortCells('grid')">{{ $t('grid') }}</button></th>
+                        <th><button @click="sortCells('count')">{{ $t('presses') }}</button></th>
                     </tr></thead>
                     <tbody>
                         <tr v-for="cell in visibleCells" :key="cell.key" @click="$emit('open-grid', cell.grid.id)">
@@ -81,14 +81,16 @@
                 cellSearch: '',
                 gridDescending: true,
                 cellDescending: true,
-                cellCountDescending: true
+                cellCountDescending: true,
+                gridSortBy: 'count',
+                cellSortBy: 'count'
             };
         },
         computed: {
             visibleGrids() {
                 let grids = this.grids.filter(grid => this.getGridLabel(grid).toLowerCase().includes(this.gridSearch.toLowerCase()));
                 return grids.sort((a, b) => {
-                    let diff = (this.gridOpens[b.id] || 0) - (this.gridOpens[a.id] || 0);
+                    let diff = this.gridSortBy === 'label' ? this.getGridLabel(a).localeCompare(this.getGridLabel(b)) : (this.gridOpens[b.id] || 0) - (this.gridOpens[a.id] || 0);
                     return this.gridDescending ? diff : -diff;
                 });
             },
@@ -106,8 +108,11 @@
                     }
                 }
                 return cells.sort((a, b) => {
-                    let diff = this.cellCountDescending ? b.count - a.count : a.count - b.count;
-                    return diff || (this.cellDescending ? a.label.localeCompare(b.label) : b.label.localeCompare(a.label));
+                    let diff = 0;
+                    if (this.cellSortBy === 'label') diff = a.label.localeCompare(b.label);
+                    else if (this.cellSortBy === 'grid') diff = this.getGridLabel(a.grid).localeCompare(this.getGridLabel(b.grid));
+                    else diff = b.count - a.count;
+                    return this.cellDescending ? diff : -diff;
                 });
             }
         },
@@ -125,8 +130,23 @@
                 await statisticsService.setEnabled(event.target.checked);
                 await this.reload();
             },
-            sortGrids() {
-                this.gridDescending = !this.gridDescending;
+            sortGrids(key) {
+                if (this.gridSortBy === key) this.gridDescending = !this.gridDescending;
+                else {
+                    this.gridSortBy = key;
+                    this.gridDescending = key === 'count';
+                }
+            },
+            sortCells(key) {
+                if (this.cellSortBy === key) this.cellDescending = !this.cellDescending;
+                else {
+                    this.cellSortBy = key;
+                    this.cellDescending = key === 'count';
+                }
+            },
+            showGridCells(gridId) {
+                this.selectedGridId = gridId;
+                this.activeTab = 'cells';
             },
             async reset(type) {
                 let message = type === 'all' ? i18nService.t('confirmResetAllStatistics') :
