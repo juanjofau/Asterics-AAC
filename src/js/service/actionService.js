@@ -2,6 +2,7 @@ import { areService } from './areService';
 import { openHABService } from './openHABService';
 import { httpService } from './httpService.js';
 import { dataService } from './data/dataService';
+import { statisticsService } from './data/statisticsService';
 import { speechService } from './speechService';
 import { collectElementService } from './collectElementService';
 import { predictionService } from './predictionService';
@@ -59,6 +60,7 @@ actionService.doAction = async function (gridIdOrObject, gridElementId) {
     let gridElement = JSON.parse(JSON.stringify(gridData.gridElements.find(e => e.id === gridElementId)));
 
     log.debug('do actions for: ' + i18nService.getTranslation(gridElement.label) + ', ' + gridElementId);
+    statisticsService.recordCellPress(gridData.id, gridElementId).catch(error => log.warn('could not record cell press', error));
     switch (gridElement.type) {
         case GridElement.ELEMENT_TYPE_PREDICTION: {
             predictionService.doAction(gridElement.id);
