@@ -17,7 +17,7 @@
                 <i class="fas fa-4x fa-spinner fa-spin" style="position: relative;"/>
             </div>
         </div>
-        <div class="srow content text-content" v-if="graphList && graphList.length > 0 && !showLoading && activeTab === 'grids'>
+        <div class="srow content text-content" v-if="graphList && graphList.length > 0 && !showLoading && activeTab === 'grids'">
             <div v-if="selectedGraphElement">
                 <h1>{{headerDetails}}</h1>
                 <div class="srow">
