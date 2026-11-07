@@ -49,8 +49,6 @@
             <div class="grid-debug-line"><strong>{{ $t('debugGrid') }}:</strong> {{ debugMetrics.gridName }}</div>
             <div class="grid-debug-line">
                 <span>{{ $t('debugBoardOpen') }}: {{ formatDebugTime(debugMetrics.boardOpenTime) }}</span>
-                <span>{{ $t('debugSelectionToGrid') }}: {{ formatDebugTime(debugMetrics.selectionToGridTime) }}</span>
-                <span>{{ $t('debugSelectionToAudio') }}: {{ formatDebugTime(debugMetrics.selectionToAudioTime) }}</span>
                 <span>{{ $t('debugImageLoad') }}: {{ formatDebugTime(debugMetrics.imageLoadTime) }}</span>
                 <span>{{ $t('debugTotalLoad') }}: {{ formatDebugTime(debugMetrics.totalTime) }}</span>
             </div>
@@ -65,6 +63,8 @@
             </div>
             <div class="grid-debug-line">
                 <span>{{ $t('debugBoardSize') }}: {{ formatDebugBytes(debugMetrics.boardSize) }}</span>
+                <span>{{ $t('debugSelectionToGrid') }}: {{ formatDebugTime(debugMetrics.selectionToGridTime) }}</span>
+                <span>{{ $t('debugSelectionToAudio') }}: {{ formatDebugTime(debugMetrics.selectionToAudioTime) }}</span>
             </div>
         </div>
     </div>
