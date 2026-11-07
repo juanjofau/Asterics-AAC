@@ -46,7 +46,7 @@ let metadata = null;
 let lastActionElementId = null;
 let lastActionTime = 0;
 
-actionService.doAction = async function (gridIdOrObject, gridElementId) {
+actionService.doAction = async function (gridIdOrObject, gridElementId, selectionStartedAt) {
     if (!gridIdOrObject || !gridElementId) {
         return;
     }
@@ -65,7 +65,7 @@ actionService.doAction = async function (gridIdOrObject, gridElementId) {
             break;
         }
     }
-    doActions(gridElement, gridData.id);
+    doActions(gridElement, gridData.id, selectionStartedAt);
 };
 
 actionService.testAction = function (gridElement, action, gridData = {}) {
@@ -83,7 +83,7 @@ actionService.getPredefinedRequestInfos = async function() {
     return getPredefinedInfos(METADATA_URL_REQUESTS);
 };
 
-async function doActions(gridElement, gridId) {
+async function doActions(gridElement, gridId, selectionStartedAt) {
     let actions = gridElement.actions;
     actions.sort((a, b) => {
         // do lang change before navigation
@@ -109,7 +109,8 @@ async function doActions(gridElement, gridId) {
     for (let action of actions) {
         await doAction(gridElement, action, {
             gridId: gridId,
-            actions: actions
+            actions: actions,
+            selectionStartedAt: selectionStartedAt
         });
     }
     metadata = metadata || (await dataService.getMetadata());
@@ -177,7 +178,14 @@ async function doAction(gridElement, action, options = {}) {
         case 'GridActionAudio':
             if (action.dataBase64) {
                 audioUtil.stopAudio();
-                audioUtil.playAudio(action.dataBase64);
+                audioUtil.playAudio(action.dataBase64, {
+                    onStart: () => {
+                        if (options.selectionStartedAt !== undefined) {
+                            let elapsed = performance.now() - options.selectionStartedAt;
+                            window.dispatchEvent(new CustomEvent('grid-debug-audio-start', { detail: elapsed }));
+                        }
+                    }
+                });
             }
             break;
         case 'GridActionWordForm':
@@ -214,6 +222,9 @@ async function doAction(gridElement, action, options = {}) {
             }
             break;
         case 'GridActionNavigate':
+            if (options.selectionStartedAt !== undefined) {
+                window.__debugGridSelectionStartedAt = options.selectionStartedAt;
+            }
             if (action.navType === GridActionNavigate.NAV_TYPES.TO_HOME) {
                 Router.toMain();
             } else if (action.navType === GridActionNavigate.NAV_TYPES.TO_LAST) {
