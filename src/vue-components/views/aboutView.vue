@@ -110,7 +110,7 @@
                 <div class="srow" style="margin-top: 3em">
                     <i18n path="youreUsingAstericsGridVersion" tag="div">
                         <template v-slot:gridVersion>
-                            <a target="_blank" href="https://github.com/asterics/Asterics-AAC/releases/tag/#ASTERICS_GRID_VERSION#">#ASTERICS_GRID_VERSION#</a>
+                            <a target="_blank" :href="versionUrl">{{ appVersion }}</a>
                         </template>
                     </i18n>
                 </div>
@@ -122,6 +122,7 @@
 
 <script>
     import {Router} from "../../js/router";
+    import {constants} from "../../js/util/constants";
     import HeaderIcon from '../../vue-components/components/headerIcon.vue'
     import ProjectAcknowledgement from '../components/projectAcknowledgement.vue';
 
@@ -130,6 +131,14 @@
         props: [],
         data() {
             return {
+            }
+        },
+        computed: {
+            appVersion() {
+                return constants.CURRENT_VERSION === '#ASTERICS_GRID_VERSION#' ? constants.LOCAL_VERSION : constants.CURRENT_VERSION;
+            },
+            versionUrl() {
+                return 'https://github.com/asterics/Asterics-AAC/releases/tag/' + this.appVersion;
             }
         },
         methods: {
