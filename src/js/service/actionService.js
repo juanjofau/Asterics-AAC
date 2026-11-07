@@ -234,7 +234,7 @@ async function doAction(gridElement, action, options = {}) {
             } else if (Router.isOnEditPage()) {
                 Router.toEditGrid(action.toGridId);
             } else {
-                Router.toGrid(action.toGridId, options.selectionStartedAt === undefined ? undefined : { selectionStartedAt: options.selectionStartedAt });
+                Router.toGrid(action.toGridId, undefined, options.selectionStartedAt);
             }
             break;
         case 'GridActionARE':
