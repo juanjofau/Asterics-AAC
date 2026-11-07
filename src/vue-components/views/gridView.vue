@@ -49,6 +49,8 @@
             <div class="grid-debug-line"><strong>{{ $t('debugGrid') }}:</strong> {{ debugMetrics.gridName }}</div>
             <div class="grid-debug-line">
                 <span>{{ $t('debugBoardOpen') }}: {{ formatDebugTime(debugMetrics.boardOpenTime) }}</span>
+                <span>{{ $t('debugSelectionToGrid') }}: {{ formatDebugTime(debugMetrics.selectionToGridTime) }}</span>
+                <span>{{ $t('debugSelectionToAudio') }}: {{ formatDebugTime(debugMetrics.selectionToAudioTime) }}</span>
                 <span>{{ $t('debugImageLoad') }}: {{ formatDebugTime(debugMetrics.imageLoadTime) }}</span>
                 <span>{{ $t('debugTotalLoad') }}: {{ formatDebugTime(debugMetrics.totalTime) }}</span>
             </div>
@@ -162,6 +164,11 @@
             ScanningModal, HeaderIcon
         },
         methods: {
+            onDebugAudioStart(event) {
+                if (this.debugMetrics) {
+                    this.debugMetrics.selectionToAudioTime = event.detail;
+                }
+            },
             openModal(modalType) {
                 this.showModal = modalType;
                 stopInputMethods();
@@ -230,7 +237,7 @@
                 let selectionListener = (item) => {
                     this.stopHighlightElements();
                     L.removeAddClass(item, 'selected');
-                    actionService.doAction(thiz.renderGridData, item.id);
+                    actionService.doAction(thiz.renderGridData, item.id, performance.now());
                 };
                 let activeListener = (items, wrap, restarted) => {
                     if (!Array.isArray(items)) {
@@ -359,6 +366,8 @@
                     boardSize: this.getDebugDataSize(sourceGridData),
                     imageErrors: null,
                     boardOpenTime: null,
+                    selectionToGridTime: null,
+                    selectionToAudioTime: null,
                     imageLoadTime: null,
                     totalTime: null
                 };
@@ -423,6 +432,13 @@
                 await this.loadGrid(gridData, { continueInputMethods: true });
             },
             async loadGrid(gridData, options = {}) {
+                let selectionStartedAt = window.__debugGridSelectionStartedAt;
+                if (selectionStartedAt !== undefined) {
+                    window.__debugGridSelectionStartedAt = undefined;
+                    if (this.debugMetrics) {
+                        this.debugMetrics.selectionToGridTime = performance.now() - selectionStartedAt;
+                    }
+                }
                 options.continueInputMethods = options.continueInputMethods || false;
                 options.forceReload = options.forceReload || false;
                 collectElementService.clearCollectElements();
@@ -628,6 +644,7 @@
         },
         created() {
             $(document).on(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
+            window.addEventListener('grid-debug-audio-start', this.onDebugAudioStart);
             $(document).on(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).on(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.addEventListener('contextmenu', this.contextMenuListener);
@@ -638,6 +655,7 @@
         },
         beforeDestroy() {
             $(document).off(constants.EVENT_DB_PULL_UPDATED, this.onExternalUpdate);
+            window.removeEventListener('grid-debug-audio-start', this.onDebugAudioStart);
             $(document).off(constants.EVENT_SIDEBAR_OPEN, this.onSidebarOpen);
             $(document).off(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, this.onNavigateEvent);
             document.removeEventListener('contextmenu', this.contextMenuListener);
