@@ -221,7 +221,7 @@ Router.toLastOpenedGrid = function () {
     });
 };
 
-Router.toGrid = function (id, props) {
+Router.toGrid = function (id, props, selectionStartedAt) {
     if (id) {
         Router.addToGridHistory(id);
         props = props || {};
@@ -237,7 +237,7 @@ Router.toGrid = function (id, props) {
                     history.replaceState(null, null, getFullUrl(`#grid/${id}`));
                 }
                 $(document).trigger(constants.EVENT_NAVIGATE);
-                $(document).trigger(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, [gridData, props]);
+                $(document).trigger(constants.EVENT_NAVIGATE_GRID_IN_VIEWMODE, [gridData, props, selectionStartedAt]);
             });
         } else {
             let noHistory = location.hash.startsWith('#main');
