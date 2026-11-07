@@ -160,6 +160,9 @@ audioUtil.playAudioUint8 = function (arrayBuffer, options) {
                 }
             };
             _currentAudioSource.start(0);
+            if (options.onStart) {
+                options.onStart();
+            }
             resolve();
         }
     });
