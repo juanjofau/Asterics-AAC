@@ -1340,6 +1340,8 @@
   "browserNotSupportingOfflineMode": "Your browser doesn’t support offline mode. If you need it, update or use a different browser.",
   "debugGrid": "Board",
   "debugBoardOpen": "Board opening",
+  "debugSelectionToGrid": "Selection to board load",
+  "debugSelectionToAudio": "Selection to audio start",
   "debugImageLoad": "Image loading",
   "debugTotalLoad": "Total loading",
   "debugCells": "Cells",
