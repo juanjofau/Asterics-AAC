@@ -110,7 +110,7 @@
                 <div class="srow" style="margin-top: 3em">
                     <i18n path="youreUsingAstericsGridVersion" tag="div">
                         <template v-slot:gridVersion>
-                            <a target="_blank" :href="versionUrl">{{ appVersion }}</a>
+                            <span>{{ appVersion }}</span>
                         </template>
                     </i18n>
                 </div>
@@ -136,9 +136,6 @@
         computed: {
             appVersion() {
                 return constants.CURRENT_VERSION === '#ASTERICS_GRID_VERSION#' ? constants.LOCAL_VERSION : constants.CURRENT_VERSION;
-            },
-            versionUrl() {
-                return 'https://github.com/asterics/Asterics-AAC/releases/tag/' + this.appVersion;
             }
         },
         methods: {
