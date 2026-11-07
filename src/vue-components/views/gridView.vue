@@ -433,11 +433,10 @@
             },
             async loadGrid(gridData, options = {}) {
                 let selectionStartedAt = window.__debugGridSelectionStartedAt;
+                let selectionToGridTime = null;
                 if (selectionStartedAt !== undefined) {
                     window.__debugGridSelectionStartedAt = undefined;
-                    if (this.debugMetrics) {
-                        this.debugMetrics.selectionToGridTime = performance.now() - selectionStartedAt;
-                    }
+                    selectionToGridTime = performance.now() - selectionStartedAt;
                 }
                 options.continueInputMethods = options.continueInputMethods || false;
                 options.forceReload = options.forceReload || false;
@@ -470,6 +469,10 @@
                         this.metadata.lastOpenedGridId = gridData.id;
                         await dataService.saveMetadata(this.metadata);
                     }
+                }
+
+                if (selectionToGridTime !== null && this.debugMetrics) {
+                    this.debugMetrics.selectionToGridTime = selectionToGridTime;
                 }
 
                 await this.$nextTick();
