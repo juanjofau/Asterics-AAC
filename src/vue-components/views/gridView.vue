@@ -428,10 +428,10 @@
                 this.debugMetrics.imageLoadTime = Date.now() - imageLoadStartedAt;
                 this.debugMetrics.totalTime = Date.now() - startedAt;
             },
-            async onNavigateEvent(event, gridData, params) {
+            async onNavigateEvent(event, gridData, params, selectionStartedAt) {
                 await this.loadGrid(gridData, {
                     continueInputMethods: true,
-                    selectionStartedAt: params && params.selectionStartedAt
+                    selectionStartedAt: selectionStartedAt
                 });
             },
             async loadGrid(gridData, options = {}) {
