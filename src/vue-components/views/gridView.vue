@@ -429,13 +429,18 @@
                 this.debugMetrics.totalTime = Date.now() - startedAt;
             },
             async onNavigateEvent(event, gridData, params) {
-                await this.loadGrid(gridData, { continueInputMethods: true });
+                await this.loadGrid(gridData, {
+                    continueInputMethods: true,
+                    selectionStartedAt: params && params.selectionStartedAt
+                });
             },
             async loadGrid(gridData, options = {}) {
-                let selectionStartedAt = window.__debugGridSelectionStartedAt;
+                let selectionStartedAt = options.selectionStartedAt !== undefined ? options.selectionStartedAt : window.__debugGridSelectionStartedAt;
                 let selectionToGridTime = null;
                 if (selectionStartedAt !== undefined) {
-                    window.__debugGridSelectionStartedAt = undefined;
+                    if (window.__debugGridSelectionStartedAt === selectionStartedAt) {
+                        window.__debugGridSelectionStartedAt = undefined;
+                    }
                     selectionToGridTime = performance.now() - selectionStartedAt;
                 }
                 options.continueInputMethods = options.continueInputMethods || false;
